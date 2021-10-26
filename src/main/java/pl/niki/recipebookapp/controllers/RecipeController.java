@@ -1,5 +1,6 @@
 package pl.niki.recipebookapp.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,7 +11,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -32,7 +35,8 @@ public class RecipeController implements Initializable {
     //public ListView<Instruction> instructionList;
     public TableView<Instruction> instructionTable;
     public TableColumn<Instruction,String> descriptionColumn;
-    public ImageView imageView;
+    public TableColumn<Instruction, Image> imageColumn;
+    public ImageView recipeImage;
     public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel;
     public Button backButton;
 
@@ -80,16 +84,47 @@ public class RecipeController implements Initializable {
         // TableView ===================================================================================================
         instructions = FXCollections.observableArrayList(recipe.getInstructions());
         instructionTable.setItems(instructions);
+        instructionTable.setFixedCellSize(150);
+        instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));;
+
         descriptionColumn.setCellValueFactory(cell -> cell.getValue().descriptionProperty());
-        descriptionColumn.setCellFactory(i -> {
+        descriptionColumn.setCellFactory(param -> {
             TableCell<Instruction,String> cell = new TableCell<>();
             Text text = new Text();
             cell.setGraphic(text);
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+//            cell.setPrefWidth(Control.USE_COMPUTED_SIZE);
             text.wrappingWidthProperty().bind(descriptionColumn.widthProperty());
             text.textProperty().bind(cell.itemProperty());
             return cell;
         });
+
+        imageColumn.setCellFactory(param -> {
+            // set ImageView
+            final ImageView descriptionImage = new ImageView();
+            descriptionImage.setFitHeight(150);
+            descriptionImage.setFitWidth(200);
+
+            // set cell
+            TableCell<Instruction, Image> cell = new TableCell<>(){
+                @Override
+                protected void updateItem(Image image, boolean b) {
+//                    super.updateItem(image, b);
+                    if (image != null){
+                        descriptionImage.setImage(image);
+                    }
+                    else {
+
+                    }
+                }
+            };
+            cell.setGraphic(descriptionImage);
+            return cell;
+        });
+        imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+
+//        instructionTable.minHeightProperty().bind(instructionTable.prefHeightProperty());
+//        instructionTable.maxHeightProperty().bind(instructionTable.prefHeightProperty());
 
         //        descriptionColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Instruction, String>, ObservableValue<String>>() {
 //            @Override
@@ -132,26 +167,27 @@ public class RecipeController implements Initializable {
 //        instructionList.setFocusTraversable( false );
 
         // height of list
-        ingredientsList.setPrefHeight(ingredients.size()*30+2);
+        ingredientsList.setFixedCellSize(30);
+        ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(1.01)));
 
         // ImageView ===================================================================================================
-        imageView.setImage(recipe.getImage());
+        recipeImage.setImage(recipe.getImage());
 
         //rounded rectangle ImageView
-        Rectangle rectangle = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
+        Rectangle rectangle = new Rectangle(recipeImage.getFitWidth(), recipeImage.getFitHeight());
         rectangle.setArcWidth(25);
         rectangle.setArcHeight(25);
-        imageView.setClip(rectangle);
+        recipeImage.setClip(rectangle);
 
         SnapshotParameters parameters = new SnapshotParameters();
         parameters.setFill(Color.TRANSPARENT);
-        WritableImage image = imageView.snapshot(parameters, null);
+        WritableImage image = recipeImage.snapshot(parameters, null);
 
         //add shadow
-        imageView.setClip(null);
-        imageView.setEffect(new DropShadow(20, Color.WHITE));
+        recipeImage.setClip(null);
+        recipeImage.setEffect(new DropShadow(20, Color.WHITE));
 
-        imageView.setImage(image);
+        recipeImage.setImage(image);
 
         backButton.setOnAction(this::backAction);
     }

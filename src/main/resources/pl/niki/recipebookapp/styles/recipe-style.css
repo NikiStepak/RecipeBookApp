@@ -78,7 +78,8 @@ TableView Label {
 
 .table-view .table-cell {
     -fx-border-color: transparent;
-    -fx-padding: 10;
+    -fx-padding: 10 0 10 0;
+    -fx-alignment: CENTER-LEFT;
 }
 
 .table-row-cell:hover {
@@ -86,5 +87,10 @@ TableView Label {
 
 .table-row-cell {
     -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+TableView .scroll-bar:vertical {
+    -fx-scale-x: 0;
 }
 
