@@ -119,7 +119,7 @@ public class Recipe {
     }
 
     public void  addInstruction(String instruction){
-        instructions.add(new Instruction((instructions.size()+1) + ". " + instruction));
+        instructions.add(new Instruction((instructions.size()+1) + ".  " + instruction));
     }
 
 }

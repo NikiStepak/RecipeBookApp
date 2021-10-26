@@ -48,16 +48,17 @@ public class DataManager {
                 "1h 40min", 1900);
         int i = 0;
         for (Product p: this.products){
-            if (i%2==0){
+            //if (i%2==0){
                 recipe.addIngredient(p,10*(i+1));
-            }
+            //}
+            //System.out.println(10*(i+1));
             i++;
         }
 
         recipe.addInstruction("Preheat the oven to 190°C.");
         recipe.addInstruction("Thinly slice the potatoes.");
         recipe.addInstruction("Mix the cream and/or milk, garlic together with lots of salt and pepper.");
-        recipe.addInstruction("Place a thin layer of potatoes on the base of an oven proof dish. Sprinkle with cheese and dollops of the creamy mix.");
+        recipe.addInstruction("Place a thin layer of potatoes on the base of an oven proof dish. Sprinkle with cheese and dollops of the creamy mix. Place a thin layer of potatoes on the base of an oven proof dish. Sprinkle with cheese and dollops of the creamy mix. Place a thin layer of potatoes on the base of an oven proof dish. Sprinkle with cheese and dollops of the creamy mix.");
         recipe.addInstruction("Repeat these layers using all of the potatoes.");
         recipe.addInstruction("Bake for 80 minutes until the potatoes are cooked and the top is golden.");
 

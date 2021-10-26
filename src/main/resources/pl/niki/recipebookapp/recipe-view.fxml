@@ -1,84 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
-<!--fx:controller="pl.niki.recipebookapp.controllers.RecipeController"-->
-<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <ImageView fx:id="imageView" fitHeight="234.0" fitWidth="200.0" layoutX="22.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="40.0">
-         <image>
-            <Image url="@../../../../java/pl/niki/recipebookapp/images/pancake.jpg" />
-         </image>
-      </ImageView>
-      <Label layoutX="35.0" layoutY="283.0" text="INGREDIENTS:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="283.0">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="307.0" layoutY="283.0" text="PREPARATIONS:">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font>
-      </Label>
-      <ListView fx:id="ingredientsList" focusTraversable="false" layoutX="35.0" layoutY="312.0" prefHeight="262.0" prefWidth="225.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="313.0" />
-      <Separator layoutX="275.0" layoutY="273.0" orientation="VERTICAL" prefHeight="299.0" prefWidth="6.0" AnchorPane.bottomAnchor="25.0" AnchorPane.topAnchor="276.0" />
-      <ListView fx:id="instructionList" focusTraversable="false" layoutX="291.0" layoutY="313.0" prefHeight="262.0" prefWidth="573.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="302.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="313.0" />
-      <Label layoutX="647.0" layoutY="121.0" text="Calorific value:" AnchorPane.rightAnchor="150.0">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="270.0" layoutY="74.0" text="Total Time:">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="270.0" layoutY="109.0" text="Servings:">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="623.0" layoutY="64.0" prefWidth="210.0" text="NUTRITION INFORMATION (Per Servings):" textAlignment="CENTER" wrapText="true" AnchorPane.rightAnchor="67.0">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font>
-      </Label>
-      <Separator layoutX="570.0" layoutY="63.0" orientation="VERTICAL" prefHeight="213.0" prefWidth="6.0" AnchorPane.rightAnchor="324.0" AnchorPane.topAnchor="63.0" />
-      <Separator layoutX="25.0" layoutY="285.0" prefHeight="0.0" prefWidth="846.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="275.0" />
-      <Label fx:id="timeLabel" layoutX="360.0" layoutY="74.0" text="1h 30min">
-         <font>
-            <Font name="Comic Sans MS" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="servingsLabel" layoutX="343.0" layoutY="110.0" text="4">
-         <font>
-            <Font name="Comic Sans MS" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="kcalLabel" layoutX="768.0" layoutY="121.0" text="2500.45 kcal" AnchorPane.rightAnchor="50.0">
-         <font>
-            <Font name="Comic Sans MS" size="14.0" />
-         </font>
-      </Label>
-      <Label layoutX="270.0" layoutY="144.0" text="Description:">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font>
-      </Label>
-      <Label fx:id="descriptionLabel" alignment="TOP_LEFT" layoutX="270.0" layoutY="175.0" prefHeight="76.0" prefWidth="286.0" text="This is a great recipe that I found in my Grandma's recipe book. Judging from the weathered look of this recipe card, this was a family favorite." textAlignment="JUSTIFY" wrapText="true" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="344.0" AnchorPane.topAnchor="175.0">
-         <font>
-            <Font name="Comic Sans MS" size="13.0" />
-         </font>
-      </Label>
-      <Label fx:id="recipeNameLabel" alignment="CENTER" layoutX="20.0" layoutY="19.0" prefHeight="35.0" prefWidth="850.0" text="PANCAKE" textAlignment="CENTER" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="15.0">
-         <font>
-            <Font name="Comic Sans MS Bold" size="24.0" />
-         </font>
-      </Label>
-   </children>
-</AnchorPane>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="1024.0" styleClass="color" stylesheets="@styles/recipe-style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <SplitPane dividerPositions="0.2" prefHeight="160.0" prefWidth="200.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <ToolBar prefHeight="40.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                      <Button fx:id="backButton" mnemonicParsing="false" text="Back" />
+                    </items>
+                  </ToolBar>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <BorderPane layoutY="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <top>
+                        <BorderPane styleClass="color" BorderPane.alignment="CENTER">
+                           <center>
+                              <BorderPane>
+                                 <center>
+                                    <AnchorPane prefWidth="200.0">
+                                       <children>
+                                          <Label layoutX="272.0" layoutY="65.0" styleClass="main" text="Total Time:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="12.5">
+                                             <font>
+                                                <Font name="Comic Sans MS Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="timeLabel" layoutX="383.0" layoutY="82.0" text="1h 30min" AnchorPane.leftAnchor="120.0" AnchorPane.topAnchor="12.5">
+                                             <font>
+                                                <Font name="Comic Sans MS" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="275.0" layoutY="98.0" styleClass="main" text="Servings:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="43.0">
+                                             <font>
+                                                <Font name="Comic Sans MS Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="servingsLabel" layoutX="345.0" layoutY="107.0" text="4" AnchorPane.leftAnchor="103.0" AnchorPane.topAnchor="43.0">
+                                             <font>
+                                                <Font name="Comic Sans MS" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="281.0" layoutY="136.0" styleClass="main" text="Description:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="74.0">
+                                             <font>
+                                                <Font name="Comic Sans MS Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="descriptionLabel" alignment="TOP_LEFT" layoutX="265.0" layoutY="158.0" prefWidth="315.0" text="This is a great recipe that I found in my Grandma's recipe book. Judging from the weathered look of this recipe card, this was a family favorite." textAlignment="JUSTIFY" wrapText="true" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="12.5" AnchorPane.topAnchor="105.0">
+                                             <font>
+                                                <Font name="Comic Sans MS" size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                 </center>
+                                 <top>
+                                    <AnchorPane prefWidth="200.0" BorderPane.alignment="CENTER">
+                                       <children>
+                                          <Label fx:id="recipeNameLabel" alignment="CENTER" layoutX="254.0" prefHeight="55.0" prefWidth="755.0" text="PANCAKE" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <font>
+                                                <Font name="Comic Sans MS Bold" size="24.0" />
+                                             </font>
+                                             <styleClass>
+                                                <String fx:value="main" />
+                                                <String fx:value="title" />
+                                             </styleClass>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                 </top>
+                                 <right>
+                                    <AnchorPane BorderPane.alignment="CENTER">
+                                       <children>
+                                          <Label prefWidth="230.0" styleClass="main" text="NUTRITION INFORMATION (Per Servings):" textAlignment="CENTER" wrapText="true" AnchorPane.leftAnchor="12.5" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="12.5">
+                                             <font>
+                                                <Font name="Comic Sans MS Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label styleClass="main" text="Calorific value:" AnchorPane.rightAnchor="135.0" AnchorPane.topAnchor="74.0">
+                                             <font>
+                                                <Font name="Comic Sans MS Bold" size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="kcalLabel" text="2500.45 kcal" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="74.0">
+                                             <font>
+                                                <Font name="Comic Sans MS" size="14.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                 </right>
+                              </BorderPane>
+                           </center>
+                           <left>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <ImageView fx:id="imageView" fitHeight="230.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="12.5" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="25.0">
+                                       <image>
+                                          <Image url="@../../../../java/pl/niki/recipebookapp/images/pancake.jpg" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </AnchorPane>
+                           </left>
+                        </BorderPane>
+                     </top>
+                     <left>
+                        <AnchorPane BorderPane.alignment="CENTER">
+                           <children>
+                              <ListView fx:id="ingredientsList" focusTraversable="false" layoutX="8.0" layoutY="50.0" prefWidth="217.5" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="12.5" AnchorPane.topAnchor="40.0" />
+                              <Label layoutX="24.0" layoutY="19.0" text="INGREDIENTS:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="12.5">
+                                 <font>
+                                    <Font name="Comic Sans MS Bold" size="14.0" />
+                                 </font>
+                                 <styleClass>
+                                    <String fx:value="main" />
+                                    <String fx:value="blackText" />
+                                 </styleClass>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </left>
+                     <center>
+                        <AnchorPane prefWidth="611.0" styleClass="whiteBackground" BorderPane.alignment="CENTER">
+                           <children>
+                              <TableView fx:id="instructionTable" layoutX="107.0" layoutY="85.0" prefWidth="200.0" AnchorPane.leftAnchor="12.5" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="8.0">
+                                 <columns>
+                                    <TableColumn fx:id="descriptionColumn" prefWidth="632.5" text="PREPARATIONS:" />
+                                    <TableColumn fx:id="stepColumn" editable="false" maxWidth="-1.0" minWidth="20.0" prefWidth="-1.0" sortable="false" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </content>
+</ScrollPane>
