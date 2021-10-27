@@ -38,7 +38,7 @@ public class RecipeController implements Initializable {
     public TableColumn<Instruction, Image> imageColumn;
     public ImageView recipeImage;
     public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel;
-    public Button backButton;
+    public Button backButton, homeButton, recipesButton;
 
     private DataManager dm;
     private MathManager mm;
@@ -99,62 +99,34 @@ public class RecipeController implements Initializable {
             return cell;
         });
 
-        imageColumn.setCellFactory(param -> {
-            // set ImageView
-            final ImageView descriptionImage = new ImageView();
-            descriptionImage.setFitHeight(150);
-            descriptionImage.setFitWidth(200);
+        if(recipe.isInstructionImage()) {
+            imageColumn.setCellFactory(param -> {
+                // set ImageView
+                final ImageView descriptionImage = new ImageView();
 
-            // set cell
-            TableCell<Instruction, Image> cell = new TableCell<>(){
-                @Override
-                protected void updateItem(Image image, boolean b) {
+                // set cell
+                TableCell<Instruction, Image> cell = new TableCell<>() {
+                    @Override
+                    protected void updateItem(Image image, boolean b) {
 //                    super.updateItem(image, b);
-                    if (image != null){
-                        descriptionImage.setImage(image);
+                        if (image != null) {
+                            descriptionImage.setFitHeight(150);
+                            descriptionImage.setFitWidth(200);
+                            descriptionImage.setImage(image);
+                        } else {
+                        }
                     }
-                    else {
-
-                    }
-                }
-            };
-            cell.setGraphic(descriptionImage);
-            return cell;
-        });
-        imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
-
-//        instructionTable.minHeightProperty().bind(instructionTable.prefHeightProperty());
-//        instructionTable.maxHeightProperty().bind(instructionTable.prefHeightProperty());
-
-        //        descriptionColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Instruction, String>, ObservableValue<String>>() {
-//            @Override
-//            public ObservableValue<String> call(TableColumn.CellDataFeatures<Instruction, String> instructionStringCellDataFeatures) {
-//                return instructionStringCellDataFeatures.getValue().descriptionProperty();
-//            }
-//        });
-
-//        instructionList.setItems(instructions);
-//        instructionList.setCellFactory(i -> new ListCell<>(){
-//            @Override
-//            protected void updateItem(Instruction instruction, boolean b) {
-//                super.updateItem(instruction, b);
-//                if (b || instruction == null || instruction.getDescription() == null){
-//                    setGraphic(null);
-//                    setText(null);
-//                }
-//                else {
-//                    setMinWidth(i.getWidth());
-//                    setMaxWidth(i.getWidth());
-//                    setPrefWidth(i.getWidth());
-//
-//
-//
-//                    setWrapText(true);
-//                    setText(instruction.getDescription());
-//                }
-//            }
-//        });
-
+                };
+                cell.setGraphic(descriptionImage);
+                return cell;
+            });
+            imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+        }
+        else {
+            imageColumn.setPrefWidth(0);
+            imageColumn.setMaxWidth(0);
+            imageColumn.setMinWidth(0);
+        }
 
         // no scroll, no focus list and table
         ingredientsList.setMouseTransparent(true);
@@ -189,7 +161,26 @@ public class RecipeController implements Initializable {
 
         recipeImage.setImage(image);
 
+        // Button ======================================================================================================
+        //back button
+        if(mm.getBackIcon()!=null) {
+            backButton.setGraphic(mm.getBackIcon());
+        }
+        else
+            backButton.setText("Back");
         backButton.setOnAction(this::backAction);
+
+        //home button
+        if(mm.getHomeIcon()!=null){
+            homeButton.setGraphic(mm.getHomeIcon());
+        }
+        homeButton.setOnAction(this::backAction);
+
+        //recipe button
+        if (mm.getRecipesIcon()!=null){
+            recipesButton.setGraphic(mm.getRecipesIcon());
+        }
+        recipesButton.setOnAction(this::backAction);
     }
 
     private void backAction(ActionEvent event){

@@ -58,7 +58,7 @@ public class DataManager {
         recipe.addInstruction("Preheat the oven to 190°C.");
         recipe.addInstruction("Thinly slice the potatoes.");
         recipe.addInstruction("Mix the cream and/or milk, garlic together with lots of salt and pepper.");
-        recipe.addInstruction("Place a thin layer of potatoes on the base of an oven proof dish. Sprinkle with cheese and dollops of the creamy mix. Place a thin layer of potatoes on the base of an oven proof dish. Sprinkle with cheese and dollops of the creamy mix. Place a thin layer of potatoes on the base of an oven proof dish. Sprinkle with cheese and dollops of the creamy mix.");
+        recipe.addInstruction("Place a thin layer of potatoes on the base of an oven proof dish. Sprinkle with cheese and dollops of the creamy mix.");
         recipe.addInstruction("Repeat these layers using all of the potatoes.");
         recipe.addInstruction("Bake for 80 minutes until the potatoes are cooked and the top is golden.");
 

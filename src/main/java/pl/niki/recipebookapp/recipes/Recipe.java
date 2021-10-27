@@ -14,6 +14,7 @@ public class Recipe {
     private int amount;
     private double kcal;
     private Image image;
+    private boolean instructionImage;
 
     public Recipe(String name, String describe, String time, int amount) {
         this.name = name;
@@ -112,6 +113,14 @@ public class Recipe {
         this.kcal = kcal;
     }
 
+    public boolean isInstructionImage() {
+        return instructionImage;
+    }
+
+    public void setInstructionImage(boolean instructionImage) {
+        this.instructionImage = instructionImage;
+    }
+
     public void addIngredient(Product product, int amount){
         double ingredientKcal = product.getKcal() * amount / product.getAmount();
         this.kcal += ingredientKcal;
@@ -119,6 +128,12 @@ public class Recipe {
     }
 
     public void  addInstruction(String instruction){
+//        Image image = null;
+//        if(image==null){
+//            this.instructionImage = false;
+//        }
+//        else
+            this.instructionImage = true;
         instructions.add(new Instruction((instructions.size()+1) + ".  " + instruction));
     }
 

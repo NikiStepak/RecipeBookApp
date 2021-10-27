@@ -18,20 +18,34 @@
 <?import javafx.scene.text.Font?>
 
 
-<SplitPane dividerPositions="0.15" stylesheets="@styles/recipe-style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.14" prefWidth="1100.0" stylesheets="@styles/recipe-style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <items>
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="0.0">
+    <AnchorPane maxWidth="150.0" minWidth="150.0" prefWidth="150.0">
          <children>
-            <VBox layoutX="7.0" layoutY="51.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox layoutX="7.0" layoutY="51.0" styleClass="greyBackground" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ToolBar prefHeight="40.0" prefWidth="200.0">
                     <items>
-                      <Button fx:id="backButton" mnemonicParsing="false" text="Back" />
+                      <Button fx:id="backButton" focusTraversable="false" mnemonicParsing="false" styleClass="main" />
                     </items>
                   </ToolBar>
-                  <ImageView fitHeight="69.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="210.0" text="HOME" />
-                  <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="207.0" text="Button">
+                  <AnchorPane>
+                     <children>
+                        <ImageView fx:id="userImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="10.0">
+                           <image>
+                              <Image url="@../../../../java/pl/niki/recipebookapp/images/pancake.jpg" />
+                           </image>
+                        </ImageView>
+                        <Label fx:id="userNameLabel" focusTraversable="false" text="Sign in / Sign up" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="65.0">
+                           <styleClass>
+                              <String fx:value="blackText" />
+                              <String fx:value="main" />
+                           </styleClass>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <Button fx:id="homeButton" focusTraversable="false" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" styleClass="main" text="HOME" />
+                  <Button fx:id="recipesButton" focusTraversable="false" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" styleClass="main" text="RECIPES">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -137,7 +151,7 @@
                         </BorderPane>
                      </top>
                      <left>
-                        <AnchorPane BorderPane.alignment="CENTER">
+                        <AnchorPane styleClass="greyBackground" BorderPane.alignment="CENTER">
                            <children>
                               <ListView fx:id="ingredientsList" focusTraversable="false" layoutX="8.0" layoutY="50.0" prefWidth="217.5" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="12.5" AnchorPane.topAnchor="40.0" />
                               <Label layoutX="24.0" layoutY="19.0" text="INGREDIENTS:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="12.5">

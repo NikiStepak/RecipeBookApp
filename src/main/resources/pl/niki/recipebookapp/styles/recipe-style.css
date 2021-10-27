@@ -1,6 +1,25 @@
-/*AnchorPane {*/
-/*    -fx-background-color: transparent;*/
-/*}*/
+.greyBackground {
+    -fx-background-color: #EAEAEA;
+}
+
+SplitPane:horizontal > .split-pane-divider {
+    -fx-background-color:linear-gradient(to right, #EAEAEA, #1f2a34);
+}
+
+SplitPane {
+    -fx-background-color: #1f2a34;
+}
+
+Button {
+    -fx-alignment: CENTER-LEFT;
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+Button:hover {
+    -fx-background-color:linear-gradient(to right, #1f2a34, #EAEAEA);
+    -fx-text-fill: #ffffff;
+}
 
 Label {
     -fx-font-family: "Comic Sans MS";
