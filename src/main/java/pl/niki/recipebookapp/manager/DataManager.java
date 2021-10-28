@@ -44,7 +44,7 @@ public class DataManager {
     }
 
     private void addRecipes() {
-        Recipe recipe = new Recipe("CHEESY POTATO BAKE", "This super easy Cheesy Potato Bake is my go-to dish to make for family and friends, or when my husband and I feel like a treat. This makes a big batch that serves roughly 8 people as a side dish. It's also perfect to wrap up in tin foil and take along to a family BBQ.",
+        Recipe recipe = new Recipe("Cheesy Potato Bake", "This super easy Cheesy Potato Bake is my go-to dish to make for family and friends, or when my husband and I feel like a treat. This makes a big batch that serves roughly 8 people as a side dish. It's also perfect to wrap up in tin foil and take along to a family BBQ.",
                 "1h 40min", 1900);
         int i = 0;
         for (Product p: this.products){
@@ -63,6 +63,11 @@ public class DataManager {
         recipe.addInstruction("Bake for 80 minutes until the potatoes are cooked and the top is golden.");
 
         this.recipes.add(recipe);
+
+        for (i=0; i<20; i++) {
+            this.recipes.add(new Recipe(i+" Cheesy Potato Bake", "This super easy Cheesy Potato Bake is my go-to dish to make for family and friends, or when my husband and I feel like a treat. This makes a big batch that serves roughly 8 people as a side dish. It's also perfect to wrap up in tin foil and take along to a family BBQ.",
+                    "1h 40min", 1900));
+        }
     }
 
 

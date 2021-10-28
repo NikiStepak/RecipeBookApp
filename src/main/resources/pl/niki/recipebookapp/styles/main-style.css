@@ -1,0 +1,41 @@
+.greyBackground {
+    -fx-background-color: #EAEAEA;
+}
+
+Button {
+    -fx-alignment: CENTER-LEFT;
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-family: "Comic Sans MS";
+}
+
+Button:hover {
+    -fx-background-color:linear-gradient(to right, #1f2a34, #EAEAEA);
+    -fx-text-fill: #ffffff;
+}
+
+Label {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 14;
+}
+
+.main {
+    -fx-font-weight: bold;
+}
+
+ListView {
+    -fx-background-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 14;
+}
+
+ListView .scroll-bar:vertical{
+    -fx-scale-x: 0;
+}
+ListView .scroll-bar:horizontal {
+    -fx-scale-y: 0;
+}

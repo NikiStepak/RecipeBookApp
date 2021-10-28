@@ -51,11 +51,17 @@ public class RecipeController implements Initializable {
         this.recipeKey = recipeKey;
     }
 
+    public RecipeController(DataManager dm, MathManager mm, int recipeKey) {
+        this.dm = dm;
+        this.mm = mm;
+        this.recipeKey = recipeKey;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //System.out.println(recipeKey);
-        dm = new DataManager();
-        mm = new MathManager();
+//        dm = new DataManager();
+//        mm = new MathManager();
         recipe = dm.getRecipes().get(recipeKey);
 
         // labels ======================================================================================================
@@ -93,7 +99,6 @@ public class RecipeController implements Initializable {
             Text text = new Text();
             cell.setGraphic(text);
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-//            cell.setPrefWidth(Control.USE_COMPUTED_SIZE);
             text.wrappingWidthProperty().bind(descriptionColumn.widthProperty());
             text.textProperty().bind(cell.itemProperty());
             return cell;
@@ -135,12 +140,9 @@ public class RecipeController implements Initializable {
         instructionTable.setMouseTransparent(true);
         instructionTable.setFocusTraversable(false);
 
-//        instructionList.setMouseTransparent( true );
-//        instructionList.setFocusTraversable( false );
-
         // height of list
         ingredientsList.setFixedCellSize(30);
-        ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(1.01)));
+        ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
 
         // ImageView ===================================================================================================
         recipeImage.setImage(recipe.getImage());
@@ -193,7 +195,7 @@ public class RecipeController implements Initializable {
             e.printStackTrace();
         }
         Scene scene = new Scene(root);
-//            scene.getStylesheets().add(getClass().getResource("/pl/niki/recipebookapp/styles/recipe-style.css").toExternalForm());
+//        scene.getStylesheets().add(getClass().getResource("/pl/niki/recipebookapp/styles/recipe-style.css").toExternalForm());
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(scene);
         stage.show();
