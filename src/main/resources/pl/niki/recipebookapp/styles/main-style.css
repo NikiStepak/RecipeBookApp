@@ -14,6 +14,10 @@ Button:hover {
     -fx-text-fill: #ffffff;
 }
 
+Button:hover ImageView {
+    -fx-effect: innershadow( gaussian , #ffffff , 7 , 1 , 1 , 1 );
+}
+
 Label {
     -fx-font-family: "Comic Sans MS";
     -fx-font-size: 14;

@@ -46,6 +46,7 @@
                         <Insets />
                      </VBox.margin>
                   </Button>
+                  <Button fx:id="addButton" minWidth="150.0" mnemonicParsing="false" styleClass="main" text="ADD RECIPE" />
                </children>
             </VBox>
          </children>

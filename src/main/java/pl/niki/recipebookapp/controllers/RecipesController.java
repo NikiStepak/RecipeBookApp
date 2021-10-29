@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class RecipesController implements Initializable {
-    public Button backButton, homeButton, recipesButton;
+    public Button backButton, homeButton, recipesButton, addButton;
     public ScrollPane scroll;
     public AnchorPane anchor;
     public HBox hbox;
@@ -67,6 +67,10 @@ public class RecipesController implements Initializable {
 //        recipesButton.setOnAction(this::backAction);
 
         //add button
+        if (mm.getAddIcon()!=null){
+            addButton.setGraphic(mm.getAddIcon());
+        }
+//        addButton.setOnAction(this::backAction);
 
 
         // ListView ====================================================================================================
@@ -93,8 +97,7 @@ public class RecipesController implements Initializable {
                         hbox.setPrefWidth(scroll.getWidth()-15);
                         hbox.getChildren().add(recipeList[i]);
                     }
-//                }
-                System.out.println((scroll.getWidth()/190));
+//                System.out.println((scroll.getWidth()/190));
             }
         });
         scroll.setMinWidth(200);

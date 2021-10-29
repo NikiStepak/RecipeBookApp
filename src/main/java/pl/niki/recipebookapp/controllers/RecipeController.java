@@ -38,7 +38,7 @@ public class RecipeController implements Initializable {
     public TableColumn<Instruction, Image> imageColumn;
     public ImageView recipeImage;
     public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel;
-    public Button backButton, homeButton, recipesButton;
+    public Button backButton, homeButton, recipesButton, addButton;
 
     private DataManager dm;
     private MathManager mm;
@@ -183,6 +183,13 @@ public class RecipeController implements Initializable {
             recipesButton.setGraphic(mm.getRecipesIcon());
         }
         recipesButton.setOnAction(this::backAction);
+
+        //add button
+        if (mm.getAddIcon()!=null){
+            addButton.setGraphic(mm.getAddIcon());
+        }
+        addButton.setOnAction(this::backAction);
+
     }
 
     private void backAction(ActionEvent event){

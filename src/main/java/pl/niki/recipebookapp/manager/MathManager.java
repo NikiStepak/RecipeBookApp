@@ -7,13 +7,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class MathManager {
-    private ImageView backIcon, homeIcon, recipesIcon;
+    private ImageView backIcon, homeIcon, recipesIcon, addIcon;
     private int smallIconSize = 15, iconSize = 25;
 
     public MathManager() {
         setBackIcon();
         setHomeIcon();
         setRecipesIcon();
+        setAddIcon();
     }
 
     public ImageView getBackIcon() {
@@ -48,6 +49,24 @@ public class MathManager {
             e.printStackTrace();
             this.homeIcon = null;
         }
+    }
+
+    public ImageView getAddIcon() {
+        return addIcon;
+    }
+
+    public void setAddIcon() {
+        try {
+            Image image = new Image(new FileInputStream("D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\add_icon.png"));
+            this.addIcon = new ImageView();
+            this.addIcon.setFitWidth(this.iconSize);
+            this.addIcon.setFitHeight(this.iconSize);
+            this.addIcon.setImage(image);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            this.addIcon = null;
+        }
+
     }
 
     public ImageView getRecipesIcon() {
