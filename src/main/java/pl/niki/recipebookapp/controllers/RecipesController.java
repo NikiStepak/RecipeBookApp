@@ -1,5 +1,7 @@
 package pl.niki.recipebookapp.controllers;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,6 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pl.niki.recipebookapp.manager.DataManager;
@@ -24,38 +28,22 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class RecipesController implements Initializable {
-    public ListView<Recipe> recipesList1, recipesList2, recipesList3, recipesList4, recipesList5;
     public Button backButton, homeButton, recipesButton;
-    private ObservableList<Recipe> recipes1, recipes2, recipes3, recipes4, recipes5;
+    public ScrollPane scroll;
+    public AnchorPane anchor;
+    public HBox hbox;
+
     private DataManager dm;
     private MathManager mm;
+    private int listAmount;
 
     public RecipesController() {
-        this.recipes1 = FXCollections.observableArrayList();
-        this.recipes2 = FXCollections.observableArrayList();
-        this.recipes3 = FXCollections.observableArrayList();
-        this.recipes4 = FXCollections.observableArrayList();
-        this.recipes5 = FXCollections.observableArrayList();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dm = new DataManager();
         mm = new MathManager();
-
-        // ListView ====================================================================================================
-        setRecipes(dm.getRecipes());
-        recipesList1.setItems(recipes1);
-        recipesList2.setItems(recipes2);
-        recipesList3.setItems(recipes3);
-        recipesList4.setItems(recipes4);
-        recipesList5.setItems(recipes5);
-
-        setList(recipesList1);
-        setList(recipesList2);
-        setList(recipesList3);
-        setList(recipesList4);
-        setList(recipesList5);
 
         // Button ======================================================================================================
         //back button
@@ -77,15 +65,50 @@ public class RecipesController implements Initializable {
             recipesButton.setGraphic(mm.getRecipesIcon());
         }
 //        recipesButton.setOnAction(this::backAction);
+
+        //add button
+
+
+        // ListView ====================================================================================================
+        scroll.widthProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                    hbox.getChildren().clear();
+                    listAmount = (int) (scroll.getWidth() / 188);
+                    ListView[] recipeList = new ListView[listAmount];
+                    ObservableList[] recipes = new ObservableList[listAmount];
+
+                    for (int i =0; i<listAmount; i++){
+                        recipes[i] = FXCollections.observableArrayList();
+                        recipeList[i] = new ListView<>();
+                    }
+
+                    setRecipes(dm.getRecipes(), recipes);
+
+                    for (int i =0; i<listAmount; i++){
+                        recipeList[i].setItems(recipes[i]);
+                        setList(recipeList[i], i);
+
+                        anchor.setPrefWidth(scroll.getWidth()-15);
+                        hbox.setPrefWidth(scroll.getWidth()-15);
+                        hbox.getChildren().add(recipeList[i]);
+                    }
+//                }
+                System.out.println((scroll.getWidth()/190));
+            }
+        });
+        scroll.setMinWidth(200);
     }
 
-    private void setList(ListView<Recipe> recipeList) {
+    private void setList(ListView<Recipe> recipeList, int i) {
         recipeList.setCellFactory(cell -> new ListCell<>(){
+            final Tooltip tooltip = new Tooltip();
             @Override
             protected void updateItem(Recipe recipe, boolean b) {
                 super.updateItem(recipe, b);
                 if (b || recipe == null || recipe.getName() == null){
                     setText(null);
+                    setTooltip(null);
                 }
                 else {
                     if (recipe.getImage()!=null){
@@ -101,27 +124,28 @@ public class RecipesController implements Initializable {
                         vBox.getChildren().add(label);
                         setGraphic(vBox);
                     }
-                    else
+                    else {
                         setText(recipe.getName());
+                    }
+                    tooltip.setText(recipe.getName());
+                    setTooltip(tooltip);
                 }
             }
         });
 
-        recipeList.setFixedCellSize(188);
+        recipeList.setMinWidth(180);
+        recipeList.setFixedCellSize(190);
         recipeList.prefHeightProperty().bind(recipeList.fixedCellSizeProperty().multiply(Bindings.size(recipeList.getItems()).add(0.2)));
 
+        recipeList.setOnMouseClicked(event -> {
+            int selectedRecipe = recipeList.getSelectionModel().getSelectedIndex() * this.listAmount + i;
+            click(selectedRecipe, event);
+        });
     }
 
-
-    private void setRecipes(List<Recipe> recipes) {
-        for (int i=0; i<recipes.size();i++){
-            switch (i % 5) {
-                case 0 -> recipes1.add(recipes.get(i));
-                case 1 -> recipes2.add(recipes.get(i));
-                case 2 -> recipes3.add(recipes.get(i));
-                case 3 -> recipes4.add(recipes.get(i));
-                case 4 -> recipes5.add(recipes.get(i));
-            }
+    private void setRecipes(List<Recipe> dmList, List<Recipe> recipes[]) {
+        for (int i=0; i<dmList.size();i++){
+            recipes[i%this.listAmount].add(dmList.get(i));
         }
     }
 
@@ -144,29 +168,5 @@ public class RecipesController implements Initializable {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void clicked1(MouseEvent mouseEvent) {
-        int selectedRecipe = recipesList1.getSelectionModel().getSelectedIndex() * 5;
-        click(selectedRecipe, mouseEvent);
-    }
-
-    public void clicked2(MouseEvent mouseEvent) {
-        int selectedRecipe = (recipesList2.getSelectionModel().getSelectedIndex() * 5) + 1;
-        click(selectedRecipe, mouseEvent);    }
-
-    public void clicked3(MouseEvent mouseEvent) {
-        int selectedRecipe = (recipesList3.getSelectionModel().getSelectedIndex() * 5) + 2;
-        click(selectedRecipe, mouseEvent);
-    }
-
-    public void clicked4(MouseEvent mouseEvent) {
-        int selectedRecipe = (recipesList4.getSelectionModel().getSelectedIndex() * 5) + 3;
-        click(selectedRecipe, mouseEvent);
-    }
-
-    public void clicked5(MouseEvent mouseEvent) {
-        int selectedRecipe = (recipesList5.getSelectionModel().getSelectedIndex() * 5) + 4;
-        click(selectedRecipe, mouseEvent);
     }
 }

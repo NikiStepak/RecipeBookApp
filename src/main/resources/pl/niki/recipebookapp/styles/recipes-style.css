@@ -1,0 +1,21 @@
+Label {
+    -fx-padding: 3;
+}
+
+.list-cell:hover {
+    -fx-cursor: HAND;
+    -fx-effect: dropshadow(gaussian, #000000, 12, 0.05, 0.0, 2);
+}
+
+.list-cell:focused Label {
+    -fx-text-fill: #000000;
+}
+
+.list-cell:hover ImageView{
+
+}
+
+.tooltip {
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5;
+}
