@@ -1,20 +1,61 @@
 package pl.niki.recipebookapp.manager;
 
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import pl.niki.recipebookapp.recipes.Ingredient;
+import pl.niki.recipebookapp.recipes.Product;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MathManager {
-    private ImageView backIcon, homeIcon, recipesIcon, addIcon;
+    private ImageView backIcon, homeIcon, recipesIcon, addIcon, doneIcon;
     private int smallIconSize = 15, iconSize = 25;
+    private String path = "D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\";
+    private List<Ingredient> ingredients;
+
+    public void addIngredient(Product product, int amount){
+        this.ingredients.add(new Ingredient(product, amount));
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
 
     public MathManager() {
-        setBackIcon();
-        setHomeIcon();
-        setRecipesIcon();
-        setAddIcon();
+        this.backIcon = new ImageView();
+        setIcon(this.backIcon, "arrow_back_icon.png");
+        this.homeIcon = new ImageView();
+        setIcon(this.homeIcon, "home_icon.png");
+        this.recipesIcon = new ImageView();
+        setIcon(this.recipesIcon, "reorder_icon.png");
+        this.addIcon = new ImageView();
+        setIcon(this.addIcon, "add_icon.png");
+        this.doneIcon = new ImageView();
+        setIcon(this.doneIcon, "done_icon.png");
+
+        ingredients = new ArrayList<>();
+    }
+
+    private void setIcon(ImageView imageView, String fileName) {
+        try {
+            Image image = new Image(new FileInputStream(path+fileName));
+            imageView.setFitWidth(this.iconSize);
+            imageView.setFitHeight(this.iconSize);
+            imageView.setImage(image);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            this.backIcon = null;
+        }
+    }
+
+    public void setAddIcon() {
+        this.addIcon = new ImageView();
+        setIcon(this.addIcon, "add_icon.png");
+
     }
 
     public ImageView getBackIcon() {
@@ -22,74 +63,27 @@ public class MathManager {
     }
 
     public void setBackIcon() {
-        try {
-            Image image = new Image(new FileInputStream("D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\arrow_back_icon.png"));
-            this.backIcon = new ImageView();
-            this.backIcon.setFitWidth(this.smallIconSize);
-            this.backIcon.setFitHeight(this.smallIconSize);
-            this.backIcon.setImage(image);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.backIcon = null;
-        }
+
     }
 
     public ImageView getHomeIcon() {
         return homeIcon;
     }
 
-    public void setHomeIcon() {
-        try {
-            Image image = new Image(new FileInputStream("D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\home_icon.png"));
-            this.homeIcon = new ImageView();
-            this.homeIcon.setFitHeight(this.iconSize);
-            this.homeIcon.setFitWidth(this.iconSize);
-            this.homeIcon.setImage(image);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.homeIcon = null;
-        }
-    }
-
     public ImageView getAddIcon() {
         return addIcon;
     }
 
-    public void setAddIcon() {
-        try {
-            Image image = new Image(new FileInputStream("D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\add_icon.png"));
-            this.addIcon = new ImageView();
-            this.addIcon.setFitWidth(this.iconSize);
-            this.addIcon.setFitHeight(this.iconSize);
-            this.addIcon.setImage(image);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.addIcon = null;
-        }
-
+    public ImageView getDoneIcon() {
+        return doneIcon;
     }
 
     public ImageView getRecipesIcon() {
         return recipesIcon;
     }
 
-    public void setRecipesIcon() {
-        try {
-            Image image = new Image(new FileInputStream("D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\reorder_icon.png"));
-            this.recipesIcon = new ImageView();
-            this.recipesIcon.setFitWidth(this.iconSize);
-            this.recipesIcon.setFitHeight(this.iconSize);
-            this.recipesIcon.setImage(image);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.recipesIcon = null;
-        }
-    }
-
     public double round_double(double d){
         double r_d = Math.round(d*100);
         return r_d/100;
     }
-
-
 }

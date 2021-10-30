@@ -5,6 +5,7 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -170,6 +171,24 @@ public class RecipesController implements Initializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void addAction(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/pl/niki/recipebookapp/add-view.fxml"));
+            AddController controller = new AddController(dm, mm);
+            loader.setController(controller);
+            Parent root = null;
+            root = loader.load();
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/pl/niki/recipebookapp/styles/add-style.css").toExternalForm());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

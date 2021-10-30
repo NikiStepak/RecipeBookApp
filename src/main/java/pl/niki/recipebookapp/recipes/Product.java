@@ -34,4 +34,9 @@ public class Product {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

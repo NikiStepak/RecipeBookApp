@@ -1,5 +1,6 @@
 package pl.niki.recipebookapp.manager;
 
+import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
 
@@ -10,17 +11,27 @@ import java.util.Set;
 
 public class DataManager {
     List<Recipe> recipes;
-    Set<Product> products;
+    List<Product> products;
 
     public DataManager() {
         this.recipes = new ArrayList<>();
-        this.products = new HashSet<>();
+        this.products = new ArrayList<>();
         addProducts();
         addRecipes();
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
     public List<Recipe> getRecipes() {
         return recipes;
+    }
+
+    public Product addProduct(String name, double kcal){
+        Product p = new Product(name, kcal, 100);
+        this.products.add(p);
+        return p;
     }
 
     private void addProducts() {

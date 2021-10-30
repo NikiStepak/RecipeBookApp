@@ -5,10 +5,16 @@ public class Ingredient {
     private int amount;
     private double kcal;
 
-    public Ingredient(Product product, int amount, double kcal) {
+    public Ingredient(Product product, int amount) {
         this.product = product;
         this.amount = amount;
-        this.kcal = kcal;
+        countKcal();
+    }
+
+    public double countKcal(){
+        double ingredientKcal = this.product.getKcal() * this.amount / this.product.getAmount();
+        this.kcal = ingredientKcal;
+        return ingredientKcal;
     }
 
     public Product getProduct() {

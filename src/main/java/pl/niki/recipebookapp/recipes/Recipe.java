@@ -122,9 +122,9 @@ public class Recipe {
     }
 
     public void addIngredient(Product product, int amount){
-        double ingredientKcal = product.getKcal() * amount / product.getAmount();
-        this.kcal += ingredientKcal;
-        ingredients.add(new Ingredient(product,amount,ingredientKcal));
+        Ingredient ingredient = new Ingredient(product,amount);
+        this.kcal += ingredient.countKcal();
+        ingredients.add(ingredient);
     }
 
     public void  addInstruction(String instruction){

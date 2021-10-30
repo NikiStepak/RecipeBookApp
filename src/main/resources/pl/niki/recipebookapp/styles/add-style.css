@@ -1,0 +1,4 @@
+ImageView:hover {
+    -fx-effect: dropshadow(gaussian, #000000, 12, 0.05, 0.0, 2);
+    -fx-cursor: HAND;
+}

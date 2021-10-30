@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="145.0" maxWidth="317.0" minHeight="145.0" minWidth="317.0" prefHeight="145.0" prefWidth="317.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane>
+         <children>
+            <AnchorPane prefWidth="217.0" stylesheets="@styles/main-style.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <ComboBox fx:id="amountComboBox" layoutX="249.0" layoutY="17.0" prefWidth="60.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                  <Label fx:id="amountLabel" layoutX="24.0" layoutY="21.0" text="Amount:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="11.0" />
+                  <TextField fx:id="amountField" layoutX="83.0" layoutY="17.0" prefWidth="70.0" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="8.0" />
+                  <TextField fx:id="ingredientField" layoutX="25.0" layoutY="57.0" promptText="INGREDIENT" visible="false" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="53.0" />
+                  <ComboBox fx:id="ingredientComboBox" prefWidth="150.0" promptText="INGREDIENT" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="45.0" AnchorPane.topAnchor="50.0" />
+                  <Button fx:id="addButton" mnemonicParsing="false" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="0.0" />
+                  <Button fx:id="doneButton" mnemonicParsing="false" visible="false" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="0.0" />
+                  <Label fx:id="in100Label" layoutX="158.0" layoutY="13.0" text="in 100g" visible="false" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="11.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <ToolBar prefHeight="40.0" prefWidth="200.0">
+        <items>
+          <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" prefWidth="150.0" text="CANCEL" />
+            <Button fx:id="okButton" mnemonicParsing="false" prefWidth="150.0" text="OK" />
+        </items>
+      </ToolBar>
+   </children>
+</VBox>
