@@ -32,47 +32,8 @@ ListView {
     -fx-background-color: #ffffff;
 }
 
-TableView {
-    -fx-font-family: "Comic Sans MS";
-    -fx-font-size: 14;
-    -fx-background-color: transparent;
-}
-
 TableView Label {
     -fx-text-fill: black;
     -fx-alignment: CENTER-LEFT;
-}
-
-.table-view .column-header-background .filler {
-    -fx-background-color: transparent;
-}
-
-.table-view .corner {
-}
-
-.table-view .column-header-background {
-    -fx-background-color: transparent;
-}
-
-.table-view .column-header {
-    -fx-background-color: transparent;
-}
-
-.table-view .table-cell {
-    -fx-border-color: transparent;
-    -fx-padding: 10 0 10 0;
-    -fx-alignment: CENTER-LEFT;
-}
-
-.table-row-cell:hover {
-}
-
-.table-row-cell {
-    -fx-background-color: transparent;
-    -fx-padding: 0;
-}
-
-TableView .scroll-bar:vertical {
-    -fx-scale-x: 0;
 }
 

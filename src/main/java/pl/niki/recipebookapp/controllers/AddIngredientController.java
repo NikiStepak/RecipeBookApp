@@ -26,16 +26,18 @@ public class AddIngredientController implements Initializable {
     private MathManager mm;
     private ObservableList<Product> products;
     private ObservableList<String> amounts;
+    private boolean added;
 
     public AddIngredientController(DataManager dm, MathManager mm) {
         this.dm = dm;
         this.mm = mm;
+        this.added = false;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // combo box
-        products = FXCollections.observableArrayList(dm.getProducts());
+        products = FXCollections.observableArrayList(mm.getNotAddedProducts(dm.getProducts()));
         ingredientComboBox.setItems(products);
         ingredientComboBox.setCellFactory(new Callback<ListView<Product>, ListCell<Product>>() {
             @Override
@@ -62,7 +64,6 @@ public class AddIngredientController implements Initializable {
 
         // add button
         if(mm.getAddIcon()!=null){
-            mm.setAddIcon();
             addButton.setGraphic(mm.getAddIcon());
         }
         else addButton.setText("Add");
@@ -83,6 +84,14 @@ public class AddIngredientController implements Initializable {
 
     }
 
+    public boolean isAdded() {
+        return added;
+    }
+
+    public MathManager getMm() {
+        return mm;
+    }
+
     private void cancelAction(ActionEvent event) {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
@@ -93,6 +102,7 @@ public class AddIngredientController implements Initializable {
         if (product!=null){
             if (amountField.getText().length()>0){
                 mm.addIngredient(product, Integer.parseInt(amountField.getText()));
+                this.added = true;
                 cancelAction(event);
             }
         }

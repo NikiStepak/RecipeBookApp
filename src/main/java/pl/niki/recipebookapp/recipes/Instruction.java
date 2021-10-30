@@ -20,6 +20,11 @@ public class Instruction {
         }
     }
 
+    public Instruction(String description, Image image) {
+        descriptionProperty().set(description);
+        this.image = image;
+    }
+
     public StringProperty descriptionProperty() {
         if (description==null)
             description = new SimpleStringProperty(this, null);
