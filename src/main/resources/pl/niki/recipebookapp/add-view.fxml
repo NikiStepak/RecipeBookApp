@@ -131,7 +131,7 @@
                                           <left>
                                               <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                                                   <children>
-                                                      <ImageView fx:id="recipeImage" fitHeight="230.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="12.5" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="25.0">
+                                                      <ImageView fx:id="recipeImage" fitHeight="230.0" fitWidth="230.0" pickOnBounds="true" AnchorPane.bottomAnchor="12.5" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="25.0">
                                                           <image>
                                                               <Image url="@../../../../java/pl/niki/recipebookapp/images/pancake.jpg" />
                                                           </image>
