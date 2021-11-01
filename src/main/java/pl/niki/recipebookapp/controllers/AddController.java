@@ -20,6 +20,7 @@ import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
+import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,19 +44,46 @@ public class AddController implements Initializable {
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
     private Image newRecipeImage;
+    private boolean edit;
+    private int recipeKey;
 
     public AddController(DataManager dm, MathManager mm) {
         this.dm = dm;
         this.mm = mm;
         this.newRecipeImage = null;
+        this.edit = false;
         mm.newRecipe();
+    }
+
+    public AddController(DataManager dm, MathManager mm, int recipeKey) {
+        this.dm = dm;
+        this.mm = mm;
+        this.edit = true;
+        this.recipeKey = recipeKey;
+        mm.setNewRecipe(dm.getRecipes().get(recipeKey));
+        this.newRecipeImage = mm.getNewRecipe().getImage();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        recipeImage.setImage(mm.getAddImage());
+        // ImageView ===================================================================================================
+        if (edit){
+            recipeImage.setImage(mm.getNewRecipe().getImage());
+        }
+        else {
+            recipeImage.setImage(mm.getAddImage());
+        }
         recipeImage.setOnMouseClicked(this::imageAction);
+
+        // Label, Fields and Area ========================================
+        if (edit){
+            kcalLabel.setText(mm.round_double(mm.getNewRecipe().getKcal()) + " kcal");
+            recipeNameField.setText(mm.getNewRecipe().getName());
+            timeField.setText(mm.getNewRecipe().getTime());
+            servingsField.setText(String.valueOf(mm.getNewRecipe().getAmount()));
+            descriptionArea.setText(mm.getNewRecipe().getDescription());
+        }
 
         // ListView ====================================================================================================
         ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
@@ -73,6 +101,9 @@ public class AddController implements Initializable {
             }
         });
 
+        ingredientsList.setFixedCellSize(30);
+        ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
+
         // TableView ===================================================================================================
         instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
         instructionTable.setItems(instructions);
@@ -86,6 +117,40 @@ public class AddController implements Initializable {
             text.textProperty().bind(cell.itemProperty());
             return cell;
         });
+
+        if (mm.getNewRecipe().isInstructionImage()) {
+
+            imageColumn.setPrefWidth(200);
+            imageColumn.setMaxWidth(200);
+            imageColumn.setMinWidth(200);
+            imageColumn.setCellFactory(param -> {
+                // set ImageView
+                final ImageView descriptionImage = new ImageView();
+
+                // set cell
+                TableCell<Instruction, Image> cell = new TableCell<>() {
+                    @Override
+                    protected void updateItem(Image image, boolean b) {
+//                    super.updateItem(image, b);
+                        if (image != null) {
+                            descriptionImage.setFitHeight(150);
+                            descriptionImage.setFitWidth(200);
+                            descriptionImage.setImage(image);
+                        } else {
+                        }
+                    }
+                };
+                cell.setGraphic(descriptionImage);
+                return cell;
+            });
+            imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+            instructionTable.setFixedCellSize(150);
+            instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
+        } else {
+            imageColumn.setPrefWidth(0);
+            imageColumn.setMaxWidth(0);
+            imageColumn.setMinWidth(0);
+        }
 
         // Button ======================================================================================================
         //back button
@@ -137,10 +202,18 @@ public class AddController implements Initializable {
                         if(mm.getNewRecipe().getIngredients().size() > 0){
                             if (mm.getNewRecipe().getInstructions().size() > 0){
                                 if (this.newRecipeImage != null){
-                                    mm.setNewRecipe(recipeNameField.getText(),timeField.getText(), Integer.parseInt(servingsField.getText()),descriptionArea.getText(), this.newRecipeImage);
-                                    dm.addRecipe(mm.getNewRecipe());
-                                    RecipeController controller = new RecipeController(dm, mm, dm.getRecipes().size()-1);
-                                    mm.show(getClass(),"recipe-view.fxml",controller,event);
+                                    mm.setNewRecipe(recipeNameField.getText(), timeField.getText(), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage);
+
+                                    RecipeController controller;
+                                    if (edit){
+                                         controller = new RecipeController(dm,mm,recipeKey);
+                                    }
+                                    else {
+                                        dm.addRecipe(mm.getNewRecipe());
+                                        controller = new RecipeController(dm, mm, dm.getRecipes().size() - 1);
+                                    }
+                                    mm.show(getClass(), "recipe-view.fxml", controller, event);
+
 //                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //                                    alert.setHeaderText("aaa");
 //                                    alert.showAndWait();
@@ -208,7 +281,7 @@ public class AddController implements Initializable {
             ingredientsList.setItems(ingredients);
             ingredientsList.setFixedCellSize(30);
             ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
-            kcalLabel.setText(String.valueOf(mm.round_double(mm.getNewRecipe().getKcal())));
+            kcalLabel.setText(mm.round_double(mm.getNewRecipe().getKcal()) + " kcal");
         }
     }
 

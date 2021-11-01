@@ -57,12 +57,24 @@
       </AnchorPane>
       <VBox>
          <children>
-            <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
-              <items>
-                <Button fx:id="nextButton" mnemonicParsing="false" />
-                  <Button fx:id="prevButton" mnemonicParsing="false" />
-              </items>
-            </ToolBar>
+            <BorderPane>
+               <left>
+                  <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <items>
+                      <Button fx:id="editButton" mnemonicParsing="false" />
+                        <Button fx:id="deleteButton" mnemonicParsing="false" />
+                    </items>
+                  </ToolBar>
+               </left>
+               <center>
+                  <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <items>
+                      <Button fx:id="nextButton" mnemonicParsing="false" />
+                        <Button fx:id="prevButton" mnemonicParsing="false" />
+                    </items>
+                  </ToolBar>
+               </center>
+            </BorderPane>
             <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="1024.0" styleClass="color">
                <content>
                   <AnchorPane>

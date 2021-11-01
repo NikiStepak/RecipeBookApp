@@ -38,7 +38,7 @@ public class RecipeController implements Initializable {
     public TableColumn<Instruction, Image> imageColumn;
     public ImageView recipeImage;
     public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel;
-    public Button backButton, homeButton, recipesButton, addButton, nextButton, prevButton;
+    public Button backButton, homeButton, recipesButton, addButton, nextButton, prevButton, deleteButton, editButton;
 
     private DataManager dm;
     private MathManager mm;
@@ -210,6 +210,34 @@ public class RecipeController implements Initializable {
         }
         addButton.setOnAction(this::addAction);
 
+        // delete button
+        if (mm.getDeleteIcon()!=null){
+            deleteButton.setGraphic(mm.getDeleteIcon());
+        }
+        else {
+            deleteButton.setText("Delete");
+        }
+        deleteButton.setOnAction(this::deleteAction);
+
+        // edit button
+        if (mm.getEditIcon()!=null){
+            editButton.setGraphic(mm.getEditIcon());
+        }
+        else {
+            editButton.setText("Edit");
+        }
+        editButton.setOnAction(this::editAction);
+    }
+
+    private void editAction(ActionEvent event) {
+        AddController controller = new AddController(dm,mm,recipeKey);
+        mm.show(getClass(),"add-view.fxml",controller,event);
+    }
+
+    private void deleteAction(ActionEvent event) {
+        dm.getRecipes().remove(recipeKey);
+        RecipeController controller = new RecipeController(dm,mm, recipeKey);
+        mm.show(getClass(),"recipe-view.fxml",controller,event);
     }
 
     private void nextAction(ActionEvent event) {
