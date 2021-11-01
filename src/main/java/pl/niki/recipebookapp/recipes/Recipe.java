@@ -139,7 +139,7 @@ public class Recipe {
         }
         else
             this.instructionImage = true;
-        instructions.add(new Instruction((instructions.size()+1) + ".  " + instruction, image));
+        instructions.add(new Instruction(instruction, (instructions.size()+1), image));
     }
 
     public void  addInstruction(String instruction){
@@ -149,7 +149,7 @@ public class Recipe {
 //        }
 //        else
             this.instructionImage = true;
-        instructions.add(new Instruction((instructions.size()+1) + ".  " + instruction));
+        instructions.add(new Instruction(instruction, this.instructions.size()+1));
     }
 
 
@@ -159,5 +159,48 @@ public class Recipe {
         this.amount = servings;
         this.description = description;
         this.image = image;
+    }
+
+    public void removeIngredient(int index) {
+        this.kcal -= this.ingredients.get(index).getKcal();
+        if (kcal<0) this.kcal = 0;
+        this.ingredients.remove(index);
+    }
+    public void removeIngredient(Ingredient ingredient) {
+        this.kcal -= ingredient.getKcal();
+        if (kcal<0) this.kcal = 0;
+        this.ingredients.remove(ingredient);
+    }
+
+    public double countKcal(){
+        this.kcal = 0;
+        for (Ingredient ingredient: this.ingredients){
+            this.kcal += ingredient.getKcal();
+        }
+        return kcal;
+    }
+
+    public void removeInstruction(int index) {
+        this.instructions.remove(index);
+        setInstructionsStep();
+    }
+
+    private void setInstructionsStep() {
+        int i = 1;
+        for (Instruction instruction: this.instructions){
+            instruction.setStep(i);
+            i++;
+        }
+    }
+
+    public void checkInstructionsImage(){
+        this.instructionImage = false;
+        for (Instruction instruction: this.instructions){
+            if (instruction.getImage()!=null){
+                this.instructionImage = true;
+                break;
+            }
+        }
+        System.out.println(instructionImage);
     }
 }

@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
+import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Product;
 
 import java.net.URL;
@@ -26,12 +27,22 @@ public class AddIngredientController implements Initializable {
     private MathManager mm;
     private ObservableList<Product> products;
     private ObservableList<String> amounts;
-    private boolean added;
+    private boolean added, edit;
+    private Ingredient editIngredient;
 
     public AddIngredientController(DataManager dm, MathManager mm) {
         this.dm = dm;
         this.mm = mm;
         this.added = false;
+        this.edit = false;
+    }
+
+    public AddIngredientController(DataManager dm, MathManager mm, Ingredient ingredient) {
+        this.dm = dm;
+        this.mm = mm;
+        this.added = false;
+        this.edit = true;
+        this.editIngredient = ingredient;
     }
 
     @Override
@@ -58,9 +69,18 @@ public class AddIngredientController implements Initializable {
             }
         });
 
+        if (edit){
+            ingredientComboBox.getSelectionModel().select(editIngredient.getProduct());
+        }
+
         amounts = FXCollections.observableArrayList();
         amounts.add("g");
         amountComboBox.setItems(amounts);
+
+        // amount field ============
+        if (edit){
+            amountField.setText(String.valueOf(editIngredient.getAmount()));
+        }
 
         // add button
         if(mm.getAddIcon()!=null){
@@ -99,7 +119,23 @@ public class AddIngredientController implements Initializable {
 
     private void okAction(ActionEvent event) {
         Product product = ingredientComboBox.getSelectionModel().getSelectedItem();
-        if (product!=null){
+        if (edit){
+            if (product != this.editIngredient.getProduct()){
+                if (product!=null){
+                    mm.getNewRecipe().removeIngredient(editIngredient);
+                    mm.getNewRecipe().addIngredient(product, Integer.parseInt(amountField.getText()));
+                    cancelAction(event);
+                }
+            }
+            else {
+                if (amountField.getText().length()>0){
+                    this.editIngredient.setAmount(Integer.parseInt(amountField.getText()));
+                    this.editIngredient.countKcal();
+                    cancelAction(event);
+                }
+            }
+        }
+        else if (product!=null){
             if (amountField.getText().length()>0){
                 mm.getNewRecipe().addIngredient(product, Integer.parseInt(amountField.getText()));
                 this.added = true;
@@ -124,6 +160,7 @@ public class AddIngredientController implements Initializable {
     }
 
     private void addAction(ActionEvent event) {
+        amountField.setText("");
         ingredientField.setVisible(true);
         doneButton.setVisible(true);
         ingredientComboBox.setVisible(false);

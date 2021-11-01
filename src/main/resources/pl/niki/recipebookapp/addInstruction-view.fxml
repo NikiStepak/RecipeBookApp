@@ -18,7 +18,7 @@
                <children>
                   <HBox alignment="CENTER">
                      <children>
-                        <TextArea fx:id="instructionArea" focusTraversable="false" maxHeight="150.0" prefHeight="150.0" prefWidth="300.0" promptText="INSRTUCTION" />
+                        <TextArea fx:id="instructionArea" focusTraversable="false" maxHeight="150.0" prefHeight="150.0" prefWidth="300.0" promptText="INSRTUCTION" wrapText="true" />
                         <Separator orientation="VERTICAL" prefWidth="25.0" visible="false" />
                         <ImageView fx:id="instructionImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true">
                            <image>

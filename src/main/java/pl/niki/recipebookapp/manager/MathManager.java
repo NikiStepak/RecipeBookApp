@@ -124,6 +124,30 @@ public class MathManager {
         }
     }
 
+    private void setSmallIcon(ImageView imageView, String fileName) {
+        try {
+            Image image = new Image(new FileInputStream(path+fileName));
+            imageView.setFitWidth(this.smallIconSize);
+            imageView.setFitHeight(this.smallIconSize);
+            imageView.setImage(image);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            this.backIcon = null;
+        }
+    }
+
+    public ImageView getSmallEditIcon() {
+        this.editIcon = new ImageView();
+        setSmallIcon(this.editIcon,"edit_icon.png");
+        return editIcon;
+    }
+
+    public ImageView getSmallDeleteIcon() {
+        this.deleteIcon = new ImageView();
+        setSmallIcon(this.deleteIcon,"delete_icon.png");
+        return deleteIcon;
+    }
+
     public ImageView getEditIcon() {
         this.editIcon = new ImageView();
         setIcon(this.editIcon,"edit_icon.png");

@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,6 +13,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -89,6 +92,7 @@ public class AddController implements Initializable {
         ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
         ingredientsList.setItems(ingredients);
         ingredientsList.setCellFactory(i -> new ListCell<>(){
+
             @Override
             protected void updateItem(Ingredient ingredient, boolean b) {
                 super.updateItem(ingredient, b);
@@ -96,7 +100,30 @@ public class AddController implements Initializable {
                     setText(null);
                 }
                 else {
-                    setText(ingredient.toString());
+                    final HBox hBox = new HBox();
+                    final Button deleteIngredientButton = new Button();
+                    if (mm.getSmallDeleteIcon()!=null){
+                        deleteIngredientButton.setGraphic(mm.getSmallDeleteIcon());
+                    }
+                    else {
+                        deleteIngredientButton.setText("Delete");
+                    }
+                    deleteIngredientButton.setOnAction(event -> deleteIngredientAction(event,getIndex()));
+                    final Button editIngredientButton = new Button();
+                    if (mm.getSmallEditIcon()!=null){
+                        editIngredientButton.setGraphic(mm.getSmallEditIcon());
+                    }
+                    else {
+                        editIngredientButton.setText("Edit");
+                    }
+                    editIngredientButton.setOnAction(event -> editIngredientAction(event, getIndex()));
+
+                    final Label label = new Label(ingredient.toString());
+                    hBox.setAlignment(Pos.CENTER_LEFT);
+                    hBox.getChildren().add(label);
+                    hBox.getChildren().add(editIngredientButton);
+                    hBox.getChildren().add(deleteIngredientButton);
+                    setGraphic(hBox);
                 }
             }
         });
@@ -111,9 +138,35 @@ public class AddController implements Initializable {
         descriptionColumn.setCellFactory(param -> {
             TableCell<Instruction,String> cell = new TableCell<>();
             Text text = new Text();
-            cell.setGraphic(text);
+            HBox hBox = new HBox();
+            VBox vBox = new VBox();
+            Button deleteInstructionButton = new Button();
+            if (mm.getSmallDeleteIcon()!=null){
+                deleteInstructionButton.setGraphic(mm.getSmallDeleteIcon());
+            }
+            else {
+                deleteInstructionButton.setText("Delete");
+            }
+            deleteInstructionButton.setOnAction(event -> deleteInstructionAction(event, cell.getIndex()));
+
+            Button editInstructionButton = new Button();
+            if (mm.getSmallEditIcon()!=null){
+                editInstructionButton.setGraphic(mm.getSmallEditIcon());
+            }
+            else {
+                editInstructionButton.setText("Edit");
+            }
+            editInstructionButton.setOnAction(event -> editInstructionAction(event, cell.getIndex()));
+
+            vBox.setAlignment(Pos.CENTER_LEFT);
+            vBox.getChildren().add(editInstructionButton);
+            vBox.getChildren().add(deleteInstructionButton);
+            hBox.setAlignment(Pos.CENTER_LEFT);
+            hBox.getChildren().add(vBox);
+            hBox.getChildren().add(text);
+            cell.setGraphic(hBox);
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
-            text.wrappingWidthProperty().bind(descriptionColumn.widthProperty());
+            text.wrappingWidthProperty().bind(descriptionColumn.widthProperty().subtract(50));
             text.textProperty().bind(cell.itemProperty());
             return cell;
         });
@@ -151,6 +204,8 @@ public class AddController implements Initializable {
             imageColumn.setMaxWidth(0);
             imageColumn.setMinWidth(0);
         }
+
+//        instructionTable.setOnMouseClicked(event -> );
 
         // Button ======================================================================================================
         //back button
@@ -192,6 +247,107 @@ public class AddController implements Initializable {
         }
         addIngredientButton.setOnAction(this::addIngredientAction);
         addInstructionButton.setOnAction(this::addInstructionAction);
+    }
+
+    private void deleteInstructionAction(ActionEvent event, int index) {
+        mm.getNewRecipe().removeInstruction(index);
+        mm.getNewRecipe().checkInstructionsImage();
+        instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
+        instructionTable.setItems(instructions);
+
+        if (mm.getNewRecipe().isInstructionImage()) {
+
+            imageColumn.setPrefWidth(200);
+            imageColumn.setMaxWidth(200);
+            imageColumn.setMinWidth(200);
+            imageColumn.setCellFactory(param -> {
+                // set ImageView
+                final ImageView descriptionImage = new ImageView();
+
+                // set cell
+                TableCell<Instruction, Image> cell = new TableCell<>() {
+                    @Override
+                    protected void updateItem(Image image, boolean b) {
+//                    super.updateItem(image, b);
+                        if (image != null) {
+                            descriptionImage.setFitHeight(150);
+                            descriptionImage.setFitWidth(200);
+                            descriptionImage.setImage(image);
+                        } else {
+                        }
+                    }
+                };
+                cell.setGraphic(descriptionImage);
+                return cell;
+            });
+            imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+            instructionTable.setFixedCellSize(150);
+            instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
+        } else {
+            imageColumn.setPrefWidth(0);
+            imageColumn.setMaxWidth(0);
+            imageColumn.setMinWidth(0);
+        }
+    }
+
+    private void editInstructionAction(ActionEvent event, int index) {
+        AddInstructionController controller = new AddInstructionController(dm, mm, mm.getNewRecipe().getInstructions().get(index), recipeKey);
+        mm.showAndWait(getClass(), "addInstruction-view.fxml", controller, addIngredientButton);
+        mm.getNewRecipe().checkInstructionsImage();
+        instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
+        instructionTable.setItems(instructions);
+
+        if (mm.getNewRecipe().isInstructionImage()) {
+            imageColumn.setPrefWidth(200);
+            imageColumn.setMaxWidth(200);
+            imageColumn.setMinWidth(200);
+            imageColumn.setCellFactory(param -> {
+                // set ImageView
+                final ImageView descriptionImage = new ImageView();
+
+                // set cell
+                TableCell<Instruction, Image> cell = new TableCell<>() {
+                    @Override
+                    protected void updateItem(Image image, boolean b) {
+//                    super.updateItem(image, b);
+                        if (image != null) {
+                            descriptionImage.setFitHeight(150);
+                            descriptionImage.setFitWidth(200);
+                            descriptionImage.setImage(image);
+                        } else {
+                        }
+                    }
+                };
+                cell.setGraphic(descriptionImage);
+                return cell;
+            });
+            imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+            instructionTable.setFixedCellSize(150);
+            instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
+        } else {
+            imageColumn.setPrefWidth(0);
+            imageColumn.setMaxWidth(0);
+            imageColumn.setMinWidth(0);
+        }
+    }
+
+    private void editIngredientAction(ActionEvent event, int index) {
+        AddIngredientController controller = new AddIngredientController(dm, mm, mm.getNewRecipe().getIngredients().get(index));
+        mm.showAndWait(getClass(), "addIngredient-view.fxml", controller, addIngredientButton);
+        ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
+        ingredientsList.setItems(ingredients);
+        ingredientsList.setFixedCellSize(30);
+        ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
+        kcalLabel.setText(mm.round_double(mm.getNewRecipe().countKcal()) + " kcal");
+    }
+
+    private void deleteIngredientAction(ActionEvent event, int index) {
+        mm.getNewRecipe().removeIngredient(index);
+        ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
+        ingredientsList.setItems(ingredients);
+        ingredientsList.setFixedCellSize(30);
+        ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
+        kcalLabel.setText(mm.round_double(mm.getNewRecipe().getKcal()) + " kcal");
     }
 
     private void addRecipeAction(ActionEvent event) {

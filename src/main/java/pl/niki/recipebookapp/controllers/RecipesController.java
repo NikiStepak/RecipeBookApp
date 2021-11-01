@@ -78,7 +78,7 @@ public class RecipesController implements Initializable {
         addButton.setOnAction(this::addAction);
 
 
-        // ListView ====================================================================================================
+        // ScrollPane ====================================================================================================
         scroll.widthProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
