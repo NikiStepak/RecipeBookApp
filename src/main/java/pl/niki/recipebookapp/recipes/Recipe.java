@@ -16,6 +16,11 @@ public class Recipe {
     private Image image;
     private boolean instructionImage;
 
+    public Recipe() {
+        this.ingredients = new ArrayList<>();
+        this.instructions = new ArrayList<>();
+    }
+
     public Recipe(String name, String describe, String time, int amount) {
         this.name = name;
         this.describe = describe;
@@ -127,6 +132,16 @@ public class Recipe {
         ingredients.add(ingredient);
     }
 
+    public void  addInstruction(String instruction, Image image){
+//        Image image = null;
+        if(image==null){
+            this.instructionImage = false;
+        }
+        else
+            this.instructionImage = true;
+        instructions.add(new Instruction((instructions.size()+1) + ".  " + instruction, image));
+    }
+
     public void  addInstruction(String instruction){
 //        Image image = null;
 //        if(image==null){
@@ -136,5 +151,6 @@ public class Recipe {
             this.instructionImage = true;
         instructions.add(new Instruction((instructions.size()+1) + ".  " + instruction));
     }
+
 
 }

@@ -46,7 +46,7 @@ public class AddInstructionController implements Initializable {
     private void okAction(ActionEvent event) {
         String description = instructionArea.getText();
         if (description.length()>3){
-            mm.addInstruction(description, this.image);
+            mm.getNewRecipe().addInstruction(description, this.image);
             this.added = true;
             cancelAction(event);
         }

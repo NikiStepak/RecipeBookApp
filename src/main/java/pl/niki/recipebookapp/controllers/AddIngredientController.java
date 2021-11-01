@@ -101,7 +101,7 @@ public class AddIngredientController implements Initializable {
         Product product = ingredientComboBox.getSelectionModel().getSelectedItem();
         if (product!=null){
             if (amountField.getText().length()>0){
-                mm.addIngredient(product, Integer.parseInt(amountField.getText()));
+                mm.getNewRecipe().addIngredient(product, Integer.parseInt(amountField.getText()));
                 this.added = true;
                 cancelAction(event);
             }

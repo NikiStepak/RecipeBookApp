@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
+import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,28 +18,37 @@ public class MathManager {
     private Image addImage;
     private int smallIconSize = 15, iconSize = 25;
     private String path = "D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\";
-    private List<Ingredient> ingredients;
-    private List<Instruction> instructions;
-    private boolean instructionsImages;
+//    private List<Ingredient> ingredients;
+//    private List<Instruction> instructions;
+//    private boolean instructionsImages;
+    private Recipe newRecipe;
 
-    public void addIngredient(Product product, int amount){
-        this.ingredients.add(new Ingredient(product, amount));
+    public Recipe getNewRecipe() {
+        return newRecipe;
     }
 
-    public List<Ingredient> getIngredients() {
-        return ingredients;
+    public void setNewRecipe(Recipe newRecipe) {
+        this.newRecipe = newRecipe;
     }
 
-    public void addInstruction(String description, Image image){
-        this.instructions.add(new Instruction(description, image));
-        if (image!=null){
-            this.instructionsImages = true;
-        }
-    }
-
-    public List<Instruction> getInstructions() {
-        return instructions;
-    }
+//    public void addIngredient(Product product, int amount){
+//        this.ingredients.add(new Ingredient(product, amount));
+//    }
+//
+//    public List<Ingredient> getIngredients() {
+//        return ingredients;
+//    }
+//
+//    public void addInstruction(String description, Image image){
+//        this.instructions.add(new Instruction(description, image));
+//        if (image!=null){
+//            this.instructionsImages = true;
+//        }
+//    }
+//
+//    public List<Instruction> getInstructions() {
+//        return instructions;
+//    }
 
     public void setAddImage() {
         try {
@@ -58,7 +68,7 @@ public class MathManager {
         boolean isIngredient;
         for (Product product: allProduct){
             isIngredient = false;
-            for (Ingredient ingredient: ingredients){
+            for (Ingredient ingredient: newRecipe.getIngredients()){
                 if(product == ingredient.getProduct()){
                     isIngredient = true;
                     break;
@@ -71,24 +81,22 @@ public class MathManager {
         }
         return products;
     }
-
-    public double countKcal(){
-        double kcal = 0;
-        for (Ingredient ingredient: this.ingredients){
-            kcal += ingredient.countKcal();
-        }
-        kcal = round_double(kcal);
-        return kcal;
-    }
-
-    public boolean isInstructionsImages() {
-        return instructionsImages;
-    }
+//
+//    public double countKcal(){
+//        double kcal = 0;
+//        for (Ingredient ingredient: this.ingredients){
+//            kcal += ingredient.countKcal();
+//        }
+//        kcal = round_double(kcal);
+//        return kcal;
+//    }
+//
+//    public boolean isInstructionsImages() {
+//        return instructionsImages;
+//    }
 
     public void newRecipe(){
-        this.ingredients = new ArrayList<>();
-        this.instructions = new ArrayList<>();
-        this.instructionsImages = false;
+        newRecipe = new Recipe();
     }
 
     public MathManager() {

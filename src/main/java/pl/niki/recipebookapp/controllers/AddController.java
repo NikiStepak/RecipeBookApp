@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -32,7 +33,7 @@ import java.nio.file.spi.FileTypeDetector;
 import java.util.ResourceBundle;
 
 public class AddController implements Initializable {
-    public Button backButton, homeButton, recipesButton, addButton, addIngredientButton, addInstructionButton;
+    public Button backButton, addRecipeButton, homeButton, recipesButton, addButton, addIngredientButton, addInstructionButton;
     public ImageView recipeImage;
     public ListView<Ingredient> ingredientsList;
     public TableView<Instruction> instructionTable;
@@ -58,7 +59,7 @@ public class AddController implements Initializable {
         recipeImage.setOnMouseClicked(this::imageAction);
 
         // ListView ====================================================================================================
-        ingredients = FXCollections.observableArrayList(mm.getIngredients());
+        ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
         ingredientsList.setItems(ingredients);
         ingredientsList.setCellFactory(i -> new ListCell<>(){
             @Override
@@ -74,7 +75,7 @@ public class AddController implements Initializable {
         });
 
         // TableView ===================================================================================================
-        instructions = FXCollections.observableArrayList(mm.getInstructions());
+        instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
         instructionTable.setItems(instructions);
         descriptionColumn.setCellValueFactory(cell -> cell.getValue().descriptionProperty());
         descriptionColumn.setCellFactory(param -> {
@@ -108,6 +109,14 @@ public class AddController implements Initializable {
         }
 //        recipesButton.setOnAction(this::backAction);
 
+        // add recipe button
+        if (mm.getDoneIcon()!=null){
+            addRecipeButton.setGraphic(mm.getDoneIcon());
+        }
+        else {
+            addRecipeButton.setText("Add Recipe");
+        }
+
         //add button
         // add ingredient button
         // add instruction button
@@ -136,8 +145,41 @@ public class AddController implements Initializable {
 
             if (controller.isAdded()){
                 this.mm = controller.getMm();
-                instructions = FXCollections.observableArrayList(mm.getInstructions());
+                instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
                 instructionTable.setItems(instructions);
+
+                if(mm.getNewRecipe().isInstructionImage()) {
+                    imageColumn.setPrefWidth(200);
+                    imageColumn.setMaxWidth(200);
+                    imageColumn.setMinWidth(200);
+                    imageColumn.setCellFactory(param -> {
+                        // set ImageView
+                        final ImageView descriptionImage = new ImageView();
+
+                        // set cell
+                        TableCell<Instruction, Image> cell = new TableCell<>() {
+                            @Override
+                            protected void updateItem(Image image, boolean b) {
+//                    super.updateItem(image, b);
+                                if (image != null) {
+                                    descriptionImage.setFitHeight(150);
+                                    descriptionImage.setFitWidth(200);
+                                    descriptionImage.setImage(image);
+                                } else {
+                                }
+                            }
+                        };
+                        cell.setGraphic(descriptionImage);
+                        return cell;
+                    });
+                    imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+                    instructionTable.setFixedCellSize(150);
+                }
+                else {
+                    imageColumn.setPrefWidth(0);
+                    imageColumn.setMaxWidth(0);
+                    imageColumn.setMinWidth(0);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -159,9 +201,9 @@ public class AddController implements Initializable {
 
             if (controller.isAdded()){
                 this.mm = controller.getMm();
-                ingredients = FXCollections.observableArrayList(mm.getIngredients());
+                ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
                 ingredientsList.setItems(ingredients);
-                kcalLabel.setText(String.valueOf(mm.countKcal()));
+                kcalLabel.setText(String.valueOf(mm.getNewRecipe().getKcal()));
             }
         }
         catch (IOException e){
