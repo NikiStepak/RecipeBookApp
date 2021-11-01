@@ -138,9 +138,11 @@ public class AddController implements Initializable {
                                 if (this.newRecipeImage != null){
                                     mm.setNewRecipe(recipeNameField.getText(),timeField.getText(), Integer.parseInt(servingsField.getText()),descriptionArea.getText(), this.newRecipeImage);
                                     dm.addRecipe(mm.getNewRecipe());
-                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                    alert.setHeaderText("aaa");
-                                    alert.showAndWait();
+                                    RecipeController controller = new RecipeController(dm, mm, dm.getRecipes().size()-1);
+                                    mm.show(getClass(),"recipe-view.fxml",controller,event);
+//                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//                                    alert.setHeaderText("aaa");
+//                                    alert.showAndWait();
                                 }
                             }
                         }

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MathManager {
-    private ImageView backIcon, homeIcon, recipesIcon, addIcon, doneIcon;
+    private ImageView backIcon, homeIcon, recipesIcon, addIcon, doneIcon, nextIcon;
     private Image addImage;
     private int smallIconSize = 15, iconSize = 25;
     private String path = "D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\";
@@ -129,6 +129,12 @@ public class MathManager {
         this.backIcon = new ImageView();
         setIcon(this.backIcon, "arrow_back_icon.png");
         return backIcon;
+    }
+
+    public ImageView getNextIcon() {
+        this.nextIcon = new ImageView();
+        setIcon(this.nextIcon,"arrow_forward_icon.png");
+        return nextIcon;
     }
 
     public ImageView getHomeIcon() {

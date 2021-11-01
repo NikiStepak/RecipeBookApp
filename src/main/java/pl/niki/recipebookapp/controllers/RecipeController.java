@@ -38,7 +38,7 @@ public class RecipeController implements Initializable {
     public TableColumn<Instruction, Image> imageColumn;
     public ImageView recipeImage;
     public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel;
-    public Button backButton, homeButton, recipesButton, addButton;
+    public Button backButton, homeButton, recipesButton, addButton, nextButton, prevButton;
 
     private DataManager dm;
     private MathManager mm;
@@ -46,10 +46,6 @@ public class RecipeController implements Initializable {
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
     private final int recipeKey;
-
-    public RecipeController(int recipeKey) {
-        this.recipeKey = recipeKey;
-    }
 
     public RecipeController(DataManager dm, MathManager mm, int recipeKey) {
         this.dm = dm;
@@ -164,13 +160,37 @@ public class RecipeController implements Initializable {
         recipeImage.setImage(image);
 
         // Button ======================================================================================================
-        //back button
+        // next button
+        if (mm.getNextIcon() != null) {
+            nextButton.setGraphic(mm.getNextIcon());
+        }
+        else {
+            nextButton.setText("Next");
+        }
+        if (recipeKey < (dm.getRecipes().size()-1)) {
+            nextButton.setOnAction(this::nextAction);
+        }
+        else {
+            nextButton.setDisable(true);
+        }
+
+        // back button
+        // prev button
         if(mm.getBackIcon()!=null) {
+            prevButton.setGraphic(mm.getBackIcon());
             backButton.setGraphic(mm.getBackIcon());
         }
-        else
+        else {
             backButton.setText("Back");
+            prevButton.setText("Prev");
+        }
         backButton.setOnAction(this::backAction);
+        if (recipeKey > 0){
+            prevButton.setOnAction(this::prevAction);
+        }
+        else {
+            prevButton.setDisable(true);
+        }
 
         //home button
         if(mm.getHomeIcon()!=null){
@@ -190,6 +210,16 @@ public class RecipeController implements Initializable {
         }
         addButton.setOnAction(this::addAction);
 
+    }
+
+    private void nextAction(ActionEvent event) {
+        RecipeController controller = new RecipeController(dm,mm,recipeKey+1);
+        mm.show(getClass(),"recipe-view.fxml",controller,event);
+    }
+
+    private void prevAction(ActionEvent event) {
+        RecipeController controller = new RecipeController(dm,mm,recipeKey-1);
+        mm.show(getClass(),"recipe-view.fxml",controller,event);
     }
 
     // menu's buttons action
