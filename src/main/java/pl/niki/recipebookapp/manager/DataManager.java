@@ -82,4 +82,7 @@ public class DataManager {
     }
 
 
+    public void addRecipe(Recipe recipe) {
+        this.recipes.add(recipe);
+    }
 }

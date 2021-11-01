@@ -68,7 +68,7 @@ public class RecipeController implements Initializable {
         recipeNameLabel.setText(recipe.getName().toUpperCase());
         servingsLabel.setText(String.valueOf(recipe.getAmount()));
         kcalLabel.setText(mm.round_double(recipe.getKcal()) + " kcal");
-        descriptionLabel.setText(recipe.getDescribe());
+        descriptionLabel.setText(recipe.getDescription());
         timeLabel.setText(recipe.getTime());
 
         // ListView ====================================================================================================

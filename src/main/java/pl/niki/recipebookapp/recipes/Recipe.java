@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Recipe {
-    private String name, describe, time;
+    private String name, description, time;
     private List<Ingredient> ingredients;
     private List<Instruction> instructions;
     //private  photo;
@@ -21,9 +21,9 @@ public class Recipe {
         this.instructions = new ArrayList<>();
     }
 
-    public Recipe(String name, String describe, String time, int amount) {
+    public Recipe(String name, String description, String time, int amount) {
         this.name = name;
-        this.describe = describe;
+        this.description = description;
         this.time = time;
         this.amount = amount;
         this.kcal = 0;
@@ -36,17 +36,17 @@ public class Recipe {
         }
     }
 
-    public Recipe(String name, String describe, String time, int amount, double kcal) {
+    public Recipe(String name, String description, String time, int amount, double kcal) {
         this.name = name;
-        this.describe = describe;
+        this.description = description;
         this.time = time;
         this.amount = amount;
         this.kcal = kcal;
     }
 
-    public Recipe(String name, String describe, String time, List<Ingredient> ingredients, List<Instruction> preparation, int amount, double kcal) {
+    public Recipe(String name, String description, String time, List<Ingredient> ingredients, List<Instruction> preparation, int amount, double kcal) {
         this.name = name;
-        this.describe = describe;
+        this.description = description;
         this.time = time;
         this.ingredients = ingredients;
         this.instructions = preparation;
@@ -70,12 +70,12 @@ public class Recipe {
         this.name = name;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getTime() {
@@ -153,4 +153,11 @@ public class Recipe {
     }
 
 
+    public void set(String name, String time, int servings, String description, Image image) {
+        this.name = name;
+        this.time = time;
+        this.amount = servings;
+        this.description = description;
+        this.image = image;
+    }
 }

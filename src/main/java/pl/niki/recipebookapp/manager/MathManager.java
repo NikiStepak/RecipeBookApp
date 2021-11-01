@@ -150,4 +150,8 @@ public class MathManager {
         double r_d = Math.round(d*100);
         return r_d/100;
     }
+
+    public void setNewRecipe(String name, String time, int servings, String description, Image image) {
+        this.newRecipe.set(name,time,servings,description,image);
+    }
 }

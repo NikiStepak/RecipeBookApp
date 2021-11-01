@@ -39,16 +39,20 @@ public class AddController implements Initializable {
     public TableView<Instruction> instructionTable;
     public TableColumn<Instruction,String> descriptionColumn;
     public TableColumn<Instruction, Image> imageColumn;
+    public TextField recipeNameField, timeField, servingsField;
+    public TextArea descriptionArea;
     public Label kcalLabel;
 
     private DataManager dm;
     private MathManager mm;
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
+    private Image newRecipeImage;
 
     public AddController(DataManager dm, MathManager mm) {
         this.dm = dm;
         this.mm = mm;
+        this.newRecipeImage = null;
         mm.newRecipe();
     }
 
@@ -116,6 +120,7 @@ public class AddController implements Initializable {
         else {
             addRecipeButton.setText("Add Recipe");
         }
+        addRecipeButton.setOnAction(this::addRecipeAction);
 
         //add button
         // add ingredient button
@@ -128,6 +133,28 @@ public class AddController implements Initializable {
 //        addButton.setOnAction(this::backAction);
         addIngredientButton.setOnAction(this::addIngredientAction);
         addInstructionButton.setOnAction(this::addInstructionAction);
+    }
+
+    private void addRecipeAction(ActionEvent event) {
+        if (recipeNameField.getText().length() > 2){
+            if(timeField.getText().length() > 0){
+                if (servingsField.getText().length() > 0){
+                    if (descriptionArea.getText().length() > 2){
+                        if(mm.getNewRecipe().getIngredients().size() > 0){
+                            if (mm.getNewRecipe().getInstructions().size() > 0){
+                                if (this.newRecipeImage != null){
+                                    mm.setNewRecipe(recipeNameField.getText(),timeField.getText(), Integer.parseInt(servingsField.getText()),descriptionArea.getText(), this.newRecipeImage);
+                                    dm.addRecipe(mm.getNewRecipe());
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    alert.setHeaderText("aaa");
+                                    alert.showAndWait();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void addInstructionAction(ActionEvent event) {
@@ -203,7 +230,7 @@ public class AddController implements Initializable {
                 this.mm = controller.getMm();
                 ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
                 ingredientsList.setItems(ingredients);
-                kcalLabel.setText(String.valueOf(mm.getNewRecipe().getKcal()));
+                kcalLabel.setText(String.valueOf(mm.round_double(mm.getNewRecipe().getKcal())));
             }
         }
         catch (IOException e){
@@ -219,7 +246,7 @@ public class AddController implements Initializable {
                 String type = Files.probeContentType(file.toPath());
                 type = type.split("/")[0];
                 if (type.equals("image")){
-                    Image image = new Image(file.toURI().toString());
+                    this.newRecipeImage = new Image(file.toURI().toString());
 //                    FXMLLoader loader = new FXMLLoader();
 //                    loader.setLocation(getClass().getResource("/pl/niki/recipebookapp/imageCropper-view.fxml"));
 //                    ImageCropperController controller = new ImageCropperController(image);
@@ -231,7 +258,7 @@ public class AddController implements Initializable {
 //                    stage.initModality(Modality.WINDOW_MODAL);
 //                    stage.initOwner(recipeImage.getScene().getWindow());
 //                    stage.show();
-                    recipeImage.setImage(image);
+                    recipeImage.setImage(newRecipeImage);
                 }
             }
 
