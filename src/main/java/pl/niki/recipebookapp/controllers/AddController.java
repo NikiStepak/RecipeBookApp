@@ -1,5 +1,6 @@
 package pl.niki.recipebookapp.controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -162,6 +163,7 @@ public class AddController implements Initializable {
             instructionTable.setItems(instructions);
 
             if (mm.getNewRecipe().isInstructionImage()) {
+
                 imageColumn.setPrefWidth(200);
                 imageColumn.setMaxWidth(200);
                 imageColumn.setMinWidth(200);
@@ -187,6 +189,7 @@ public class AddController implements Initializable {
                 });
                 imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
                 instructionTable.setFixedCellSize(150);
+                instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
             } else {
                 imageColumn.setPrefWidth(0);
                 imageColumn.setMaxWidth(0);
@@ -203,6 +206,8 @@ public class AddController implements Initializable {
             this.mm = controller.getMm();
             ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
             ingredientsList.setItems(ingredients);
+            ingredientsList.setFixedCellSize(30);
+            ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
             kcalLabel.setText(String.valueOf(mm.round_double(mm.getNewRecipe().getKcal())));
         }
     }

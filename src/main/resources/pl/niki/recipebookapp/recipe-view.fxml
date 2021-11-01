@@ -184,7 +184,7 @@
                                           <String fx:value="main" />
                                        </styleClass>
                                     </Label>
-                                    <TableView fx:id="instructionTable" layoutX="142.0" layoutY="97.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="8.0">
+                                    <TableView fx:id="instructionTable" layoutX="142.0" layoutY="97.0" minHeight="300.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="8.0">
                                       <columns>
                                         <TableColumn fx:id="descriptionColumn" prefWidth="508.0" />
                                           <TableColumn maxWidth="5.0" minWidth="5.0" prefWidth="5.0" resizable="false" />
