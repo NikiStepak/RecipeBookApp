@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.5" minWidth="500.0" prefHeight="602.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.niki.recipebookapp.controllers.RecipesController">
+<SplitPane dividerPositions="0.5" minWidth="500.0" prefHeight="602.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <items>
       <AnchorPane maxWidth="150.0" minWidth="150.0" prefWidth="150.0">
          <children>
@@ -46,7 +46,7 @@
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="addButton" minWidth="150.0" mnemonicParsing="false" onAction="#addAction" styleClass="main" text="ADD RECIPE" />
+                  <Button fx:id="addButton" minWidth="150.0" mnemonicParsing="false" styleClass="main" text="ADD RECIPE" />
                </children>
             </VBox>
          </children>

@@ -39,12 +39,17 @@ public class RecipesController implements Initializable {
     private int listAmount;
 
     public RecipesController() {
+        dm = new DataManager();
+        mm = new MathManager();
+    }
+
+    public RecipesController(DataManager dm, MathManager mm) {
+        this.dm = dm;
+        this.mm = mm;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        dm = new DataManager();
-        mm = new MathManager();
 
         // Button ======================================================================================================
         //back button
@@ -53,25 +58,24 @@ public class RecipesController implements Initializable {
         }
         else
             backButton.setText("Back");
-//        backButton.setOnAction(this::backAction);
+        backButton.setOnAction(this::backAction);
 
         //home button
         if(mm.getHomeIcon()!=null){
             homeButton.setGraphic(mm.getHomeIcon());
         }
-//        homeButton.setOnAction(this::backAction);
+        homeButton.setOnAction(this::homeAction);
 
-        //recipe button
+        //recipes button
         if (mm.getRecipesIcon()!=null){
             recipesButton.setGraphic(mm.getRecipesIcon());
         }
-//        recipesButton.setOnAction(this::backAction);
 
         //add button
         if (mm.getAddIcon()!=null){
             addButton.setGraphic(mm.getAddIcon());
         }
-//        addButton.setOnAction(this::backAction);
+        addButton.setOnAction(this::addAction);
 
 
         // ListView ====================================================================================================
@@ -156,39 +160,23 @@ public class RecipesController implements Initializable {
     public void click(int selectedRecipe, MouseEvent mouseEvent) {
 //        System.out.println("click" + selectedRecipe);
         if(selectedRecipe >= 0) {
-            try {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/pl/niki/recipebookapp/recipe-view.fxml"));
-                RecipeController controller = new RecipeController(dm, mm, selectedRecipe);
-                loader.setController(controller);
-                Parent root = null;
-                root = loader.load();
-                Scene scene = new Scene(root);
-                scene.getStylesheets().add(getClass().getResource("/pl/niki/recipebookapp/styles/recipe-style.css").toExternalForm());
-                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            RecipeController controller = new RecipeController(dm, mm, selectedRecipe);
+            mm.show(getClass(),"recipe-view.fxml",controller,mouseEvent);
         }
     }
 
-    public void addAction(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/pl/niki/recipebookapp/add-view.fxml"));
-            AddController controller = new AddController(dm, mm);
-            loader.setController(controller);
-            Parent root = null;
-            root = loader.load();
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getResource("/pl/niki/recipebookapp/styles/add-style.css").toExternalForm());
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+    // menu's buttons action
+    private void addAction(ActionEvent event) {
+        AddController controller = new AddController(dm, mm);
+        mm.show(getClass(),"add-view.fxml",controller,event);
+    }
+
+    private void homeAction(ActionEvent event) {
+//        backAction(event);
+    }
+
+    private void backAction(ActionEvent event) {
+//        mm.show(getClass(), "recipes-view.fxml", event);
     }
 }

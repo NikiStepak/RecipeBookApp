@@ -3,9 +3,7 @@ package pl.niki.recipebookapp.controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -21,15 +19,11 @@ import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
-import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.spi.FileTypeDetector;
 import java.util.ResourceBundle;
 
 public class AddController implements Initializable {
@@ -99,19 +93,19 @@ public class AddController implements Initializable {
         }
         else
             backButton.setText("Back");
-//        backButton.setOnAction(this::backAction);
+        backButton.setOnAction(this::backAction);
 
         //home button
         if(mm.getHomeIcon()!=null){
             homeButton.setGraphic(mm.getHomeIcon());
         }
-//        homeButton.setOnAction(this::backAction);
+        homeButton.setOnAction(this::homeAction);
 
-        //recipe button
+        //recipes button
         if (mm.getRecipesIcon()!=null){
             recipesButton.setGraphic(mm.getRecipesIcon());
         }
-//        recipesButton.setOnAction(this::backAction);
+        recipesButton.setOnAction(this::recipesAction);
 
         // add recipe button
         if (mm.getDoneIcon()!=null){
@@ -122,7 +116,7 @@ public class AddController implements Initializable {
         }
         addRecipeButton.setOnAction(this::addRecipeAction);
 
-        //add button
+        // add button
         // add ingredient button
         // add instruction button
         if (mm.getAddIcon()!=null){
@@ -130,7 +124,6 @@ public class AddController implements Initializable {
             addIngredientButton.setGraphic(mm.getAddIcon());
             addInstructionButton.setGraphic(mm.getAddIcon());
         }
-//        addButton.setOnAction(this::backAction);
         addIngredientButton.setOnAction(this::addIngredientAction);
         addInstructionButton.setOnAction(this::addInstructionAction);
     }
@@ -158,83 +151,57 @@ public class AddController implements Initializable {
     }
 
     private void addInstructionAction(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/pl/niki/recipebookapp/addInstruction-view.fxml"));
-            AddInstructionController controller = new AddInstructionController(dm,mm);
-            loader.setController(controller);
-            Parent parent = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(parent));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(addInstructionButton.getScene().getWindow());
-            stage.showAndWait();
+        AddInstructionController controller = new AddInstructionController(dm, mm);
+        mm.showAndWait(getClass(), "addInstruction-view.fxml", controller, addInstructionButton);
 
-            if (controller.isAdded()){
-                this.mm = controller.getMm();
-                instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
-                instructionTable.setItems(instructions);
+        if (controller.isAdded()) {
+            this.mm = controller.getMm();
+            instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
+            instructionTable.setItems(instructions);
 
-                if(mm.getNewRecipe().isInstructionImage()) {
-                    imageColumn.setPrefWidth(200);
-                    imageColumn.setMaxWidth(200);
-                    imageColumn.setMinWidth(200);
-                    imageColumn.setCellFactory(param -> {
-                        // set ImageView
-                        final ImageView descriptionImage = new ImageView();
+            if (mm.getNewRecipe().isInstructionImage()) {
+                imageColumn.setPrefWidth(200);
+                imageColumn.setMaxWidth(200);
+                imageColumn.setMinWidth(200);
+                imageColumn.setCellFactory(param -> {
+                    // set ImageView
+                    final ImageView descriptionImage = new ImageView();
 
-                        // set cell
-                        TableCell<Instruction, Image> cell = new TableCell<>() {
-                            @Override
-                            protected void updateItem(Image image, boolean b) {
+                    // set cell
+                    TableCell<Instruction, Image> cell = new TableCell<>() {
+                        @Override
+                        protected void updateItem(Image image, boolean b) {
 //                    super.updateItem(image, b);
-                                if (image != null) {
-                                    descriptionImage.setFitHeight(150);
-                                    descriptionImage.setFitWidth(200);
-                                    descriptionImage.setImage(image);
-                                } else {
-                                }
+                            if (image != null) {
+                                descriptionImage.setFitHeight(150);
+                                descriptionImage.setFitWidth(200);
+                                descriptionImage.setImage(image);
+                            } else {
                             }
-                        };
-                        cell.setGraphic(descriptionImage);
-                        return cell;
-                    });
-                    imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
-                    instructionTable.setFixedCellSize(150);
-                }
-                else {
-                    imageColumn.setPrefWidth(0);
-                    imageColumn.setMaxWidth(0);
-                    imageColumn.setMinWidth(0);
-                }
+                        }
+                    };
+                    cell.setGraphic(descriptionImage);
+                    return cell;
+                });
+                imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+                instructionTable.setFixedCellSize(150);
+            } else {
+                imageColumn.setPrefWidth(0);
+                imageColumn.setMaxWidth(0);
+                imageColumn.setMinWidth(0);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
     private void addIngredientAction(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/pl/niki/recipebookapp/addIngredient-view.fxml"));
-            AddIngredientController controller = new AddIngredientController(dm, mm);
-            loader.setController(controller);
-            Parent parent = loader.load();
-            Stage stage  = new Stage();
-            stage.setScene(new Scene(parent));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(addIngredientButton.getScene().getWindow());
-            stage.showAndWait();
+        AddIngredientController controller = new AddIngredientController(dm, mm);
+        mm.showAndWait(getClass(), "addIngredient-view.fxml", controller, addIngredientButton);
 
-            if (controller.isAdded()){
-                this.mm = controller.getMm();
-                ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
-                ingredientsList.setItems(ingredients);
-                kcalLabel.setText(String.valueOf(mm.round_double(mm.getNewRecipe().getKcal())));
-            }
-        }
-        catch (IOException e){
-            e.printStackTrace();
+        if (controller.isAdded()) {
+            this.mm = controller.getMm();
+            ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
+            ingredientsList.setItems(ingredients);
+            kcalLabel.setText(String.valueOf(mm.round_double(mm.getNewRecipe().getKcal())));
         }
     }
 
@@ -266,5 +233,19 @@ public class AddController implements Initializable {
             e.printStackTrace();
         }
 
+    }
+
+    // menu's buttons action
+    private void recipesAction(ActionEvent event) {
+        RecipesController controller = new RecipesController(dm, mm);
+        mm.show(getClass(),"recipes-view.fxml",controller, event);
+    }
+
+    private void homeAction(ActionEvent event) {
+        recipesAction(event);
+    }
+
+    private void backAction(ActionEvent event) {
+        recipesAction(event);
     }
 }

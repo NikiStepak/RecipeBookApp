@@ -176,35 +176,38 @@ public class RecipeController implements Initializable {
         if(mm.getHomeIcon()!=null){
             homeButton.setGraphic(mm.getHomeIcon());
         }
-        homeButton.setOnAction(this::backAction);
+        homeButton.setOnAction(this::homeAction);
 
-        //recipe button
+        //recipes button
         if (mm.getRecipesIcon()!=null){
             recipesButton.setGraphic(mm.getRecipesIcon());
         }
-        recipesButton.setOnAction(this::backAction);
+        recipesButton.setOnAction(this::recipesAction);
 
         //add button
         if (mm.getAddIcon()!=null){
             addButton.setGraphic(mm.getAddIcon());
         }
-        addButton.setOnAction(this::backAction);
+        addButton.setOnAction(this::addAction);
 
     }
 
-    private void backAction(ActionEvent event){
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/pl/niki/recipebookapp/recipes-view.fxml"));
-        Parent root = null;
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Scene scene = new Scene(root);
-//        scene.getStylesheets().add(getClass().getResource("/pl/niki/recipebookapp/styles/recipe-style.css").toExternalForm());
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
+    // menu's buttons action
+    private void recipesAction(ActionEvent event) {
+        RecipesController controller = new RecipesController(dm,mm);
+        mm.show(getClass(),"recipes-view.fxml",controller,event);
+    }
+
+    private void addAction(ActionEvent event) {
+        AddController controller = new AddController(dm, mm);
+        mm.show(getClass(),"add-view.fxml",controller,event);
+    }
+
+    private void homeAction(ActionEvent event) {
+        recipesAction(event);
+    }
+
+    private void backAction(ActionEvent event) {
+        recipesAction(event);
     }
 }

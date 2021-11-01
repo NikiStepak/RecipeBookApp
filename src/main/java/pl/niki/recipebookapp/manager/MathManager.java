@@ -1,8 +1,16 @@
 package pl.niki.recipebookapp.manager;
 
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
@@ -10,6 +18,7 @@ import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,7 +154,7 @@ public class MathManager {
         setIcon(this.recipesIcon, "reorder_icon.png");
         return recipesIcon;
     }
-
+//
     public double round_double(double d){
         double r_d = Math.round(d*100);
         return r_d/100;
@@ -153,5 +162,52 @@ public class MathManager {
 
     public void setNewRecipe(String name, String time, int servings, String description, Image image) {
         this.newRecipe.set(name,time,servings,description,image);
+    }
+
+    private String locationPath = "/pl/niki/recipebookapp/", stylePath = "/pl/niki/recipebookapp/styles/";
+
+    private FXMLLoader setController(Class getC, String fxmlName, Object controller){
+        FXMLLoader loader = getLoader(getC,fxmlName);
+        loader.setController(controller);
+        return loader;
+    }
+
+    private FXMLLoader getLoader(Class getC, String fxmlName){
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getC.getResource(locationPath+fxmlName));
+        return loader;
+    }
+
+    public void showAndWait(Class getC, String fxmlName, Object controller, Button button){
+        try {
+            Parent parent = setController(getC,fxmlName,controller).load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(parent));
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initOwner(button.getScene().getWindow());
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void show(Class getC, String fxmlName, Object controller, Event event){
+        showStage(setController(getC,fxmlName,controller),event);
+    }
+
+    public void show(Class getC, String fxmlName, Event event){
+        showStage(getLoader(getC,fxmlName),event);
+    }
+
+    private void showStage(FXMLLoader loader, Event event){
+        try {
+            Parent parent = loader.load();
+            //        scene.getStylesheets().add(getClass().getResource("/pl/niki/recipebookapp/styles/recipe-style.css").toExternalForm());
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(parent));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
