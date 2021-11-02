@@ -152,7 +152,9 @@ public class AddIngredientController implements Initializable {
         amountComboBox.setVisible(true);
         in100Label.setVisible(false);
         amountLabel.setText("Amount:");
-        if (ingredientField.getText().length() > 2){
+        okButton.setDisable(false);
+        cancelButton.setDisable(false);
+        if (ingredientField.getText().length() > 2 && amountField.getText().length()>0){
             products.add(dm.addProduct(ingredientField.getText(), Double.parseDouble(amountField.getText())));
             ingredientComboBox.getSelectionModel().select(products.size()-1);
             amountField.setText("");
@@ -168,5 +170,7 @@ public class AddIngredientController implements Initializable {
         amountComboBox.setVisible(false);
         in100Label.setVisible(true);
         amountLabel.setText("Kcal:");
+        okButton.setDisable(true);
+        cancelButton.setDisable(true);
     }
 }
