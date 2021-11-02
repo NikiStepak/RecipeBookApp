@@ -34,6 +34,7 @@ public class RecipesController implements Initializable {
     public AnchorPane anchor;
     public HBox hbox;
     public SplitPane split;
+    public ToolBar tool;
 
     private DataManager dm;
     private MathManager mm;
@@ -112,6 +113,10 @@ public class RecipesController implements Initializable {
             }
         });
         scroll.setMinWidth(200);
+
+        split.heightProperty().addListener(l ->{
+            scroll.setPrefHeight(split.getHeight()-tool.getHeight());
+        });
 
         split.setPrefWidth(width);
         split.setPrefHeight(height);
