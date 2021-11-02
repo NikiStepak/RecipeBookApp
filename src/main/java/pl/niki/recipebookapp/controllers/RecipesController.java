@@ -33,19 +33,25 @@ public class RecipesController implements Initializable {
     public ScrollPane scroll;
     public AnchorPane anchor;
     public HBox hbox;
+    public SplitPane split;
 
     private DataManager dm;
     private MathManager mm;
     private int listAmount;
+    private double width, height;
 
     public RecipesController() {
         dm = new DataManager();
         mm = new MathManager();
+        this.width = 1100;
+        this.height = 602;
     }
 
-    public RecipesController(DataManager dm, MathManager mm) {
+    public RecipesController(DataManager dm, MathManager mm, double width, double height) {
         this.dm = dm;
         this.mm = mm;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -106,6 +112,9 @@ public class RecipesController implements Initializable {
             }
         });
         scroll.setMinWidth(200);
+
+        split.setPrefWidth(width);
+        split.setPrefHeight(height);
     }
 
     private void setList(ListView<Recipe> recipeList, int i) {
@@ -160,7 +169,7 @@ public class RecipesController implements Initializable {
     public void click(int selectedRecipe, MouseEvent mouseEvent) {
 //        System.out.println("click" + selectedRecipe);
         if(selectedRecipe >= 0) {
-            RecipeController controller = new RecipeController(dm, mm, selectedRecipe);
+            RecipeController controller = new RecipeController(dm, mm, selectedRecipe, split.getWidth(), split.getHeight());
             mm.show(getClass(),"recipe-view.fxml",controller,mouseEvent);
         }
     }
@@ -168,7 +177,7 @@ public class RecipesController implements Initializable {
 
     // menu's buttons action
     private void addAction(ActionEvent event) {
-        AddController controller = new AddController(dm, mm);
+        AddController controller = new AddController(dm, mm, split.getWidth(), split.getHeight());
         mm.show(getClass(),"add-view.fxml",controller,event);
     }
 

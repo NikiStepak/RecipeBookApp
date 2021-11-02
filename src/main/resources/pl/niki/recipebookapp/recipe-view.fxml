@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.14" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane fx:id="split" dividerPositions="0.14" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <items>
     <AnchorPane maxWidth="150.0" minWidth="150.0" prefWidth="150.0">
          <children>
@@ -59,7 +59,7 @@
          <children>
             <BorderPane>
                <left>
-                  <ToolBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                  <ToolBar fx:id="tool" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <items>
                       <Button fx:id="editButton" mnemonicParsing="false" />
                         <Button fx:id="deleteButton" mnemonicParsing="false" />
@@ -75,13 +75,13 @@
                   </ToolBar>
                </center>
             </BorderPane>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="1024.0" styleClass="color">
+            <ScrollPane fx:id="scroll" fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="1024.0" styleClass="color">
                <content>
-                  <AnchorPane>
+                  <AnchorPane fx:id="anchor">
                      <children>
-                        <BorderPane layoutY="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <BorderPane layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <top>
-                              <BorderPane styleClass="color" BorderPane.alignment="CENTER">
+                              <BorderPane fx:id="informationBorder" styleClass="color" BorderPane.alignment="CENTER">
                                  <center>
                                     <BorderPane>
                                        <center>
@@ -174,7 +174,7 @@
                            <left>
                               <AnchorPane styleClass="greyBackground" BorderPane.alignment="CENTER">
                                  <children>
-                                    <ListView fx:id="ingredientsList" focusTraversable="false" layoutX="8.0" layoutY="50.0" prefWidth="217.5" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="12.5" AnchorPane.topAnchor="40.0" />
+                                    <ListView fx:id="ingredientsList" focusTraversable="false" layoutX="8.0" layoutY="50.0" prefWidth="217.5" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="12.5" AnchorPane.topAnchor="40.0" />
                                     <Label layoutX="24.0" layoutY="19.0" text="INGREDIENTS:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="12.5">
                                        <font>
                                           <Font name="Comic Sans MS Bold" size="14.0" />
@@ -188,7 +188,7 @@
                               </AnchorPane>
                            </left>
                            <center>
-                              <AnchorPane prefWidth="611.0" styleClass="whiteBackground" BorderPane.alignment="CENTER">
+                              <AnchorPane fx:id="instructionAnchor" prefWidth="611.0" styleClass="whiteBackground" BorderPane.alignment="CENTER">
                                  <children>
                                     <Label text="PREPARATIONS:" AnchorPane.leftAnchor="12.5" AnchorPane.topAnchor="12.5">
                                        <styleClass>
@@ -196,7 +196,7 @@
                                           <String fx:value="main" />
                                        </styleClass>
                                     </Label>
-                                    <TableView fx:id="instructionTable" layoutX="142.0" layoutY="97.0" minHeight="300.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="8.0">
+                                    <TableView fx:id="instructionTable" layoutX="142.0" layoutY="97.0" prefWidth="200.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="8.0">
                                       <columns>
                                         <TableColumn fx:id="descriptionColumn" prefWidth="508.0" />
                                           <TableColumn maxWidth="5.0" minWidth="5.0" prefWidth="5.0" resizable="false" />

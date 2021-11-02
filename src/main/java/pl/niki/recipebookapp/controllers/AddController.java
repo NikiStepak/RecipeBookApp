@@ -41,6 +41,9 @@ public class AddController implements Initializable {
     public TextField recipeNameField, timeField, servingsField;
     public TextArea descriptionArea;
     public Label kcalLabel;
+    public SplitPane split;
+    public ScrollPane scroll;
+    public ToolBar tool;
 
     private DataManager dm;
     private MathManager mm;
@@ -49,22 +52,28 @@ public class AddController implements Initializable {
     private Image newRecipeImage;
     private boolean edit;
     private int recipeKey;
+    private double width, height;
 
-    public AddController(DataManager dm, MathManager mm) {
+
+    public AddController(DataManager dm, MathManager mm, double width, double height) {
         this.dm = dm;
         this.mm = mm;
         this.newRecipeImage = null;
         this.edit = false;
         mm.newRecipe();
+        this.width = width;
+        this.height = height;
     }
 
-    public AddController(DataManager dm, MathManager mm, int recipeKey) {
+    public AddController(DataManager dm, MathManager mm, int recipeKey, double width, double height) {
         this.dm = dm;
         this.mm = mm;
         this.edit = true;
         this.recipeKey = recipeKey;
         mm.setNewRecipe(dm.getRecipes().get(recipeKey));
         this.newRecipeImage = mm.getNewRecipe().getImage();
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -206,6 +215,13 @@ public class AddController implements Initializable {
         }
 
 //        instructionTable.setOnMouseClicked(event -> );
+
+        // ========================
+        split.heightProperty().addListener(l -> {
+            scroll.setPrefHeight(split.getHeight()-tool.getHeight());
+        });
+        split.setPrefHeight(height);
+        split.setPrefWidth(width);
 
         // Button ======================================================================================================
         //back button
@@ -362,11 +378,11 @@ public class AddController implements Initializable {
 
                                     RecipeController controller;
                                     if (edit){
-                                         controller = new RecipeController(dm,mm,recipeKey);
+                                         controller = new RecipeController(dm,mm,recipeKey, split.getWidth(), split.getHeight());
                                     }
                                     else {
                                         dm.addRecipe(mm.getNewRecipe());
-                                        controller = new RecipeController(dm, mm, dm.getRecipes().size() - 1);
+                                        controller = new RecipeController(dm, mm, dm.getRecipes().size() - 1, split.getWidth(), split.getHeight());
                                     }
                                     mm.show(getClass(), "recipe-view.fxml", controller, event);
 
@@ -473,7 +489,7 @@ public class AddController implements Initializable {
 
     // menu's buttons action
     private void recipesAction(ActionEvent event) {
-        RecipesController controller = new RecipesController(dm, mm);
+        RecipesController controller = new RecipesController(dm, mm, split.getWidth(),split.getHeight());
         mm.show(getClass(),"recipes-view.fxml",controller, event);
     }
 

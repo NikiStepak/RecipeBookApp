@@ -16,6 +16,8 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -39,6 +41,11 @@ public class RecipeController implements Initializable {
     public ImageView recipeImage;
     public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel;
     public Button backButton, homeButton, recipesButton, addButton, nextButton, prevButton, deleteButton, editButton;
+    public SplitPane split;
+    public ScrollPane scroll;
+    public ToolBar tool;
+    public AnchorPane instructionAnchor, anchor;
+    public BorderPane informationBorder;
 
     private DataManager dm;
     private MathManager mm;
@@ -46,11 +53,14 @@ public class RecipeController implements Initializable {
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
     private final int recipeKey;
+    private double width, height;
 
-    public RecipeController(DataManager dm, MathManager mm, int recipeKey) {
+    public RecipeController(DataManager dm, MathManager mm, int recipeKey, double width, double height) {
         this.dm = dm;
         this.mm = mm;
         this.recipeKey = recipeKey;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -159,6 +169,14 @@ public class RecipeController implements Initializable {
 
         recipeImage.setImage(image);
 
+        // height of window ===============
+        split.heightProperty().addListener(listener ->{
+            scroll.setPrefHeight(split.getHeight()-tool.getHeight());
+
+        });
+        split.setPrefHeight(height);
+        split.setPrefWidth(width);
+
         // Button ======================================================================================================
         // next button
         if (mm.getNextIcon() != null) {
@@ -230,34 +248,34 @@ public class RecipeController implements Initializable {
     }
 
     private void editAction(ActionEvent event) {
-        AddController controller = new AddController(dm,mm,recipeKey);
+        AddController controller = new AddController(dm,mm,recipeKey, split.getWidth(), split.getHeight());
         mm.show(getClass(),"add-view.fxml",controller,event);
     }
 
     private void deleteAction(ActionEvent event) {
         dm.getRecipes().remove(recipeKey);
-        RecipeController controller = new RecipeController(dm,mm, recipeKey);
+        RecipeController controller = new RecipeController(dm,mm, recipeKey, split.getWidth(), split.getHeight());
         mm.show(getClass(),"recipe-view.fxml",controller,event);
     }
 
     private void nextAction(ActionEvent event) {
-        RecipeController controller = new RecipeController(dm,mm,recipeKey+1);
+        RecipeController controller = new RecipeController(dm,mm,recipeKey+1, split.getWidth(), split.getHeight());
         mm.show(getClass(),"recipe-view.fxml",controller,event);
     }
 
     private void prevAction(ActionEvent event) {
-        RecipeController controller = new RecipeController(dm,mm,recipeKey-1);
+        RecipeController controller = new RecipeController(dm,mm,recipeKey-1, split.getWidth(), split.getHeight());
         mm.show(getClass(),"recipe-view.fxml",controller,event);
     }
 
     // menu's buttons action
     private void recipesAction(ActionEvent event) {
-        RecipesController controller = new RecipesController(dm,mm);
+        RecipesController controller = new RecipesController(dm,mm, split.getWidth(), split.getHeight());
         mm.show(getClass(),"recipes-view.fxml",controller,event);
     }
 
     private void addAction(ActionEvent event) {
-        AddController controller = new AddController(dm, mm);
+        AddController controller = new AddController(dm, mm, split.getWidth(), split.getHeight());
         mm.show(getClass(),"add-view.fxml",controller,event);
     }
 
