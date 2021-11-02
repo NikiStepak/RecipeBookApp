@@ -30,6 +30,7 @@ import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class RecipeController implements Initializable {
@@ -253,9 +254,14 @@ public class RecipeController implements Initializable {
     }
 
     private void deleteAction(ActionEvent event) {
-        dm.getRecipes().remove(recipeKey);
-        RecipeController controller = new RecipeController(dm,mm, recipeKey, split.getWidth(), split.getHeight());
-        mm.show(getClass(),"recipe-view.fxml",controller,event);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText("Are you sure you want to delete this recipe?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            dm.getRecipes().remove(recipeKey);
+            RecipeController controller = new RecipeController(dm, mm, recipeKey, split.getWidth(), split.getHeight());
+            mm.show(getClass(), "recipe-view.fxml", controller, event);
+        }
     }
 
     private void nextAction(ActionEvent event) {
