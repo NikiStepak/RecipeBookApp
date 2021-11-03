@@ -4,9 +4,12 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -55,7 +58,14 @@
          <children>
             <ToolBar fx:id="tool" prefHeight="40.0" prefWidth="200.0">
               <items>
-                <Button mnemonicParsing="false" text="Button" />
+                <Button fx:id="filterButton" mnemonicParsing="false" text="Button" />
+                  <ChoiceBox fx:id="sortChoiceBox" prefWidth="150.0" />
+                  <ComboBox prefWidth="150.0" />
+                  <TextField fx:id="searchField" promptText="Search recipe" styleClass="search">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </TextField>
               </items>
             </ToolBar>
             <ScrollPane fx:id="scroll" prefHeight="600.0" prefWidth="1024.0">

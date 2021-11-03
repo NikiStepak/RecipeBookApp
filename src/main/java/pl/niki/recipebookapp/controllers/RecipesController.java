@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -30,6 +31,7 @@ import java.util.ResourceBundle;
 
 public class RecipesController implements Initializable {
     public Button backButton, homeButton, recipesButton, addButton;
+    public TextField searchField;
     public ScrollPane scroll;
     public AnchorPane anchor;
     public HBox hbox;
@@ -57,7 +59,7 @@ public class RecipesController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        searchField.setOnKeyTyped(this::searchAction);
         // Button ======================================================================================================
         //back button
         if(mm.getBackIcon()!=null) {
@@ -120,6 +122,29 @@ public class RecipesController implements Initializable {
 
         split.setPrefWidth(width);
         split.setPrefHeight(height);
+    }
+
+    private void searchAction(KeyEvent keyEvent) {
+        hbox.getChildren().clear();
+        listAmount = (int) (scroll.getWidth() / 188);
+        ListView[] recipeList = new ListView[listAmount];
+        ObservableList[] recipes = new ObservableList[listAmount];
+
+        for (int i =0; i<listAmount; i++){
+            recipes[i] = FXCollections.observableArrayList();
+            recipeList[i] = new ListView<>();
+        }
+
+        setRecipes(dm.getSearchedRecipes(searchField.getText()), recipes);
+
+        for (int i =0; i<listAmount; i++){
+            recipeList[i].setItems(recipes[i]);
+            setList(recipeList[i], i);
+
+            anchor.setPrefWidth(scroll.getWidth()-15);
+            hbox.setPrefWidth(scroll.getWidth()-15);
+            hbox.getChildren().add(recipeList[i]);
+        }
     }
 
     private void setList(ListView<Recipe> recipeList, int i) {

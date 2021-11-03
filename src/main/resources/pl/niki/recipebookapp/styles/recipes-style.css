@@ -19,3 +19,11 @@ Label {
     -fx-text-fill: #ffffff;
     -fx-padding: 5;
 }
+
+.search {
+    -fx-background-image: url("../images/search_icon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: right center;
+    -fx-background-size: 20;
+    /*-fx-background-insets: 0;*/
+}

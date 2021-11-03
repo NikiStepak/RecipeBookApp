@@ -81,6 +81,16 @@ public class DataManager {
         }
     }
 
+    public List<Recipe> getSearchedRecipes(String searchText){
+        List<Recipe> searchRecipes = new ArrayList<>();
+        for (Recipe recipe: recipes){
+            if (recipe.getName().toLowerCase().contains(searchText.toLowerCase().trim())){
+                searchRecipes.add(recipe);
+            }
+        }
+        return searchRecipes;
+    }
+
 
     public void addRecipe(Recipe recipe) {
         this.recipes.add(recipe);
