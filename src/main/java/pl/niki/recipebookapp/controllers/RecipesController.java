@@ -6,6 +6,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -26,12 +27,12 @@ import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class RecipesController implements Initializable {
     public Button backButton, homeButton, recipesButton, addButton;
     public TextField searchField;
+    public ChoiceBox sortChoiceBox;
     public ScrollPane scroll;
     public AnchorPane anchor;
     public HBox hbox;
@@ -42,6 +43,7 @@ public class RecipesController implements Initializable {
     private MathManager mm;
     private int listAmount;
     private double width, height;
+    private ObservableList<String> choice = FXCollections.observableArrayList("Sort by ...", "A -> Z", "Z -> A");
 
     public RecipesController() {
         dm = new DataManager();
@@ -60,6 +62,9 @@ public class RecipesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         searchField.setOnKeyTyped(this::searchAction);
+        sortChoiceBox.setItems(choice);
+        sortChoiceBox.setOnAction(this::sortAction);
+        sortChoiceBox.getSelectionModel().select(0);
         // Button ======================================================================================================
         //back button
         if(mm.getBackIcon()!=null) {
@@ -122,6 +127,57 @@ public class RecipesController implements Initializable {
 
         split.setPrefWidth(width);
         split.setPrefHeight(height);
+    }
+
+    private void sortAction(Event event) {
+        if (sortChoiceBox.getSelectionModel().getSelectedIndex() == 1) {
+            hbox.getChildren().clear();
+            listAmount = (int) (scroll.getWidth() / 188);
+            ListView[] recipeList = new ListView[listAmount];
+            ObservableList[] recipes = new ObservableList[listAmount];
+
+            for (int i = 0; i < listAmount; i++) {
+                recipes[i] = FXCollections.observableArrayList();
+                recipeList[i] = new ListView<>();
+            }
+
+            List<Recipe> rrr = dm.getRecipes();
+            Collections.sort(rrr, Comparator.comparing(Recipe::getName));
+            setRecipes(rrr, recipes);
+
+            for (int i = 0; i < listAmount; i++) {
+                recipeList[i].setItems(recipes[i]);
+                setList(recipeList[i], i);
+
+                anchor.setPrefWidth(scroll.getWidth() - 15);
+                hbox.setPrefWidth(scroll.getWidth() - 15);
+                hbox.getChildren().add(recipeList[i]);
+            }
+        }
+        else if (sortChoiceBox.getSelectionModel().getSelectedIndex() == 2){
+            hbox.getChildren().clear();
+            listAmount = (int) (scroll.getWidth() / 188);
+            ListView[] recipeList = new ListView[listAmount];
+            ObservableList[] recipes = new ObservableList[listAmount];
+
+            for (int i = 0; i < listAmount; i++) {
+                recipes[i] = FXCollections.observableArrayList();
+                recipeList[i] = new ListView<>();
+            }
+
+            List<Recipe> rrr = dm.getRecipes();
+            Collections.sort(rrr, Comparator.comparing(Recipe::getName).reversed());
+            setRecipes(rrr, recipes);
+
+            for (int i = 0; i < listAmount; i++) {
+                recipeList[i].setItems(recipes[i]);
+                setList(recipeList[i], i);
+
+                anchor.setPrefWidth(scroll.getWidth() - 15);
+                hbox.setPrefWidth(scroll.getWidth() - 15);
+                hbox.getChildren().add(recipeList[i]);
+            }
+        }
     }
 
     private void searchAction(KeyEvent keyEvent) {
