@@ -3,17 +3,22 @@ package pl.niki.recipebookapp.controllers;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -21,8 +26,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import org.controlsfx.control.RangeSlider;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
+import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.io.IOException;
@@ -31,10 +39,15 @@ import java.util.*;
 
 public class RecipesController implements Initializable {
     public Button backButton, homeButton, recipesButton, addButton;
-    public TextField searchField;
+    public ToggleButton filterToggleButton;
+    public TextField searchField, ingredientField;
     public ChoiceBox sortChoiceBox;
+    public ListView cuisineList, courseList, ingredientsList;
+    public Slider minTimeSlider, maxTimeSlider, maxRatingsSlider, minRatingsSlider, minKcalSlider, maxKcalSlider;
+    public Label minTimeLabel, maxTimeLabel, maxKcalLabel, minKcalLabel, minRatingsLabel, maxRatingsLabel;
+    //    public RangeSlider ratingSlider;
     public ScrollPane scroll;
-    public AnchorPane anchor;
+    public AnchorPane anchor, filterAnchor, ratingAnchor;
     public HBox hbox;
     public SplitPane split;
     public ToolBar tool;
@@ -44,12 +57,15 @@ public class RecipesController implements Initializable {
     private int listAmount;
     private double width, height;
     private ObservableList<String> choice = FXCollections.observableArrayList("Sort by ...", "A -> Z", "Z -> A");
+    private ObservableList<Product> ingredients;
+    private boolean isFilter;
 
     public RecipesController() {
         dm = new DataManager();
         mm = new MathManager();
         this.width = 1100;
         this.height = 602;
+        this.isFilter = false;
     }
 
     public RecipesController(DataManager dm, MathManager mm, double width, double height) {
@@ -57,14 +73,38 @@ public class RecipesController implements Initializable {
         this.mm = mm;
         this.width = width;
         this.height = height;
+        this.isFilter = false;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        ingredients = FXCollections.observableArrayList(mm.getIngredients(dm.getRecipes()));
+        ingredientsList.setItems(ingredients);
+        ObservableSet<Product> selectedIngredient = FXCollections.observableSet();
+        ingredientsList.setCellFactory(CheckBoxListCell.forListView(new Callback<Product, ObservableValue<Boolean>>() {
+            @Override
+            public ObservableValue<Boolean> call(Product product) {
+                BooleanProperty observable = new SimpleBooleanProperty();
+                observable.addListener((obs, wasSelected, isNowSelected) -> {
+                    if (isNowSelected){
+                        selectedIngredient.add(product);
+                    }
+                    else {
+                        selectedIngredient.remove(product);
+                    }
+                    ingredientsFilterAction(selectedIngredient);
+                });
+                observable.set(selectedIngredient.contains(product));
+                selectedIngredient.addListener((SetChangeListener.Change<? extends Product> c)->observable.set(selectedIngredient.contains(product)));
+                return observable;
+            }
+        }));
+
         searchField.setOnKeyTyped(this::searchAction);
         sortChoiceBox.setItems(choice);
         sortChoiceBox.setOnAction(this::sortAction);
         sortChoiceBox.getSelectionModel().select(0);
+        filterToggleButton.setOnAction(this::filterAction);
         // Button ======================================================================================================
         //back button
         if(mm.getBackIcon()!=null) {
@@ -127,6 +167,81 @@ public class RecipesController implements Initializable {
 
         split.setPrefWidth(width);
         split.setPrefHeight(height);
+    }
+
+    private void ingredientsFilterAction(ObservableSet<Product> selectedIngredient) {
+        hbox.getChildren().clear();
+        listAmount = (int) (scroll.getWidth() / 188);
+        ListView[] recipeList = new ListView[listAmount];
+        ObservableList[] recipes = new ObservableList[listAmount];
+
+        for (int i = 0; i < listAmount; i++) {
+            recipes[i] = FXCollections.observableArrayList();
+            recipeList[i] = new ListView<>();
+        }
+
+
+        setRecipes(dm.getIngredientFilteredRecipes(selectedIngredient), recipes);
+
+        for (int i = 0; i < listAmount; i++) {
+            recipeList[i].setItems(recipes[i]);
+            setList(recipeList[i], i);
+
+            anchor.setPrefWidth(scroll.getWidth() - 15);
+            hbox.setPrefWidth(scroll.getWidth() - 15);
+            hbox.getChildren().add(recipeList[i]);
+        }
+    }
+
+    private void filterAction(ActionEvent event) {
+        filterAnchor.setVisible(filterToggleButton.isSelected());
+        this.isFilter = !this.isFilter;
+        if (filterAnchor.isVisible()){
+            hbox.getChildren().clear();
+            hbox.setAlignment(Pos.TOP_LEFT);
+            hbox.getChildren().add(filterAnchor);
+            listAmount = (int) ((scroll.getWidth()-188) / 188);
+            ListView[] recipeList = new ListView[listAmount];
+            ObservableList[] recipes = new ObservableList[listAmount];
+
+            for (int i =0; i<listAmount; i++){
+                recipes[i] = FXCollections.observableArrayList();
+                recipeList[i] = new ListView<>();
+            }
+
+            setRecipes(dm.getRecipes(), recipes);
+
+            for (int i =0; i<listAmount; i++){
+                recipeList[i].setItems(recipes[i]);
+                setList(recipeList[i], i);
+
+                anchor.setPrefWidth(scroll.getWidth()-15);
+                hbox.setPrefWidth(scroll.getWidth()-15);
+                hbox.getChildren().add(recipeList[i]);
+            }
+        }
+        else {
+            hbox.getChildren().clear();
+            listAmount = (int) (scroll.getWidth() / 188);
+            ListView[] recipeList = new ListView[listAmount];
+            ObservableList[] recipes = new ObservableList[listAmount];
+
+            for (int i =0; i<listAmount; i++){
+                recipes[i] = FXCollections.observableArrayList();
+                recipeList[i] = new ListView<>();
+            }
+
+            setRecipes(dm.getRecipes(), recipes);
+
+            for (int i =0; i<listAmount; i++){
+                recipeList[i].setItems(recipes[i]);
+                setList(recipeList[i], i);
+
+                anchor.setPrefWidth(scroll.getWidth()-15);
+                hbox.setPrefWidth(scroll.getWidth()-15);
+                hbox.getChildren().add(recipeList[i]);
+            }
+        }
     }
 
     private void sortAction(Event event) {

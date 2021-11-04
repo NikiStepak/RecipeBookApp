@@ -90,6 +90,18 @@ public class MathManager {
         }
         return products;
     }
+
+    public List<Product> getIngredients(List<Recipe> recipes){
+        List<Product> ingredients = new ArrayList<>();
+        for (Recipe recipe: recipes){
+            for (Ingredient ingredient: recipe.getIngredients()){
+                if (!ingredients.contains(ingredient.getProduct())){
+                    ingredients.add(ingredient.getProduct());
+                }
+            }
+        }
+        return ingredients;
+    }
 //
 //    public double countKcal(){
 //        double kcal = 0;

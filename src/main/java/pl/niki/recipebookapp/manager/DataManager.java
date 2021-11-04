@@ -1,5 +1,7 @@
 package pl.niki.recipebookapp.manager;
 
+import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
@@ -94,5 +96,21 @@ public class DataManager {
 
     public void addRecipe(Recipe recipe) {
         this.recipes.add(recipe);
+    }
+
+    public List<Recipe> getIngredientFilteredRecipes(ObservableSet<Product> selectedIngredient) {
+        List<Recipe> ingredientFilteredRecipes = new ArrayList<>();
+        System.out.println(selectedIngredient.size());
+        for (Recipe recipe: recipes){
+            for (Product product: selectedIngredient){
+                for (Ingredient ingredient: recipe.getIngredients()){
+                    if(product == ingredient.getProduct()){
+                        ingredientFilteredRecipes.add(recipe);
+                    }
+                }
+            }
+        }
+
+        return ingredientFilteredRecipes;
     }
 }
