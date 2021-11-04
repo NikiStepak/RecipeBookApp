@@ -114,7 +114,7 @@ public class DataManager {
             return ingredientFilteredRecipes;
         }
         else {
-            return getRecipes();
+            return recipes;
         }
     }
 }
