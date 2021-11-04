@@ -69,7 +69,7 @@
                         <Insets />
                      </opaqueInsets>
                   </TextField>
-                  <ToggleButton fx:id="filterToggleButton" mnemonicParsing="false" text="ToggleButton" />
+                  <ToggleButton fx:id="filterToggleButton" mnemonicParsing="false" text="Filter" />
               </items>
             </ToolBar>
             <ScrollPane fx:id="scroll" prefHeight="600.0" prefWidth="1024.0">

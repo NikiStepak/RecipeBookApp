@@ -99,18 +99,22 @@ public class DataManager {
     }
 
     public List<Recipe> getIngredientFilteredRecipes(ObservableSet<Product> selectedIngredient) {
-        List<Recipe> ingredientFilteredRecipes = new ArrayList<>();
-        System.out.println(selectedIngredient.size());
-        for (Recipe recipe: recipes){
-            for (Product product: selectedIngredient){
-                for (Ingredient ingredient: recipe.getIngredients()){
-                    if(product == ingredient.getProduct()){
-                        ingredientFilteredRecipes.add(recipe);
+        if (selectedIngredient.size()>0) {
+            List<Recipe> ingredientFilteredRecipes = new ArrayList<>();
+            for (Recipe recipe : recipes) {
+                for (Product product : selectedIngredient) {
+                    for (Ingredient ingredient : recipe.getIngredients()) {
+                        if (product == ingredient.getProduct()) {
+                            ingredientFilteredRecipes.add(recipe);
+                        }
                     }
                 }
             }
-        }
 
-        return ingredientFilteredRecipes;
+            return ingredientFilteredRecipes;
+        }
+        else {
+            return getRecipes();
+        }
     }
 }

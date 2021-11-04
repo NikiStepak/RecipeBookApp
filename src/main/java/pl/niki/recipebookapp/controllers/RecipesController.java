@@ -104,6 +104,12 @@ public class RecipesController implements Initializable {
         sortChoiceBox.setItems(choice);
         sortChoiceBox.setOnAction(this::sortAction);
         sortChoiceBox.getSelectionModel().select(0);
+        if(mm.getFilterIcon()!=null) {
+            filterToggleButton.setGraphic(mm.getFilterIcon());
+            filterToggleButton.setText(null);
+        }
+        else
+            filterToggleButton.setText("Filter");
         filterToggleButton.setOnAction(this::filterAction);
         // Button ======================================================================================================
         //back button
