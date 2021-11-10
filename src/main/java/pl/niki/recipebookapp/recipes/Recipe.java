@@ -15,6 +15,7 @@ public class Recipe {
     private double kcal;
     private Image image;
     private boolean instructionImage;
+    private String cuisine, course;
 
     public Recipe() {
         this.ingredients = new ArrayList<>();
@@ -153,12 +154,14 @@ public class Recipe {
     }
 
 
-    public void set(String name, String time, int servings, String description, Image image) {
+    public void set(String name, String time, int servings, String description, Image image, String course, String cuisine) {
         this.name = name;
         this.time = time;
         this.amount = servings;
         this.description = description;
         this.image = image;
+        this.course = course;
+        this.cuisine = cuisine;
     }
 
     public void removeIngredient(int index) {

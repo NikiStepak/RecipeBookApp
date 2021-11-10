@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -38,9 +39,11 @@ public class AddController implements Initializable {
     public TableView<Instruction> instructionTable;
     public TableColumn<Instruction,String> descriptionColumn;
     public TableColumn<Instruction, Image> imageColumn;
-    public TextField recipeNameField, timeField, servingsField;
+    public TextField recipeNameField, timeField, servingsField, cuisineField;
     public TextArea descriptionArea;
     public Label kcalLabel;
+    public ComboBox<String> courseComboBox;
+
     public SplitPane split;
     public ScrollPane scroll;
     public ToolBar tool;
@@ -49,6 +52,7 @@ public class AddController implements Initializable {
     private MathManager mm;
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
+    private ObservableList<String> course;
     private Image newRecipeImage;
     private boolean edit;
     private int recipeKey;
@@ -78,6 +82,8 @@ public class AddController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        course = FXCollections.observableArrayList(dm.getCourse());
+        courseComboBox.setItems(course);
 
         // ImageView ===================================================================================================
         if (edit){
@@ -371,24 +377,29 @@ public class AddController implements Initializable {
             if(timeField.getText().length() > 0){
                 if (servingsField.getText().length() > 0){
                     if (descriptionArea.getText().length() > 2){
-                        if(mm.getNewRecipe().getIngredients().size() > 0){
-                            if (mm.getNewRecipe().getInstructions().size() > 0){
-                                if (this.newRecipeImage != null){
-                                    mm.setNewRecipe(recipeNameField.getText(), timeField.getText(), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage);
-
-                                    RecipeController controller;
-                                    if (edit){
-                                         controller = new RecipeController(dm,mm,recipeKey, split.getWidth(), split.getHeight());
-                                    }
-                                    else {
-                                        dm.addRecipe(mm.getNewRecipe());
-                                        controller = new RecipeController(dm, mm, dm.getRecipes().size() - 1, split.getWidth(), split.getHeight());
-                                    }
-                                    mm.show(getClass(), "recipe-view.fxml", controller, event);
+                        if (courseComboBox.getSelectionModel().getSelectedIndex()>=0) {
+                            if (mm.getNewRecipe().getIngredients().size() > 0) {
+                                if (mm.getNewRecipe().getInstructions().size() > 0) {
+                                    if (this.newRecipeImage != null) {
+                                        if (cuisineField.getText().length()>0){
+                                            mm.setNewRecipe(recipeNameField.getText(), timeField.getText(), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage,cuisineField.getText(),courseComboBox.getSelectionModel().getSelectedItem());
+                                        }
+                                        else {
+                                            mm.setNewRecipe(recipeNameField.getText(), timeField.getText(), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage,"-",courseComboBox.getSelectionModel().getSelectedItem());
+                                        }
+                                        RecipeController controller;
+                                        if (edit) {
+                                            controller = new RecipeController(dm, mm, recipeKey, split.getWidth(), split.getHeight());
+                                        } else {
+                                            dm.addRecipe(mm.getNewRecipe());
+                                            controller = new RecipeController(dm, mm, dm.getRecipes().size() - 1, split.getWidth(), split.getHeight());
+                                        }
+                                        mm.show(getClass(), "recipe-view.fxml", controller, event);
 
 //                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //                                    alert.setHeaderText("aaa");
 //                                    alert.showAndWait();
+                                    }
                                 }
                             }
                         }

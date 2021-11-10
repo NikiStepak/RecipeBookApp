@@ -12,14 +12,33 @@ import java.util.List;
 import java.util.Set;
 
 public class DataManager {
-    List<Recipe> recipes;
-    List<Product> products;
+    private List<Recipe> recipes;
+    private List<Product> products;
+    private String[] course = {"soup", "side dish", "salad", "main dish", "drink", "dessert",
+            "bread", "snack", "cake", "breakfast, brunch or supper"};
+    private List<String> cuisines;
+
+    public String[] getCourse() {
+        return course;
+    }
 
     public DataManager() {
         this.recipes = new ArrayList<>();
         this.products = new ArrayList<>();
+        this.cuisines = new ArrayList<>();
         addProducts();
         addRecipes();
+    }
+
+    public int checkIfCuisineExist(String cuisine){
+        int exist = -1;
+        for (int i=0; i<cuisines.size(); i++){
+            if (cuisines.get(i).equals(cuisine)){
+                exist = i;
+                break;
+            }
+        }
+        return exist;
     }
 
     public List<Product> getProducts() {

@@ -4,9 +4,11 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -26,7 +28,7 @@
                <children>
                   <ToolBar prefHeight="40.0" prefWidth="200.0">
                     <items>
-                      <Button fx:id="backButton" focusTraversable="false" mnemonicParsing="false" styleClass="main" />
+                      <Button fx:id="backButton" focusTraversable="false" mnemonicParsing="false" styleClass="main" text="Back" />
                     </items>
                   </ToolBar>
                   <AnchorPane>
@@ -61,16 +63,23 @@
                <left>
                   <ToolBar fx:id="tool" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <items>
-                      <Button fx:id="editButton" mnemonicParsing="false" />
-                        <Button fx:id="deleteButton" mnemonicParsing="false" />
+                      <Button fx:id="editButton" mnemonicParsing="false" styleClass="main" text="Edit" />
+                        <Button fx:id="deleteButton" mnemonicParsing="false" styleClass="main" text="Delete" />
                     </items>
                   </ToolBar>
                </left>
                <center>
                   <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                     <items>
-                      <Button fx:id="nextButton" mnemonicParsing="false" />
-                        <Button fx:id="prevButton" mnemonicParsing="false" />
+                      <Button fx:id="nextButton" mnemonicParsing="false" styleClass="main" text="Next" />
+                        <Button fx:id="prevButton" mnemonicParsing="false" styleClass="main" text="Prev" />
+                        <Separator orientation="VERTICAL" prefWidth="50.0" visible="false" />
+                        <Hyperlink text="Original Recipe">
+                           <styleClass>
+                              <String fx:value="blackText" />
+                              <String fx:value="main" />
+                           </styleClass>
+                        </Hyperlink>
                     </items>
                   </ToolBar>
                </center>
@@ -117,6 +126,10 @@
                                                       <Font name="Comic Sans MS" size="13.0" />
                                                    </font>
                                                 </Label>
+                                                <Label layoutX="230.0" layoutY="13.0" styleClass="main" text="Cuisine:" AnchorPane.leftAnchor="247.0" AnchorPane.topAnchor="29.0" />
+                                                <Label layoutX="183.0" layoutY="43.0" styleClass="main" text="Course:" AnchorPane.leftAnchor="247.0" AnchorPane.topAnchor="60.0" />
+                                                <Label fx:id="cuisineLabel" layoutX="308.0" layoutY="15.0" text="-" AnchorPane.leftAnchor="313.0" AnchorPane.topAnchor="29.0" />
+                                                <Label fx:id="courseLabel" layoutX="300.0" layoutY="43.0" text="breakfast" AnchorPane.leftAnchor="313.0" AnchorPane.topAnchor="60.0" />
                                              </children>
                                           </AnchorPane>
                                        </center>
