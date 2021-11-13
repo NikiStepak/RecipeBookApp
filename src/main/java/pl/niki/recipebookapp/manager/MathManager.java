@@ -1,6 +1,5 @@
 package pl.niki.recipebookapp.manager;
 
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -12,10 +11,8 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pl.niki.recipebookapp.recipes.Ingredient;
-import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,13 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MathManager {
-    private ImageView backIcon, homeIcon, recipesIcon, addIcon, doneIcon, nextIcon, editIcon, deleteIcon, filterIcon;
+    private ImageView backIcon, editIcon, deleteIcon;
     private Image addImage;
-    private int smallIconSize = 15, iconSize = 25;
-    private String path = "D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\";
-//    private List<Ingredient> ingredients;
-//    private List<Instruction> instructions;
-//    private boolean instructionsImages;
+    private final String path = "D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\";
     private Recipe newRecipe;
 
     public Recipe getNewRecipe() {
@@ -39,25 +32,6 @@ public class MathManager {
     public void setNewRecipe(Recipe newRecipe) {
         this.newRecipe = newRecipe;
     }
-
-//    public void addIngredient(Product product, int amount){
-//        this.ingredients.add(new Ingredient(product, amount));
-//    }
-//
-//    public List<Ingredient> getIngredients() {
-//        return ingredients;
-//    }
-//
-//    public void addInstruction(String description, Image image){
-//        this.instructions.add(new Instruction(description, image));
-//        if (image!=null){
-//            this.instructionsImages = true;
-//        }
-//    }
-//
-//    public List<Instruction> getInstructions() {
-//        return instructions;
-//    }
 
     public void setAddImage() {
         try {
@@ -102,19 +76,6 @@ public class MathManager {
         }
         return ingredients;
     }
-//
-//    public double countKcal(){
-//        double kcal = 0;
-//        for (Ingredient ingredient: this.ingredients){
-//            kcal += ingredient.countKcal();
-//        }
-//        kcal = round_double(kcal);
-//        return kcal;
-//    }
-//
-//    public boolean isInstructionsImages() {
-//        return instructionsImages;
-//    }
 
     public void newRecipe(){
         newRecipe = new Recipe();
@@ -127,8 +88,9 @@ public class MathManager {
     private void setIcon(ImageView imageView, String fileName) {
         try {
             Image image = new Image(new FileInputStream(path+fileName));
-            imageView.setFitWidth(this.iconSize);
-            imageView.setFitHeight(this.iconSize);
+            int iconSize = 25;
+            imageView.setFitWidth(iconSize);
+            imageView.setFitHeight(iconSize);
             imageView.setImage(image);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -139,8 +101,9 @@ public class MathManager {
     private void setSmallIcon(ImageView imageView, String fileName) {
         try {
             Image image = new Image(new FileInputStream(path+fileName));
-            imageView.setFitWidth(this.smallIconSize);
-            imageView.setFitHeight(this.smallIconSize);
+            int smallIconSize = 15;
+            imageView.setFitWidth(smallIconSize);
+            imageView.setFitHeight(smallIconSize);
             imageView.setImage(image);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -149,8 +112,8 @@ public class MathManager {
     }
 
     public ImageView getFilterIcon() {
-        this.filterIcon = new ImageView();
-        setIcon(this.filterIcon, "filter_list_icon.png");
+        ImageView filterIcon = new ImageView();
+        setIcon(filterIcon, "filter_list_icon.png");
         return filterIcon;
     }
 
@@ -185,32 +148,32 @@ public class MathManager {
     }
 
     public ImageView getNextIcon() {
-        this.nextIcon = new ImageView();
-        setIcon(this.nextIcon,"arrow_forward_icon.png");
+        ImageView nextIcon = new ImageView();
+        setIcon(nextIcon,"arrow_forward_icon.png");
         return nextIcon;
     }
 
     public ImageView getHomeIcon() {
-        this.homeIcon = new ImageView();
-        setIcon(this.homeIcon, "home_icon.png");
+        ImageView homeIcon = new ImageView();
+        setIcon(homeIcon, "home_icon.png");
         return homeIcon;
     }
 
     public ImageView getAddIcon() {
-        this.addIcon = new ImageView();
-        setIcon(this.addIcon, "add_icon.png");
+        ImageView addIcon = new ImageView();
+        setIcon(addIcon, "add_icon.png");
         return addIcon;
     }
 
     public ImageView getDoneIcon() {
-        this.doneIcon = new ImageView();
-        setIcon(this.doneIcon, "done_icon.png");
+        ImageView doneIcon = new ImageView();
+        setIcon(doneIcon, "done_icon.png");
         return doneIcon;
     }
 
     public ImageView getRecipesIcon() {
-        this.recipesIcon = new ImageView();
-        setIcon(this.recipesIcon, "reorder_icon.png");
+        ImageView recipesIcon = new ImageView();
+        setIcon(recipesIcon, "reorder_icon.png");
         return recipesIcon;
     }
 //
@@ -226,8 +189,6 @@ public class MathManager {
         this.newRecipe.set(name,time,servings,description,image,course,cuisine);
     }
 
-    private String locationPath = "/pl/niki/recipebookapp/", stylePath = "/pl/niki/recipebookapp/styles/";
-
     private FXMLLoader setController(Class getC, String fxmlName, Object controller){
         FXMLLoader loader = getLoader(getC,fxmlName);
         loader.setController(controller);
@@ -236,7 +197,8 @@ public class MathManager {
 
     private FXMLLoader getLoader(Class getC, String fxmlName){
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getC.getResource(locationPath+fxmlName));
+        String locationPath = "/pl/niki/recipebookapp/";
+        loader.setLocation(getC.getResource(locationPath +fxmlName));
         return loader;
     }
 
@@ -255,10 +217,6 @@ public class MathManager {
 
     public void show(Class getC, String fxmlName, Object controller, Event event){
         showStage(setController(getC,fxmlName,controller),event);
-    }
-
-    public void show(Class getC, String fxmlName, Event event){
-        showStage(getLoader(getC,fxmlName),event);
     }
 
     private void showStage(FXMLLoader loader, Event event){

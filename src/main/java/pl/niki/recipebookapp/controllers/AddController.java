@@ -4,11 +4,8 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -18,14 +15,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
-import pl.niki.recipebookapp.recipes.Recipe;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -48,15 +41,14 @@ public class AddController implements Initializable {
     public ScrollPane scroll;
     public ToolBar tool;
 
-    private DataManager dm;
+    private final DataManager dm;
     private MathManager mm;
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
-    private ObservableList<String> course;
     private Image newRecipeImage;
-    private boolean edit;
+    private final boolean edit;
     private int recipeKey;
-    private double width, height;
+    private final double width, height;
 
 
     public AddController(DataManager dm, MathManager mm, double width, double height) {
@@ -82,7 +74,7 @@ public class AddController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        course = FXCollections.observableArrayList(dm.getCourse());
+        ObservableList<String> course = FXCollections.observableArrayList(dm.getCourse());
         courseComboBox.setItems(course);
 
         // ImageView ===================================================================================================
@@ -123,7 +115,7 @@ public class AddController implements Initializable {
                     else {
                         deleteIngredientButton.setText("Delete");
                     }
-                    deleteIngredientButton.setOnAction(event -> deleteIngredientAction(event,getIndex()));
+                    deleteIngredientButton.setOnAction(event -> deleteIngredientAction(getIndex()));
                     final Button editIngredientButton = new Button();
                     if (mm.getSmallEditIcon()!=null){
                         editIngredientButton.setGraphic(mm.getSmallEditIcon());
@@ -131,7 +123,7 @@ public class AddController implements Initializable {
                     else {
                         editIngredientButton.setText("Edit");
                     }
-                    editIngredientButton.setOnAction(event -> editIngredientAction(event, getIndex()));
+                    editIngredientButton.setOnAction(event -> editIngredientAction(getIndex()));
 
                     final Label label = new Label(ingredient.toString());
                     hBox.setAlignment(Pos.CENTER_LEFT);
@@ -162,7 +154,7 @@ public class AddController implements Initializable {
             else {
                 deleteInstructionButton.setText("Delete");
             }
-            deleteInstructionButton.setOnAction(event -> deleteInstructionAction(event, cell.getIndex()));
+            deleteInstructionButton.setOnAction(event -> deleteInstructionAction(cell.getIndex()));
 
             Button editInstructionButton = new Button();
             if (mm.getSmallEditIcon()!=null){
@@ -171,7 +163,7 @@ public class AddController implements Initializable {
             else {
                 editInstructionButton.setText("Edit");
             }
-            editInstructionButton.setOnAction(event -> editInstructionAction(event, cell.getIndex()));
+            editInstructionButton.setOnAction(event -> editInstructionAction(cell.getIndex()));
 
             vBox.setAlignment(Pos.CENTER_LEFT);
             vBox.getChildren().add(editInstructionButton);
@@ -199,19 +191,18 @@ public class AddController implements Initializable {
                 TableCell<Instruction, Image> cell = new TableCell<>() {
                     @Override
                     protected void updateItem(Image image, boolean b) {
-//                    super.updateItem(image, b);
+                    super.updateItem(image, b);
                         if (image != null) {
                             descriptionImage.setFitHeight(150);
                             descriptionImage.setFitWidth(200);
                             descriptionImage.setImage(image);
-                        } else {
                         }
                     }
                 };
                 cell.setGraphic(descriptionImage);
                 return cell;
             });
-            imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+            imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
             instructionTable.setFixedCellSize(150);
             instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
         } else {
@@ -223,9 +214,7 @@ public class AddController implements Initializable {
 //        instructionTable.setOnMouseClicked(event -> );
 
         // ========================
-        split.heightProperty().addListener(l -> {
-            scroll.setPrefHeight(split.getHeight()-tool.getHeight());
-        });
+        split.heightProperty().addListener(l -> scroll.setPrefHeight(split.getHeight()-tool.getHeight()));
         split.setPrefHeight(height);
         split.setPrefWidth(width);
 
@@ -271,9 +260,20 @@ public class AddController implements Initializable {
         addInstructionButton.setOnAction(this::addInstructionAction);
     }
 
-    private void deleteInstructionAction(ActionEvent event, int index) {
-        mm.getNewRecipe().removeInstruction(index);
-        mm.getNewRecipe().checkInstructionsImage();
+    private void addInstructionAction(ActionEvent event) {
+        AddInstructionController controller = new AddInstructionController(dm, mm);
+        mm.showAndWait(getClass(), "addInstruction-view.fxml", controller, addInstructionButton);
+
+        if (controller.isAdded()) {
+            this.mm = controller.getMm();
+            setTable(false);
+        }
+    }
+
+    private void setTable(boolean check){
+        if (check){
+            mm.getNewRecipe().checkInstructionsImage();
+        }
         instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
         instructionTable.setItems(instructions);
 
@@ -295,14 +295,13 @@ public class AddController implements Initializable {
                             descriptionImage.setFitHeight(150);
                             descriptionImage.setFitWidth(200);
                             descriptionImage.setImage(image);
-                        } else {
                         }
                     }
                 };
                 cell.setGraphic(descriptionImage);
                 return cell;
             });
-            imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+            imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
             instructionTable.setFixedCellSize(150);
             instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
         } else {
@@ -312,48 +311,18 @@ public class AddController implements Initializable {
         }
     }
 
-    private void editInstructionAction(ActionEvent event, int index) {
+    private void editInstructionAction(int index) {
         AddInstructionController controller = new AddInstructionController(dm, mm, mm.getNewRecipe().getInstructions().get(index), recipeKey);
         mm.showAndWait(getClass(), "addInstruction-view.fxml", controller, addIngredientButton);
-        mm.getNewRecipe().checkInstructionsImage();
-        instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
-        instructionTable.setItems(instructions);
-
-        if (mm.getNewRecipe().isInstructionImage()) {
-            imageColumn.setPrefWidth(200);
-            imageColumn.setMaxWidth(200);
-            imageColumn.setMinWidth(200);
-            imageColumn.setCellFactory(param -> {
-                // set ImageView
-                final ImageView descriptionImage = new ImageView();
-
-                // set cell
-                TableCell<Instruction, Image> cell = new TableCell<>() {
-                    @Override
-                    protected void updateItem(Image image, boolean b) {
-//                    super.updateItem(image, b);
-                        if (image != null) {
-                            descriptionImage.setFitHeight(150);
-                            descriptionImage.setFitWidth(200);
-                            descriptionImage.setImage(image);
-                        } else {
-                        }
-                    }
-                };
-                cell.setGraphic(descriptionImage);
-                return cell;
-            });
-            imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
-            instructionTable.setFixedCellSize(150);
-            instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
-        } else {
-            imageColumn.setPrefWidth(0);
-            imageColumn.setMaxWidth(0);
-            imageColumn.setMinWidth(0);
-        }
+        setTable(true);
     }
 
-    private void editIngredientAction(ActionEvent event, int index) {
+    private void deleteInstructionAction(int index) {
+        mm.getNewRecipe().removeInstruction(index);
+        setTable(true);
+    }
+
+    private void editIngredientAction(int index) {
         AddIngredientController controller = new AddIngredientController(dm, mm, mm.getNewRecipe().getIngredients().get(index));
         mm.showAndWait(getClass(), "addIngredient-view.fxml", controller, addIngredientButton);
         ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
@@ -363,13 +332,27 @@ public class AddController implements Initializable {
         kcalLabel.setText(mm.round_double(mm.getNewRecipe().countKcal()) + " kcal");
     }
 
-    private void deleteIngredientAction(ActionEvent event, int index) {
-        mm.getNewRecipe().removeIngredient(index);
+    private void setList(){
         ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
         ingredientsList.setItems(ingredients);
         ingredientsList.setFixedCellSize(30);
         ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
         kcalLabel.setText(mm.round_double(mm.getNewRecipe().getKcal()) + " kcal");
+    }
+
+    private void addIngredientAction(ActionEvent event) {
+        AddIngredientController controller = new AddIngredientController(dm, mm);
+        mm.showAndWait(getClass(), "addIngredient-view.fxml", controller, addIngredientButton);
+
+        if (controller.isAdded()) {
+            this.mm = controller.getMm();
+            setList();
+        }
+    }
+
+    private void deleteIngredientAction(int index) {
+        mm.getNewRecipe().removeIngredient(index);
+        setList();
     }
 
     private void addRecipeAction(ActionEvent event) {
@@ -395,10 +378,6 @@ public class AddController implements Initializable {
                                             controller = new RecipeController(dm, mm, dm.getRecipes().size() - 1, split.getWidth(), split.getHeight());
                                         }
                                         mm.show(getClass(), "recipe-view.fxml", controller, event);
-
-//                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                                    alert.setHeaderText("aaa");
-//                                    alert.showAndWait();
                                     }
                                 }
                             }
@@ -406,65 +385,6 @@ public class AddController implements Initializable {
                     }
                 }
             }
-        }
-    }
-
-    private void addInstructionAction(ActionEvent event) {
-        AddInstructionController controller = new AddInstructionController(dm, mm);
-        mm.showAndWait(getClass(), "addInstruction-view.fxml", controller, addInstructionButton);
-
-        if (controller.isAdded()) {
-            this.mm = controller.getMm();
-            instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
-            instructionTable.setItems(instructions);
-
-            if (mm.getNewRecipe().isInstructionImage()) {
-
-                imageColumn.setPrefWidth(200);
-                imageColumn.setMaxWidth(200);
-                imageColumn.setMinWidth(200);
-                imageColumn.setCellFactory(param -> {
-                    // set ImageView
-                    final ImageView descriptionImage = new ImageView();
-
-                    // set cell
-                    TableCell<Instruction, Image> cell = new TableCell<>() {
-                        @Override
-                        protected void updateItem(Image image, boolean b) {
-//                    super.updateItem(image, b);
-                            if (image != null) {
-                                descriptionImage.setFitHeight(150);
-                                descriptionImage.setFitWidth(200);
-                                descriptionImage.setImage(image);
-                            } else {
-                            }
-                        }
-                    };
-                    cell.setGraphic(descriptionImage);
-                    return cell;
-                });
-                imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
-                instructionTable.setFixedCellSize(150);
-                instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
-            } else {
-                imageColumn.setPrefWidth(0);
-                imageColumn.setMaxWidth(0);
-                imageColumn.setMinWidth(0);
-            }
-        }
-    }
-
-    private void addIngredientAction(ActionEvent event) {
-        AddIngredientController controller = new AddIngredientController(dm, mm);
-        mm.showAndWait(getClass(), "addIngredient-view.fxml", controller, addIngredientButton);
-
-        if (controller.isAdded()) {
-            this.mm = controller.getMm();
-            ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
-            ingredientsList.setItems(ingredients);
-            ingredientsList.setFixedCellSize(30);
-            ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
-            kcalLabel.setText(mm.round_double(mm.getNewRecipe().getKcal()) + " kcal");
         }
     }
 
@@ -477,17 +397,6 @@ public class AddController implements Initializable {
                 type = type.split("/")[0];
                 if (type.equals("image")){
                     this.newRecipeImage = new Image(file.toURI().toString());
-//                    FXMLLoader loader = new FXMLLoader();
-//                    loader.setLocation(getClass().getResource("/pl/niki/recipebookapp/imageCropper-view.fxml"));
-//                    ImageCropperController controller = new ImageCropperController(image);
-//                    loader.setController(controller);
-//                    Parent parent = loader.load();
-//                    Stage stage = new Stage();
-//                    stage.setTitle("Cropper");
-//                    stage.setScene(new Scene(parent));
-//                    stage.initModality(Modality.WINDOW_MODAL);
-//                    stage.initOwner(recipeImage.getScene().getWindow());
-//                    stage.show();
                     recipeImage.setImage(newRecipeImage);
                 }
             }

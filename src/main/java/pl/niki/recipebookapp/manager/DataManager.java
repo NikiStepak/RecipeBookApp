@@ -1,22 +1,18 @@
 package pl.niki.recipebookapp.manager;
 
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class DataManager {
-    private List<Recipe> recipes;
-    private List<Product> products;
-    private String[] course = {"soup", "side dish", "salad", "main dish", "drink", "dessert",
+    private final List<Recipe> recipes;
+    private final List<Product> products;
+    private final String[] course = {"soup", "side dish", "salad", "main dish", "drink", "dessert",
             "bread", "snack", "cake", "breakfast, brunch or supper"};
-    private List<String> cuisines;
+    private final List<String> cuisines;
 
     public String[] getCourse() {
         return course;

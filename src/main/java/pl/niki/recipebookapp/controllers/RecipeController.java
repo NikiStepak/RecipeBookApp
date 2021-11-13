@@ -4,11 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -16,26 +12,20 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Recipe;
-
-import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class RecipeController implements Initializable {
     public ListView<Ingredient> ingredientsList;
-    //public ListView<Instruction> instructionList;
     public TableView<Instruction> instructionTable;
     public TableColumn<Instruction,String> descriptionColumn;
     public TableColumn<Instruction, Image> imageColumn;
@@ -45,16 +35,11 @@ public class RecipeController implements Initializable {
     public SplitPane split;
     public ScrollPane scroll;
     public ToolBar tool;
-    public AnchorPane instructionAnchor, anchor;
-    public BorderPane informationBorder;
 
-    private DataManager dm;
-    private MathManager mm;
-    private Recipe recipe;
-    private ObservableList<Ingredient> ingredients;
-    private ObservableList<Instruction> instructions;
+    private final DataManager dm;
+    private final MathManager mm;
     private final int recipeKey;
-    private double width, height;
+    private final double width, height;
 
     public RecipeController(DataManager dm, MathManager mm, int recipeKey, double width, double height) {
         this.dm = dm;
@@ -66,10 +51,7 @@ public class RecipeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //System.out.println(recipeKey);
-//        dm = new DataManager();
-//        mm = new MathManager();
-        recipe = dm.getRecipes().get(recipeKey);
+        Recipe recipe = dm.getRecipes().get(recipeKey);
 
         // labels ======================================================================================================
         recipeNameLabel.setText(recipe.getName().toUpperCase());
@@ -79,7 +61,7 @@ public class RecipeController implements Initializable {
         timeLabel.setText(recipe.getTime());
 
         // ListView ====================================================================================================
-        ingredients = FXCollections.observableArrayList(recipe.getIngredients());
+        ObservableList<Ingredient> ingredients = FXCollections.observableArrayList(recipe.getIngredients());
         ingredientsList.setItems(ingredients);
         ingredientsList.setCellFactory(i -> new ListCell<>(){
             @Override
@@ -95,10 +77,10 @@ public class RecipeController implements Initializable {
         });
 
         // TableView ===================================================================================================
-        instructions = FXCollections.observableArrayList(recipe.getInstructions());
+        ObservableList<Instruction> instructions = FXCollections.observableArrayList(recipe.getInstructions());
         instructionTable.setItems(instructions);
         instructionTable.setFixedCellSize(150);
-        instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));;
+        instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
 
         descriptionColumn.setCellValueFactory(cell -> cell.getValue().descriptionProperty());
         descriptionColumn.setCellFactory(param -> {
@@ -125,14 +107,13 @@ public class RecipeController implements Initializable {
                             descriptionImage.setFitHeight(150);
                             descriptionImage.setFitWidth(200);
                             descriptionImage.setImage(image);
-                        } else {
                         }
                     }
                 };
                 cell.setGraphic(descriptionImage);
                 return cell;
             });
-            imageColumn.setCellValueFactory(new PropertyValueFactory<Instruction, Image>("image"));
+            imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
         }
         else {
             imageColumn.setPrefWidth(0);
@@ -171,10 +152,7 @@ public class RecipeController implements Initializable {
         recipeImage.setImage(image);
 
         // height of window ===============
-        split.heightProperty().addListener(listener ->{
-            scroll.setPrefHeight(split.getHeight()-tool.getHeight());
-
-        });
+        split.heightProperty().addListener(listener -> scroll.setPrefHeight(split.getHeight()-tool.getHeight()));
         split.setPrefHeight(height);
         split.setPrefWidth(width);
 

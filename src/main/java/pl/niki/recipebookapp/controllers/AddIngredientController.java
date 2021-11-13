@@ -2,12 +2,10 @@ package pl.niki.recipebookapp.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
@@ -23,11 +21,11 @@ public class AddIngredientController implements Initializable {
     public Button okButton, addButton, doneButton, cancelButton;
     public Label amountLabel, in100Label;
 
-    private DataManager dm;
-    private MathManager mm;
+    private final DataManager dm;
+    private final MathManager mm;
     private ObservableList<Product> products;
-    private ObservableList<String> amounts;
-    private boolean added, edit;
+    private boolean added;
+    private final boolean edit;
     private Ingredient editIngredient;
 
     public AddIngredientController(DataManager dm, MathManager mm) {
@@ -50,22 +48,16 @@ public class AddIngredientController implements Initializable {
         // combo box
         products = FXCollections.observableArrayList(mm.getNotAddedProducts(dm.getProducts()));
         ingredientComboBox.setItems(products);
-        ingredientComboBox.setCellFactory(new Callback<ListView<Product>, ListCell<Product>>() {
+        ingredientComboBox.setCellFactory(cell -> new ListCell<>(){
             @Override
-            public ListCell<Product> call(ListView<Product> ingredientListView) {
-                ListCell<Product> cell = new ListCell<>(){
-                    @Override
-                    protected void updateItem(Product product, boolean b) {
-                        super.updateItem(product, b);
-                        if (b || product == null || product.getName() == null){
-                            setText(null);
-                        }
-                        else {
-                            setText(product.getName());
-                        }
-                    }
-                };
-                return cell;
+            protected void updateItem(Product product, boolean b) {
+                super.updateItem(product, b);
+                if (b || product == null || product.getName() == null){
+                    setText(null);
+                }
+                else {
+                    setText(product.getName());
+                }
             }
         });
 
@@ -73,7 +65,7 @@ public class AddIngredientController implements Initializable {
             ingredientComboBox.getSelectionModel().select(editIngredient.getProduct());
         }
 
-        amounts = FXCollections.observableArrayList();
+        ObservableList<String> amounts = FXCollections.observableArrayList();
         amounts.add("g");
         amountComboBox.setItems(amounts);
 

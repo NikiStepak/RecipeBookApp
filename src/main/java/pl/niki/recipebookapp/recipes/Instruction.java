@@ -45,14 +45,6 @@ public class Instruction {
         this.descriptionText = descriptionText;
     }
 
-    public String getDescription() {
-        return description.get();
-    }
-
-    public int getStep() {
-        return step;
-    }
-
     public void setStep(int step) {
         this.step = step;
     }

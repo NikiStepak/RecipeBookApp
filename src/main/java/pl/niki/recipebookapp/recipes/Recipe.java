@@ -67,56 +67,28 @@ public class Recipe {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
-    }
-
     public List<Ingredient> getIngredients() {
         return ingredients;
-    }
-
-    public void setIngredients(List<Ingredient> ingredients) {
-        this.ingredients = ingredients;
     }
 
     public List<Instruction> getInstructions() {
         return instructions;
     }
 
-    public void setInstructions(List<Instruction> instructions) {
-        this.instructions = instructions;
-    }
-
     public int getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
     public double getKcal() {
         return kcal;
-    }
-
-    public void setKcal(double kcal) {
-        this.kcal = kcal;
     }
 
     public boolean isInstructionImage() {
@@ -134,22 +106,12 @@ public class Recipe {
     }
 
     public void  addInstruction(String instruction, Image image){
-//        Image image = null;
-        if(image==null){
-            this.instructionImage = false;
-        }
-        else
-            this.instructionImage = true;
+        this.instructionImage = image != null;
         instructions.add(new Instruction(instruction, (instructions.size()+1), image));
     }
 
     public void  addInstruction(String instruction){
-//        Image image = null;
-//        if(image==null){
-//            this.instructionImage = false;
-//        }
-//        else
-            this.instructionImage = true;
+        this.instructionImage = true;
         instructions.add(new Instruction(instruction, this.instructions.size()+1));
     }
 

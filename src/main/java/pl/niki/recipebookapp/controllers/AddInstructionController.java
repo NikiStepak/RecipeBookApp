@@ -24,9 +24,10 @@ public class AddInstructionController implements Initializable {
     public ImageView instructionImage;
     public Button cancelButton, okButton;
 
-    private DataManager dm;
-    private MathManager mm;
-    private boolean added, edit;
+    private final DataManager dm;
+    private final MathManager mm;
+    private boolean added;
+    private final boolean edit;
     private Instruction editInstruction;
     private Image image;
     private int recipeKey;

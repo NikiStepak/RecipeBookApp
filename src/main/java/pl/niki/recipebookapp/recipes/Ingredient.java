@@ -1,7 +1,7 @@
 package pl.niki.recipebookapp.recipes;
 
 public class Ingredient {
-    private Product product;
+    private final Product product;
     private int amount;
     private double kcal;
 
@@ -21,10 +21,6 @@ public class Ingredient {
         return product;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
     public int getAmount() {
         return amount;
     }
@@ -37,9 +33,6 @@ public class Ingredient {
         return kcal;
     }
 
-    public void setKcal(double kcal) {
-        this.kcal = kcal;
-    }
 
     @Override
     public String toString() {

@@ -11,31 +11,21 @@
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <AnchorPane>
-         <children>
-            <AnchorPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="10.0">
-               <children>
-                  <HBox alignment="CENTER">
-                     <children>
-                        <TextArea fx:id="instructionArea" focusTraversable="false" maxHeight="150.0" prefHeight="150.0" prefWidth="300.0" promptText="INSRTUCTION" wrapText="true" />
-                        <Separator orientation="VERTICAL" prefWidth="25.0" visible="false" />
-                        <ImageView fx:id="instructionImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true">
-                           <image>
-                              <Image url="@../../../../java/pl/niki/recipebookapp/images/add_photo.png" />
-                           </image>
-                        </ImageView>
-                     </children>
-                  </HBox>
-               </children>
-            </AnchorPane>
-         </children>
+   <AnchorPane>
+      <AnchorPane AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0"
+                  AnchorPane.topAnchor="10.0">
+         <HBox alignment="CENTER">
+            <TextArea fx:id="instructionArea" focusTraversable="false" maxHeight="150.0" prefHeight="150.0"
+                      prefWidth="300.0" promptText="INSTRUCTION" wrapText="true"/>
+            <Separator orientation="VERTICAL" prefWidth="25.0" visible="false"/>
+            <ImageView fx:id="instructionImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true">
+               <Image url="@../../../../java/pl/niki/recipebookapp/images/add_photo.png"/>
+            </ImageView>
+         </HBox>
       </AnchorPane>
-      <ToolBar prefHeight="40.0" prefWidth="200.0">
-        <items>
-          <Button fx:id="cancelButton" mnemonicParsing="false" prefWidth="304.0" text="CANCEL" />
-            <Button fx:id="okButton" mnemonicParsing="false" prefWidth="304.0" text="OK" />
-        </items>
-      </ToolBar>
-   </children>
+   </AnchorPane>
+   <ToolBar prefHeight="40.0" prefWidth="200.0">
+      <Button fx:id="cancelButton" mnemonicParsing="false" prefWidth="304.0" text="CANCEL"/>
+      <Button fx:id="okButton" mnemonicParsing="false" prefWidth="304.0" text="OK"/>
+   </ToolBar>
 </VBox>
