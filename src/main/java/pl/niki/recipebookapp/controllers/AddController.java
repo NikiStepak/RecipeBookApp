@@ -32,10 +32,10 @@ public class AddController implements Initializable {
     public TableView<Instruction> instructionTable;
     public TableColumn<Instruction,String> descriptionColumn;
     public TableColumn<Instruction, Image> imageColumn;
-    public TextField recipeNameField, timeField, servingsField, cuisineField;
+    public TextField recipeNameField, minTimeField, servingsField, cuisineField, hTimeField;
     public TextArea descriptionArea;
     public Label kcalLabel;
-    public ComboBox<String> courseComboBox;
+    public ChoiceBox<String> courseChoiceBox;
 
     public SplitPane split;
     public ScrollPane scroll;
@@ -74,8 +74,11 @@ public class AddController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ObservableList<String> course = FXCollections.observableArrayList(dm.getCourse());
-        courseComboBox.setItems(course);
+        ObservableList<String> course = FXCollections.observableArrayList(dm.getCourses());
+        courseChoiceBox.setItems(course);
+        if (edit){
+            courseChoiceBox.getSelectionModel().select(mm.getNewRecipe().getCourse());
+        }
 
         // ImageView ===================================================================================================
         if (edit){
@@ -90,9 +93,13 @@ public class AddController implements Initializable {
         if (edit){
             kcalLabel.setText(mm.round_double(mm.getNewRecipe().getKcal()) + " kcal");
             recipeNameField.setText(mm.getNewRecipe().getName());
-            timeField.setText(mm.getNewRecipe().getTime());
+            int hours = mm.getNewRecipe().getTime()/60;
+            int minutes = mm.getNewRecipe().getTime() - (hours*60);
+            hTimeField.setText(String.valueOf(hours));
+            minTimeField.setText(String.valueOf(minutes));
             servingsField.setText(String.valueOf(mm.getNewRecipe().getAmount()));
             descriptionArea.setText(mm.getNewRecipe().getDescription());
+            cuisineField.setText(mm.getNewRecipe().getCuisine());
         }
 
         // ListView ====================================================================================================
@@ -357,19 +364,20 @@ public class AddController implements Initializable {
 
     private void addRecipeAction(ActionEvent event) {
         if (recipeNameField.getText().length() > 2){
-            if(timeField.getText().length() > 0){
+            if(minTimeField.getText().length() > 0 || hTimeField.getText().length() > 0){
                 if (servingsField.getText().length() > 0){
                     if (descriptionArea.getText().length() > 2){
-                        if (courseComboBox.getSelectionModel().getSelectedIndex()>=0) {
+                        if (courseChoiceBox.getSelectionModel().getSelectedIndex()>=0) {
                             if (mm.getNewRecipe().getIngredients().size() > 0) {
                                 if (mm.getNewRecipe().getInstructions().size() > 0) {
                                     if (this.newRecipeImage != null) {
-                                        if (cuisineField.getText().length()>0){
-                                            mm.setNewRecipe(recipeNameField.getText(), timeField.getText(), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage,cuisineField.getText(),courseComboBox.getSelectionModel().getSelectedItem());
+                                        String cuisine = cuisineField.getText();
+                                        if (cuisine.length() < 1) {
+                                            cuisine = "-";
+                                        } else {
+                                            dm.addCuisine(cuisine);
                                         }
-                                        else {
-                                            mm.setNewRecipe(recipeNameField.getText(), timeField.getText(), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage,"-",courseComboBox.getSelectionModel().getSelectedItem());
-                                        }
+                                        mm.setNewRecipe(recipeNameField.getText(), Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage, cuisine, courseChoiceBox.getSelectionModel().getSelectedItem());
                                         RecipeController controller;
                                         if (edit) {
                                             controller = new RecipeController(dm, mm, recipeKey, split.getWidth(), split.getHeight());

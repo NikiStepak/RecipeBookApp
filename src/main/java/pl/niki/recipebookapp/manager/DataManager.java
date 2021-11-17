@@ -10,12 +10,12 @@ import java.util.List;
 public class DataManager {
     private final List<Recipe> recipes;
     private final List<Product> products;
-    private final String[] course = {"soup", "side dish", "salad", "main dish", "drink", "dessert",
+    private final String[] courses = {"soup", "side dish", "salad", "main dish", "drink", "dessert",
             "bread", "snack", "cake", "breakfast, brunch or supper"};
     private final List<String> cuisines;
 
-    public String[] getCourse() {
-        return course;
+    public String[] getCourses() {
+        return courses;
     }
 
     public DataManager() {
@@ -26,7 +26,7 @@ public class DataManager {
         addRecipes();
     }
 
-    public int checkIfCuisineExist(String cuisine){
+    private int checkIfCuisineExist(String cuisine){
         int exist = -1;
         for (int i=0; i<cuisines.size(); i++){
             if (cuisines.get(i).equals(cuisine)){
@@ -35,6 +35,20 @@ public class DataManager {
             }
         }
         return exist;
+    }
+
+    public void addCuisine(String cuisine){
+        int exist = checkIfCuisineExist(cuisine);
+        if (exist>=0){
+
+        }
+        else {
+            cuisines.add(cuisine);
+        }
+    }
+
+    public List<String> getCuisines() {
+        return cuisines;
     }
 
     public List<Product> getProducts() {
@@ -73,7 +87,7 @@ public class DataManager {
 
     private void addRecipes() {
         Recipe recipe = new Recipe("Cheesy Potato Bake", "This super easy Cheesy Potato Bake is my go-to dish to make for family and friends, or when my husband and I feel like a treat. This makes a big batch that serves roughly 8 people as a side dish. It's also perfect to wrap up in tin foil and take along to a family BBQ.",
-                "1h 40min", 1900);
+                100, 1900);
         int i = 0;
         for (Product p: this.products){
             //if (i%2==0){
@@ -94,7 +108,7 @@ public class DataManager {
 
         for (i=0; i<20; i++) {
             this.recipes.add(new Recipe(i+" Cheesy Potato Bake", "This super easy Cheesy Potato Bake is my go-to dish to make for family and friends, or when my husband and I feel like a treat. This makes a big batch that serves roughly 8 people as a side dish. It's also perfect to wrap up in tin foil and take along to a family BBQ.",
-                    "1h 40min", 1900));
+                    80, 1900));
         }
     }
 
@@ -116,12 +130,19 @@ public class DataManager {
     public List<Recipe> getIngredientFilteredRecipes(ObservableSet<Product> selectedIngredient) {
         if (selectedIngredient.size()>0) {
             List<Recipe> ingredientFilteredRecipes = new ArrayList<>();
+            boolean addedRecipe;
             for (Recipe recipe : recipes) {
+                addedRecipe = false;
                 for (Product product : selectedIngredient) {
                     for (Ingredient ingredient : recipe.getIngredients()) {
                         if (product == ingredient.getProduct()) {
                             ingredientFilteredRecipes.add(recipe);
+                            addedRecipe = true;
+                            break;
                         }
+                    }
+                    if (addedRecipe){
+                        break;
                     }
                 }
             }
@@ -130,6 +151,99 @@ public class DataManager {
         }
         else {
             return recipes;
+        }
+    }
+
+
+    public List<Recipe> getCuisineFilteredRecipes(ObservableSet<String> selectedCuisine) {
+        if (selectedCuisine.size()>0){
+            List<Recipe> cuisineFilteredRecipes = new ArrayList<>();
+
+            for (Recipe recipe: recipes){
+                for (String cuisine: selectedCuisine){
+                    if (recipe.getCuisine().equals(cuisine)){
+                        cuisineFilteredRecipes.add(recipe);
+                    }
+                }
+            }
+
+            return cuisineFilteredRecipes;
+        }
+        else {
+            return recipes;
+        }
+    }
+
+    public List<Recipe> getCourseFilteredRecipes(ObservableSet<String> selectedCourse) {
+        if (selectedCourse.size()>0){
+            List<Recipe> courseFilteredRecipes = new ArrayList<>();
+
+            for (Recipe recipe: recipes){
+                for (String course: selectedCourse){
+                    if (recipe.getCourse().equals(course)){
+                        courseFilteredRecipes.add(recipe);
+                    }
+                }
+            }
+
+            return courseFilteredRecipes;
+        }
+        else {
+            return recipes;
+        }
+    }
+
+    public List<Recipe> getTimeFilteredRecipes(int minValue, int maxValue) {
+        if (minValue == 0 && maxValue == this.maxTime) {
+            return recipes;
+        }
+        else {
+            List<Recipe> timeFilteredRecipes = new ArrayList<>();
+            for (Recipe recipe: recipes){
+                if (recipe.getTime() >= minValue && recipe.getTime() <= maxValue){
+                    timeFilteredRecipes.add(recipe);
+                }
+            }
+            return timeFilteredRecipes;
+        }
+    }
+
+    private int maxTime, maxKcal;
+
+    public void setMax(){
+        this.maxTime = 0;
+        this.maxKcal = 0;
+        for (Recipe recipe: recipes){
+            if (recipe.getTime() > this.maxTime){
+                this.maxTime = recipe.getTime();
+            }
+            if (recipe.getKcal() > this.maxKcal){
+                this.maxKcal = (int) (recipe.getKcal());
+                this.maxKcal += 1;
+            }
+        }
+    }
+
+    public int getMaxKcal() {
+        return maxKcal;
+    }
+
+    public int getMaxTime() {
+        return maxTime;
+    }
+
+    public List<Recipe> getKcalFilteredRecipes(double minValue, double maxValue) {
+        if (minValue == 0 && maxValue == maxKcal){
+            return recipes;
+        }
+        else {
+            List<Recipe> kcalFilteredRecipes = new ArrayList<>();
+            for (Recipe recipe: recipes){
+                if(recipe.getKcal() >= minValue && recipe.getKcal() <= maxValue){
+                    kcalFilteredRecipes.add(recipe);
+                }
+            }
+            return kcalFilteredRecipes;
         }
     }
 }

@@ -182,7 +182,7 @@ public class MathManager {
         return r_d/100;
     }
 
-    public void setNewRecipe(String name, String time, int servings, String description, Image image, String cuisine, String course) {
+    public void setNewRecipe(String name, int time, int servings, String description, Image image, String cuisine, String course) {
         //???????????????????????????????????????
         //check if cuisine exist in list
         //???????????????????????????????????????
@@ -229,5 +229,20 @@ public class MathManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String countTime(int value){
+        String time;
+        int hours = value/60;
+        if (hours > 0){
+            time = hours + "h ";
+            if (hours * 60 < value){
+                time += (value - (hours*60)) +"min";
+            }
+        }
+        else {
+            time = value + "min";
+        }
+        return time;
     }
 }

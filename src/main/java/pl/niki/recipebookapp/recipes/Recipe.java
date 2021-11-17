@@ -7,11 +7,11 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Recipe {
-    private String name, description, time;
+    private String name, description;
     private List<Ingredient> ingredients;
     private List<Instruction> instructions;
     //private  photo;
-    private int amount;
+    private int amount, time;
     private double kcal;
     private Image image;
     private boolean instructionImage;
@@ -22,7 +22,7 @@ public class Recipe {
         this.instructions = new ArrayList<>();
     }
 
-    public Recipe(String name, String description, String time, int amount) {
+    public Recipe(String name, String description, int time, int amount) {
         this.name = name;
         this.description = description;
         this.time = time;
@@ -35,17 +35,21 @@ public class Recipe {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        this.cuisine = "-";
+        this.course = "soup";
     }
 
-    public Recipe(String name, String description, String time, int amount, double kcal) {
+    public Recipe(String name, String description, int time, int amount, double kcal) {
         this.name = name;
         this.description = description;
         this.time = time;
         this.amount = amount;
         this.kcal = kcal;
+        this.cuisine = "-";
+        this.course = "soup";
     }
 
-    public Recipe(String name, String description, String time, List<Ingredient> ingredients, List<Instruction> preparation, int amount, double kcal) {
+    public Recipe(String name, String description, int time, List<Ingredient> ingredients, List<Instruction> preparation, int amount, double kcal) {
         this.name = name;
         this.description = description;
         this.time = time;
@@ -53,6 +57,8 @@ public class Recipe {
         this.instructions = preparation;
         this.amount = amount;
         this.kcal = kcal;
+        this.cuisine = "-";
+        this.course = "soup";
     }
 
     public Image getImage() {
@@ -71,7 +77,7 @@ public class Recipe {
         return description;
     }
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
@@ -89,6 +95,14 @@ public class Recipe {
 
     public double getKcal() {
         return kcal;
+    }
+
+    public String getCuisine() {
+        return cuisine;
+    }
+
+    public String getCourse() {
+        return course;
     }
 
     public boolean isInstructionImage() {
@@ -116,7 +130,7 @@ public class Recipe {
     }
 
 
-    public void set(String name, String time, int servings, String description, Image image, String course, String cuisine) {
+    public void set(String name, int time, int servings, String description, Image image, String course, String cuisine) {
         this.name = name;
         this.time = time;
         this.amount = servings;

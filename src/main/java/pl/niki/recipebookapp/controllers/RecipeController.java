@@ -30,7 +30,7 @@ public class RecipeController implements Initializable {
     public TableColumn<Instruction,String> descriptionColumn;
     public TableColumn<Instruction, Image> imageColumn;
     public ImageView recipeImage;
-    public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel;
+    public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel, courseLabel, cuisineLabel;
     public Button backButton, homeButton, recipesButton, addButton, nextButton, prevButton, deleteButton, editButton;
     public SplitPane split;
     public ScrollPane scroll;
@@ -58,7 +58,9 @@ public class RecipeController implements Initializable {
         servingsLabel.setText(String.valueOf(recipe.getAmount()));
         kcalLabel.setText(mm.round_double(recipe.getKcal()) + " kcal");
         descriptionLabel.setText(recipe.getDescription());
-        timeLabel.setText(recipe.getTime());
+        timeLabel.setText(mm.countTime(recipe.getTime()));
+        courseLabel.setText(recipe.getCourse());
+        cuisineLabel.setText(recipe.getCuisine());
 
         // ListView ====================================================================================================
         ObservableList<Ingredient> ingredients = FXCollections.observableArrayList(recipe.getIngredients());
