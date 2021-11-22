@@ -53,13 +53,13 @@
    <VBox>
       <BorderPane>
          <left>
-            <ToolBar fx:id="tool" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ToolBar fx:id="tool" prefHeight="40.0" BorderPane.alignment="CENTER">
                <Button fx:id="editButton" mnemonicParsing="false" styleClass="main" text="Edit" />
                <Button fx:id="deleteButton" mnemonicParsing="false" styleClass="main" text="Delete" />
             </ToolBar>
          </left>
          <center>
-            <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" BorderPane.alignment="CENTER">
                <Button fx:id="nextButton" mnemonicParsing="false" styleClass="main" text="Next" />
                <Button fx:id="prevButton" contentDisplay="RIGHT" mnemonicParsing="false" styleClass="main" text="Prev" />
                <Separator orientation="VERTICAL" prefWidth="50.0" visible="false" />

@@ -377,7 +377,7 @@ public class AddController implements Initializable {
                                         } else {
                                             dm.addCuisine(cuisine);
                                         }
-                                        mm.setNewRecipe(recipeNameField.getText(), Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage, cuisine, courseChoiceBox.getSelectionModel().getSelectedItem());
+                                        mm.setNewRecipe(recipeNameField.getText(),dm.getRecipesSize(), Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage, cuisine, courseChoiceBox.getSelectionModel().getSelectedItem());
                                         RecipeController controller;
                                         if (edit) {
                                             controller = new RecipeController(dm, mm, recipeKey, split.getWidth(), split.getHeight());

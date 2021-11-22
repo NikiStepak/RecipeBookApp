@@ -11,7 +11,7 @@ public class Recipe {
     private List<Ingredient> ingredients;
     private List<Instruction> instructions;
     //private  photo;
-    private int amount, time;
+    private int amount, time, id;
     private double kcal;
     private Image image;
     private boolean instructionImage;
@@ -22,7 +22,7 @@ public class Recipe {
         this.instructions = new ArrayList<>();
     }
 
-    public Recipe(String name, String description, int time, int amount) {
+    public Recipe(String name, String description, int time, int amount, int id) {
         this.name = name;
         this.description = description;
         this.time = time;
@@ -37,19 +37,21 @@ public class Recipe {
         }
         this.cuisine = "-";
         this.course = "soup";
+        this.id = id;
     }
 
-    public Recipe(String name, String description, int time, int amount, double kcal) {
+    public Recipe(String name, String description, int time, int amount, double kcal, int id) {
         this.name = name;
         this.description = description;
         this.time = time;
         this.amount = amount;
         this.kcal = kcal;
         this.cuisine = "-";
-        this.course = "soup";
+        this.id = id;
+
     }
 
-    public Recipe(String name, String description, int time, List<Ingredient> ingredients, List<Instruction> preparation, int amount, double kcal) {
+    public Recipe(String name, int id, String description, int time, List<Ingredient> ingredients, List<Instruction> preparation, int amount, double kcal) {
         this.name = name;
         this.description = description;
         this.time = time;
@@ -59,6 +61,11 @@ public class Recipe {
         this.kcal = kcal;
         this.cuisine = "-";
         this.course = "soup";
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Image getImage() {
@@ -130,7 +137,7 @@ public class Recipe {
     }
 
 
-    public void set(String name, int time, int servings, String description, Image image, String course, String cuisine) {
+    public void set(String name, int id, int time, int servings, String description, Image image, String course, String cuisine) {
         this.name = name;
         this.time = time;
         this.amount = servings;
@@ -138,6 +145,7 @@ public class Recipe {
         this.image = image;
         this.course = course;
         this.cuisine = cuisine;
+        this.id = id;
     }
 
     public void removeIngredient(int index) {

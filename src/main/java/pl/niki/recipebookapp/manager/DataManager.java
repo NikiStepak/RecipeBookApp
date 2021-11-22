@@ -11,7 +11,7 @@ public class DataManager {
     private final List<Recipe> recipes;
     private final List<Product> products;
     private final String[] courses = {"soup", "side dish", "salad", "main dish", "drink", "dessert",
-            "bread", "snack", "cake", "breakfast, brunch or supper"};
+            "bread", "snack", "cake", "breakfast", "brunch", "supper"};
     private final List<String> cuisines;
 
     public String[] getCourses() {
@@ -87,7 +87,7 @@ public class DataManager {
 
     private void addRecipes() {
         Recipe recipe = new Recipe("Cheesy Potato Bake", "This super easy Cheesy Potato Bake is my go-to dish to make for family and friends, or when my husband and I feel like a treat. This makes a big batch that serves roughly 8 people as a side dish. It's also perfect to wrap up in tin foil and take along to a family BBQ.",
-                100, 1900);
+                100, 1900, recipes.size());
         int i = 0;
         for (Product p: this.products){
             //if (i%2==0){
@@ -108,7 +108,7 @@ public class DataManager {
 
         for (i=0; i<20; i++) {
             this.recipes.add(new Recipe(i+" Cheesy Potato Bake", "This super easy Cheesy Potato Bake is my go-to dish to make for family and friends, or when my husband and I feel like a treat. This makes a big batch that serves roughly 8 people as a side dish. It's also perfect to wrap up in tin foil and take along to a family BBQ.",
-                    80, 1900));
+                    80, 1900, recipes.size()));
         }
     }
 
@@ -128,30 +128,25 @@ public class DataManager {
     }
 
     public List<Recipe> getIngredientFilteredRecipes(ObservableSet<Product> selectedIngredient) {
-        if (selectedIngredient.size()>0) {
-            List<Recipe> ingredientFilteredRecipes = new ArrayList<>();
-            boolean addedRecipe;
-            for (Recipe recipe : recipes) {
-                addedRecipe = false;
-                for (Product product : selectedIngredient) {
-                    for (Ingredient ingredient : recipe.getIngredients()) {
-                        if (product == ingredient.getProduct()) {
-                            ingredientFilteredRecipes.add(recipe);
-                            addedRecipe = true;
-                            break;
-                        }
-                    }
-                    if (addedRecipe){
+        List<Recipe> ingredientFilteredRecipes = new ArrayList<>();
+        boolean addedRecipe;
+        for (Recipe recipe : recipes) {
+            addedRecipe = false;
+            for (Product product : selectedIngredient) {
+                for (Ingredient ingredient : recipe.getIngredients()) {
+                    if (product == ingredient.getProduct()) {
+                        ingredientFilteredRecipes.add(recipe);
+                        addedRecipe = true;
                         break;
                     }
                 }
+                if (addedRecipe) {
+                    break;
+                }
             }
+        }
 
-            return ingredientFilteredRecipes;
-        }
-        else {
-            return recipes;
-        }
+        return ingredientFilteredRecipes;
     }
 
 
@@ -245,5 +240,9 @@ public class DataManager {
             }
             return kcalFilteredRecipes;
         }
+    }
+
+    public int getRecipesSize(){
+        return recipes.size();
     }
 }

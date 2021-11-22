@@ -1,5 +1,6 @@
 package pl.niki.recipebookapp.manager;
 
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -182,11 +183,11 @@ public class MathManager {
         return r_d/100;
     }
 
-    public void setNewRecipe(String name, int time, int servings, String description, Image image, String cuisine, String course) {
+    public void setNewRecipe(String name, int id, int time, int servings, String description, Image image, String cuisine, String course) {
         //???????????????????????????????????????
         //check if cuisine exist in list
         //???????????????????????????????????????
-        this.newRecipe.set(name,time,servings,description,image,course,cuisine);
+        this.newRecipe.set(name,id,time,servings,description,image,course,cuisine);
     }
 
     private FXMLLoader setController(Class getC, String fxmlName, Object controller){
@@ -244,5 +245,20 @@ public class MathManager {
             time = value + "min";
         }
         return time;
+    }
+
+    public List<Product> getSearchedIngredients(ObservableList<Product> ingredients, String text) {
+        if (text.length() > 0) {
+            List<Product> searchedIngredients = new ArrayList<>();
+            for (Product product : ingredients) {
+                if (product.getName().toLowerCase().contains(text.toLowerCase().trim())) {
+                    searchedIngredients.add(product);
+                }
+            }
+            return searchedIngredients;
+        }
+        else {
+            return ingredients;
+        }
     }
 }
