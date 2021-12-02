@@ -56,6 +56,7 @@
             <ToolBar fx:id="tool" prefHeight="40.0" BorderPane.alignment="CENTER">
                <Button fx:id="editButton" mnemonicParsing="false" styleClass="main" text="Edit" />
                <Button fx:id="deleteButton" mnemonicParsing="false" styleClass="main" text="Delete" />
+               <Button fx:id="printButton" mnemonicParsing="false" text="Print" />
             </ToolBar>
          </left>
          <center>
@@ -74,13 +75,13 @@
       </BorderPane>
       <ScrollPane fx:id="scroll" fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="1024.0" styleClass="color">
          <AnchorPane fx:id="anchor">
-            <BorderPane layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <BorderPane fx:id="border" layoutY="1.0" prefWidth="927.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <top>
                   <BorderPane fx:id="informationBorder" styleClass="color" BorderPane.alignment="CENTER">
                      <center>
                         <BorderPane>
                            <center>
-                              <AnchorPane prefWidth="200.0">
+                              <AnchorPane minWidth="404.0">
                                  <Label layoutX="272.0" layoutY="65.0" styleClass="main" text="Total Time:" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="12.5">
                                     <font>
                                        <Font name="Comic Sans MS Bold" size="14.0" />
@@ -153,7 +154,7 @@
                      </center>
                      <left>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <ImageView fx:id="recipeImage" fitHeight="230.0" fitWidth="230.0" pickOnBounds="true" AnchorPane.bottomAnchor="12.5" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="25.0">
+                           <ImageView fx:id="recipeImage" fitHeight="230.0" fitWidth="230.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="12.5" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="25.0">
                               <Image url="@../../../../java/pl/niki/recipebookapp/images/pancake.jpg" />
                            </ImageView>
                         </AnchorPane>

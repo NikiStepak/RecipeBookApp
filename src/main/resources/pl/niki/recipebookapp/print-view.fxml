@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fx:id="pageImage" fitHeight="150.0" fitWidth="200.0" layoutX="170.0" layoutY="115.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="printButton" layoutX="42.0" layoutY="327.0" mnemonicParsing="false" text="Print" />
+      <Label layoutX="20.0" layoutY="21.0" text="Printer:" />
+      <ChoiceBox fx:id="printerChoiceBox" layoutX="29.0" layoutY="48.0" prefWidth="150.0" />
+      <Label layoutX="15.0" layoutY="91.0" text="Copies:" />
+      <Spinner fx:id="copiesSpinner" editable="true" layoutX="20.0" layoutY="115.0" />
+      <Label layoutX="15.0" layoutY="154.0" text="Orientation:" />
+      <RadioButton fx:id="landscapeRadioButton" layoutX="19.0" layoutY="182.0" mnemonicParsing="false" text="Landscape" />
+      <RadioButton fx:id="portraitRadioButton" layoutX="19.0" layoutY="209.0" mnemonicParsing="false" selected="true" text="Portrait" />
+      <Label layoutX="25.0" layoutY="235.0" text="Color:" />
+      <Label layoutX="170.0" layoutY="331.0" text="Print Quality:" />
+      <RadioButton fx:id="normalRadioButton" layoutX="300.0" layoutY="331.0" mnemonicParsing="false" selected="true" text="Normal" />
+      <RadioButton fx:id="highRadioButton" layoutX="300.0" layoutY="359.0" mnemonicParsing="false" text="High" />
+      <RadioButton fx:id="lowRadioButton" layoutX="294.0" layoutY="310.0" mnemonicParsing="false" text="Low" />
+      <RadioButton fx:id="colorRadioButton" layoutX="19.0" layoutY="265.0" mnemonicParsing="false" selected="true" text="Color" />
+      <RadioButton fx:id="monoRadioButton" layoutX="19.0" layoutY="293.0" mnemonicParsing="false" text="Monochrome" />
+      <VBox fx:id="vBox" layoutX="476.0" layoutY="38.0" prefHeight="200.0" prefWidth="100.0" />
+   </children>
+</AnchorPane>

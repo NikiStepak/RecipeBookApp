@@ -5,6 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -12,15 +14,21 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Recipe;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -31,15 +39,20 @@ public class RecipeController implements Initializable {
     public TableColumn<Instruction, Image> imageColumn;
     public ImageView recipeImage;
     public Label recipeNameLabel, servingsLabel, kcalLabel, descriptionLabel, timeLabel, courseLabel, cuisineLabel;
-    public Button backButton, homeButton, recipesButton, addButton, nextButton, prevButton, deleteButton, editButton;
+    public Button printButton, backButton, homeButton, recipesButton, addButton, nextButton, prevButton, deleteButton, editButton;
     public SplitPane split;
     public ScrollPane scroll;
     public ToolBar tool;
+    public AnchorPane anchor;
+    public BorderPane border;
 
     private final DataManager dm;
     private final MathManager mm;
     private final int recipeKey;
     private final double width, height;
+    private boolean close;
+    private URL location;
+    private ResourceBundle resource;
 
     public RecipeController(DataManager dm, MathManager mm, int recipeKey, double width, double height) {
         this.dm = dm;
@@ -49,8 +62,21 @@ public class RecipeController implements Initializable {
         this.height = height;
     }
 
+    public RecipeController(DataManager dm, MathManager mm, int recipeKey, double width, double height, ResourceBundle resourcePath, URL location, SplitPane splitPane) {
+        this.dm = dm;
+        this.mm = mm;
+        this.recipeKey = recipeKey;
+        this.width = width;
+        this.height = height;
+        this.split = splitPane;
+        this.split.getItems().addAll(splitPane.getItems());
+        initialize(location, resourcePath);
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        location = url;
+        resource = resourceBundle;
         Recipe recipe = dm.getRecipes().get(recipeKey);
 
         // labels ======================================================================================================
@@ -226,6 +252,45 @@ public class RecipeController implements Initializable {
             editButton.setText("Edit");
         }
         editButton.setOnAction(this::editAction);
+
+        // print button
+        printButton.setOnAction(this::printAction);
+    }
+
+    private BorderPane getBorder(){
+        return border;
+    }
+
+    private void printAction(ActionEvent event) {
+        // Select printer
+//        final PrinterJob job = Objects.requireNonNull(PrinterJob.createPrinterJob(), "Cannot create printer job");
+//        final Scene scene = Objects.requireNonNull(anchor.getScene(), "Missing Scene");
+
+        double borderHeight = border.getHeight();
+        double defaultPrintHeight = 1305;
+        double printHeight = 1220;
+        border = new BorderPane(border);
+
+        List<WritableImage> screenshot = new ArrayList<>();
+
+        if (borderHeight > defaultPrintHeight){
+            SnapshotParameters snapshotParameters = new SnapshotParameters();
+            for (int i=0; i < borderHeight/printHeight; i++){
+                snapshotParameters.setViewport(new Rectangle2D(0,i*printHeight,927,(i+1)*printHeight));
+                screenshot.add(border.snapshot(snapshotParameters, null));
+            }
+            System.out.println(screenshot.size());
+
+        }
+        else {
+            screenshot.add(border.snapshot(null, null));
+        }
+
+        RecipeController refreshController = new RecipeController(dm,mm, recipeKey, split.getWidth(),split.getHeight());
+        mm.show(getClass(), "recipe-view.fxml", refreshController, event);
+
+        PrintController controller = new PrintController(screenshot);
+        mm.showAndWait(getClass(), "print-view.fxml",controller, printButton);
     }
 
     private void editAction(ActionEvent event) {
