@@ -15,7 +15,7 @@ public class Recipe {
     private double kcal;
     private Image image;
     private boolean instructionImage;
-    private String cuisine, course;
+    private String cuisine, course, url;
 
     public Recipe() {
         this.ingredients = new ArrayList<>();
@@ -38,6 +38,7 @@ public class Recipe {
         this.cuisine = "-";
         this.course = "soup";
         this.id = id;
+        this.url = null;
     }
 
     public Recipe(String name, String description, int time, int amount, double kcal, int id) {
@@ -48,6 +49,7 @@ public class Recipe {
         this.kcal = kcal;
         this.cuisine = "-";
         this.id = id;
+        this.url = null;
 
     }
 
@@ -62,10 +64,15 @@ public class Recipe {
         this.cuisine = "-";
         this.course = "soup";
         this.id = id;
+        this.url = null;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public Image getImage() {
@@ -137,7 +144,7 @@ public class Recipe {
     }
 
 
-    public void set(String name, int id, int time, int servings, String description, Image image, String course, String cuisine) {
+    public void set(String name, int id, int time, int servings, String description, Image image, String course, String cuisine, String url) {
         this.name = name;
         this.time = time;
         this.amount = servings;
@@ -146,6 +153,7 @@ public class Recipe {
         this.course = course;
         this.cuisine = cuisine;
         this.id = id;
+        this.url = url;
     }
 
     public void removeIngredient(int index) {

@@ -54,6 +54,7 @@
     <VBox>
         <ToolBar fx:id="tool" nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="200.0">
             <Button fx:id="addRecipeButton" mnemonicParsing="false" styleClass="main" text="Add Recipe" />
+         <TextField fx:id="websiteField" alignment="CENTER" prefHeight="25.0" prefWidth="218.0" promptText="Original website of the recipe URL" />
         </ToolBar>
         <ScrollPane fx:id="scroll" fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="1024.0" styleClass="color">
             <AnchorPane>

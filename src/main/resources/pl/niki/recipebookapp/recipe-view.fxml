@@ -64,7 +64,7 @@
                <Button fx:id="nextButton" mnemonicParsing="false" styleClass="main" text="Next" />
                <Button fx:id="prevButton" contentDisplay="RIGHT" mnemonicParsing="false" styleClass="main" text="Prev" />
                <Separator orientation="VERTICAL" prefWidth="50.0" visible="false" />
-               <Hyperlink text="Original Recipe">
+               <Hyperlink fx:id="webSiteHyperLink" text="Original Recipe">
                   <styleClass>
                      <String fx:value="blackText" />
                      <String fx:value="main" />

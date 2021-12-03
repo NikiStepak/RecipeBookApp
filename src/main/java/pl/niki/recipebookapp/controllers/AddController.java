@@ -32,7 +32,7 @@ public class AddController implements Initializable {
     public TableView<Instruction> instructionTable;
     public TableColumn<Instruction,String> descriptionColumn;
     public TableColumn<Instruction, Image> imageColumn;
-    public TextField recipeNameField, minTimeField, servingsField, cuisineField, hTimeField;
+    public TextField recipeNameField, minTimeField, servingsField, cuisineField, hTimeField, websiteField;
     public TextArea descriptionArea;
     public Label kcalLabel;
     public ChoiceBox<String> courseChoiceBox;
@@ -49,7 +49,6 @@ public class AddController implements Initializable {
     private final boolean edit;
     private int recipeKey;
     private final double width, height;
-
 
     public AddController(DataManager dm, MathManager mm, double width, double height) {
         this.dm = dm;
@@ -100,6 +99,7 @@ public class AddController implements Initializable {
             servingsField.setText(String.valueOf(mm.getNewRecipe().getAmount()));
             descriptionArea.setText(mm.getNewRecipe().getDescription());
             cuisineField.setText(mm.getNewRecipe().getCuisine());
+            websiteField.setText(mm.getNewRecipe().getUrl());
         }
 
         // ListView ====================================================================================================
@@ -377,7 +377,11 @@ public class AddController implements Initializable {
                                         } else {
                                             dm.addCuisine(cuisine);
                                         }
-                                        mm.setNewRecipe(recipeNameField.getText(),dm.getRecipesSize(), Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage, cuisine, courseChoiceBox.getSelectionModel().getSelectedItem());
+                                        String url = null;
+                                        if (websiteField.getText().length() > 0){
+                                            url = websiteField.getText();
+                                        }
+                                        mm.setNewRecipe(recipeNameField.getText(),dm.getRecipesSize(), Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), this.newRecipeImage, cuisine, courseChoiceBox.getSelectionModel().getSelectedItem(), url);
                                         RecipeController controller;
                                         if (edit) {
                                             controller = new RecipeController(dm, mm, recipeKey, split.getWidth(), split.getHeight());

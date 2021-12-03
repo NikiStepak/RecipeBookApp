@@ -1,5 +1,6 @@
 package pl.niki.recipebookapp.manager;
 
+import javafx.application.HostServices;
 import javafx.collections.ObservableSet;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Product;
@@ -13,9 +14,19 @@ public class DataManager {
     private final String[] courses = {"soup", "side dish", "salad", "main dish", "drink", "dessert",
             "bread", "snack", "cake", "breakfast", "brunch", "supper"};
     private final List<String> cuisines;
+    private HostServices hostServices;
 
     public String[] getCourses() {
         return courses;
+    }
+
+    public DataManager(HostServices hostServices) {
+        this.recipes = new ArrayList<>();
+        this.products = new ArrayList<>();
+        this.cuisines = new ArrayList<>();
+        addProducts();
+        addRecipes();
+        this.hostServices = hostServices;
     }
 
     public DataManager() {
@@ -24,6 +35,10 @@ public class DataManager {
         this.cuisines = new ArrayList<>();
         addProducts();
         addRecipes();
+    }
+
+    public HostServices getHostServices() {
+        return hostServices;
     }
 
     private int checkIfCuisineExist(String cuisine){

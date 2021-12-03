@@ -183,11 +183,11 @@ public class MathManager {
         return r_d/100;
     }
 
-    public void setNewRecipe(String name, int id, int time, int servings, String description, Image image, String cuisine, String course) {
+    public void setNewRecipe(String name, int id, int time, int servings, String description, Image image, String cuisine, String course, String url) {
         //???????????????????????????????????????
         //check if cuisine exist in list
         //???????????????????????????????????????
-        this.newRecipe.set(name,id,time,servings,description,image,course,cuisine);
+        this.newRecipe.set(name,id,time,servings,description,image,course,cuisine, url);
     }
 
     private FXMLLoader setController(Class getC, String fxmlName, Object controller){

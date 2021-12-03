@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -16,16 +15,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Recipe;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +43,7 @@ public class RecipeController implements Initializable {
     public ToolBar tool;
     public AnchorPane anchor;
     public BorderPane border;
+    public Hyperlink webSiteHyperLink;
 
     private final DataManager dm;
     private final MathManager mm;
@@ -78,6 +77,16 @@ public class RecipeController implements Initializable {
         location = url;
         resource = resourceBundle;
         Recipe recipe = dm.getRecipes().get(recipeKey);
+
+        // HyperLink ===================================================================================================
+        if (recipe.getUrl()!=null){
+            webSiteHyperLink.setOnAction(event -> {
+                dm.getHostServices().showDocument(recipe.getUrl());
+            });
+        }
+        else {
+            webSiteHyperLink.setVisible(false);
+        }
 
         // labels ======================================================================================================
         recipeNameLabel.setText(recipe.getName().toUpperCase());
