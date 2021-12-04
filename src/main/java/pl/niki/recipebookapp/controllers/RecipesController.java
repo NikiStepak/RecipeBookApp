@@ -24,7 +24,7 @@ import java.util.*;
 public class RecipesController implements Initializable {
     public Button backButton, homeButton, recipesButton, addButton, timeFilterButton, kcalFilterButton;
     public ToggleButton filterToggleButton;
-    public TextField searchField, ingredientSearchField;
+    public TextField searchField, ingredientSearchField, cuisineSearchField;
     public ChoiceBox<String> sortChoiceBox;
     public ListView<Product> ingredientsList;
     public ListView<String> courseList, cuisineList;
@@ -32,10 +32,11 @@ public class RecipesController implements Initializable {
     public Label minTimeLabel, maxTimeLabel, maxKcalLabel, minKcalLabel;
     public ScrollPane scroll;
     public AnchorPane anchor, filterAnchor;
-    public HBox hBox;
+    public HBox listHBox;
     public VBox filterVBox;
     public SplitPane split;
     public ToolBar tool;
+    public BorderPane border;
 
     private final DataManager dm;
     private final MathManager mm;
@@ -68,9 +69,14 @@ public class RecipesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dm.setMax();
-        minKcalLabel.setText("from " + minKcalSlider.getValue() + " kcal");
-        maxKcalSlider.setMax(dm.getMaxKcal());
-        maxKcalLabel.setText("to " + maxKcalSlider.getValue() + " kcal");
+        minKcalLabel.setText("from " + (int) minKcalSlider.getValue() + " kcal");
+        int maxKcal = dm.getMaxKcal();
+        maxKcalSlider.setMax(maxKcal);
+        maxKcalSlider.setValue(maxKcal);
+        minKcalSlider.setMax(maxKcal);
+        minKcalSlider.setMajorTickUnit(maxKcal/5);
+        maxKcalSlider.setMajorTickUnit(maxKcal/5);
+        maxKcalLabel.setText("to " + (int) maxKcalSlider.getValue() + " kcal");
 
         minKcalSlider.valueProperty().addListener(((observableValue, oldNumber, newNumber) -> {
             if ((int) (newNumber.doubleValue()) > (int) (maxKcalSlider.getValue())){
@@ -80,18 +86,23 @@ public class RecipesController implements Initializable {
             minKcalLabel.setText("from " + (int) (newNumber.doubleValue()) + " kcal");
         }));
 
-        maxKcalSlider.valueProperty().addListener(((observableValue, oldNumber, newNumber) -> {
-            if ((int) (newNumber.doubleValue()) > (int) (minKcalSlider.getValue())){
+        maxKcalSlider.valueProperty().addListener((observableValue, oldNumber, newNumber) -> {
+            if ((int)(newNumber.doubleValue()) < (int) (minKcalSlider.getValue())){
                 maxKcalSlider.setValue(minKcalSlider.getValue());
                 newNumber = minKcalSlider.getValue();
             }
-            maxKcalLabel.setText("from " + (int) (newNumber.doubleValue()) + " kcal");
-        }));
+            maxKcalLabel.setText("to " + (int) (newNumber.doubleValue()) + " kcal");
+        });
 
         kcalFilterButton.setOnAction(this::kcalFilterButton);
 
         minTimeLabel.setText("from " + mm.countTime((int) minTimeSlider.getValue()));
-        maxTimeSlider.setMax(dm.getMaxTime());
+        int maxTime = dm.getMaxTime();
+        maxTimeSlider.setMax(maxTime);
+        maxTimeSlider.setValue(maxTime);
+        minTimeSlider.setMax(maxTime);
+        minTimeSlider.setMajorTickUnit(maxTime/5);
+        maxTimeSlider.setMajorTickUnit(maxTime/5);
         maxTimeLabel.setText("to " + mm.countTime((int) maxTimeSlider.getValue()));
 
         minTimeSlider.valueProperty().addListener((observableValue, oldNumber, newNumber) -> {
@@ -173,6 +184,7 @@ public class RecipesController implements Initializable {
         }));
 
         ingredientSearchField.setOnKeyTyped(this::searchIngredientAction);
+        cuisineSearchField.setOnKeyTyped(this::searchCuisineAction);
 
         searchField.setOnKeyTyped(this::searchAction);
         sortChoiceBox.setItems(choice);
@@ -218,6 +230,12 @@ public class RecipesController implements Initializable {
 
         split.setPrefWidth(width);
         split.setPrefHeight(height);
+    }
+
+    private void searchCuisineAction(KeyEvent keyEvent) {
+        ObservableList<String> searchedCuisine = FXCollections.observableArrayList(mm.getSearchedCuisine(cuisines, cuisineSearchField.getText()));
+        searchedCuisine.sort(Comparator.naturalOrder());
+        cuisineList.setItems(searchedCuisine);
     }
 
     private boolean timeSet = false, kcalSet = false;
@@ -316,21 +334,20 @@ public class RecipesController implements Initializable {
     }
 
     private void filterAction(ActionEvent event) {
-        filterAnchor.setVisible(filterToggleButton.isSelected());
-        this.isFilter = !this.isFilter;
         setPane(null, false, dm.getRecipes());
     }
 
     private void setPane(Comparator<Recipe> comparator, boolean sort, List<Recipe> shownRecipes){
-        hBox.getChildren().clear();
-        if (filterAnchor.isVisible()) {
-            filterAnchor.setMinHeight(this.split.getHeight() - tool.getHeight()-5);
-            hBox.setAlignment(Pos.TOP_LEFT);
-            listAmount = (int) ((scroll.getWidth() - 188) / 188);
+        listHBox.getChildren().clear();
+        if (filterToggleButton.isSelected()) {
+            border.setLeft(filterAnchor);
         }
         else {
-            listAmount = (int) (scroll.getWidth() / 188);
+            border.setLeft(null);
         }
+
+        listAmount = (int) ((scroll.getWidth() + 12) / 188);
+
         ListView<Recipe>[] recipeList = new ListView[listAmount];
         ObservableList<Recipe>[] recipes = new ObservableList[listAmount];
 
@@ -353,12 +370,11 @@ public class RecipesController implements Initializable {
             setList(recipeList[i], i);
 
             anchor.setPrefWidth(scroll.getWidth() - 15);
-            hBox.setPrefWidth(scroll.getWidth() - 15);
-            hBox.getChildren().add(recipeList[i]);
+            listHBox.setPrefWidth(scroll.getWidth() - 15);
+            listHBox.getChildren().add(recipeList[i]);
         }
-        if (filterAnchor.isVisible()) {
-            hBox.getChildren().add(filterAnchor);
-        }
+        System.out.println(filterAnchor.getWidth());
+
     }
 
     private void sortAction(Event event) {

@@ -261,4 +261,19 @@ public class MathManager {
             return ingredients;
         }
     }
+
+    public List<String> getSearchedCuisine(ObservableList<String> cuisines, String text) {
+        if (text.length() > 0) {
+            List<String> searchedCuisine = new ArrayList<>();
+            for (String cuisine : cuisines) {
+                if (cuisine.toLowerCase().contains(text.toLowerCase().trim())) {
+                    searchedCuisine.add(cuisine);
+                }
+            }
+            return searchedCuisine;
+        } else {
+            return cuisines;
+        }
+    }
+
 }
