@@ -127,9 +127,9 @@ public class DataManager {
         }
     }
 
-    public List<Recipe> getSearchedRecipes(String searchText){
+    public List<Recipe> getSearchedRecipes(List<Recipe> commonRecipes, String searchText){
         List<Recipe> searchRecipes = new ArrayList<>();
-        for (Recipe recipe: recipes){
+        for (Recipe recipe: commonRecipes){
             if (recipe.getName().toLowerCase().contains(searchText.toLowerCase().trim())){
                 searchRecipes.add(recipe);
             }

@@ -49,6 +49,7 @@ public class RecipesController implements Initializable {
     private ObservableSet<String> selectedCuisine = FXCollections.observableSet();
     private ObservableSet<Product> selectedIngredient = FXCollections.observableSet();
     private boolean isFilter;
+    private int maxTime, maxKcal;
 
     public RecipesController() {
         dm = new DataManager();
@@ -70,7 +71,7 @@ public class RecipesController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dm.setMax();
         minKcalLabel.setText("from " + (int) minKcalSlider.getValue() + " kcal");
-        int maxKcal = dm.getMaxKcal();
+        maxKcal = dm.getMaxKcal();
         maxKcalSlider.setMax(maxKcal);
         maxKcalSlider.setValue(maxKcal);
         minKcalSlider.setMax(maxKcal);
@@ -97,7 +98,7 @@ public class RecipesController implements Initializable {
         kcalFilterButton.setOnAction(this::kcalFilterButton);
 
         minTimeLabel.setText("from " + mm.countTime((int) minTimeSlider.getValue()));
-        int maxTime = dm.getMaxTime();
+        maxTime = dm.getMaxTime();
         maxTimeSlider.setMax(maxTime);
         maxTimeSlider.setValue(maxTime);
         minTimeSlider.setMax(maxTime);
@@ -223,7 +224,7 @@ public class RecipesController implements Initializable {
 
 
         // ScrollPane ====================================================================================================
-        scroll.widthProperty().addListener(observable -> setPane(null,false,dm.getRecipes()));
+        scroll.widthProperty().addListener(observable -> getCommonRecipes());
         scroll.setMinWidth(200);
 
         split.heightProperty().addListener(l -> scroll.setPrefHeight(split.getHeight()-tool.getHeight()));
@@ -284,11 +285,11 @@ public class RecipesController implements Initializable {
             ingredientLabel.setText("Ingredients: " + selectedIngredient);
             vBox.getChildren().add(ingredientLabel);
         }
-        if (timeSet) {
+        if ((int) minTimeSlider.getValue() > 0 || (int) maxTimeSlider.getValue() < maxTime) {
             timeLabel.setText("Time: " + minTimeLabel.getText() + " " + maxTimeLabel.getText());
             vBox.getChildren().add(timeLabel);
         }
-        if (kcalSet) {
+        if ((int) minKcalSlider.getValue() > 0 || (int) maxKcalSlider.getValue() < maxKcal) {
             kcalLabel.setText("Kcal: " + minKcalLabel.getText() + " " + maxKcalLabel.getText());
             vBox.getChildren().add(kcalLabel);
         }
@@ -305,6 +306,7 @@ public class RecipesController implements Initializable {
 
     private void cuisineFilterAction() {
         getCommonRecipes();
+
     }
 
     private void ingredientsFilterAction() {
@@ -323,31 +325,46 @@ public class RecipesController implements Initializable {
         if (selectedIngredient.size() > 0) {
             commonRecipes.retainAll(dm.getIngredientFilteredRecipes(selectedIngredient));
         }
-        if (timeSet) {
+        if ((int) minTimeSlider.getValue() > 0 || (int) maxTimeSlider.getValue() < maxTime) {
             commonRecipes.retainAll(dm.getTimeFilteredRecipes((int) (minTimeSlider.getValue()), (int) maxTimeSlider.getValue()));
         }
-        if (kcalSet) {
+        if ((int) minKcalSlider.getValue() > 0 || (int) maxKcalSlider.getValue() < maxKcal) {
             commonRecipes.retainAll(dm.getKcalFilteredRecipes(minKcalSlider.getValue(), maxKcalSlider.getValue()));
         }
+
+        commonRecipes = dm.getSearchedRecipes(commonRecipes, searchField.getText());
+
         filterTextAction();
-        setPane(null, false, commonRecipes);
+
+        if (sortChoiceBox.getSelectionModel().getSelectedIndex() == 1) {
+            setPane(Comparator.comparing(Recipe::getName), true, commonRecipes);
+
+        }
+        else if (sortChoiceBox.getSelectionModel().getSelectedIndex() == 2){
+            setPane(Comparator.comparing(Recipe::getName).reversed(), true, commonRecipes);
+        }
+        else {
+            setPane(null, false, commonRecipes);
+        }
     }
 
     private void filterAction(ActionEvent event) {
-        setPane(null, false, dm.getRecipes());
+        getCommonRecipes();
     }
 
-    private void setPane(Comparator<Recipe> comparator, boolean sort, List<Recipe> shownRecipes){
-        filterAnchor.setMinHeight(filterVBox.getHeight()+50);
+    private void setPane(Comparator<Recipe> comparator, boolean sort, List<Recipe> shownRecipes) {
+        filterAnchor.setMinHeight(filterVBox.getHeight() + 50);
         listHBox.getChildren().clear();
         if (filterToggleButton.isSelected()) {
             border.setLeft(filterScroll);
-        }
-        else {
+        } else {
             border.setLeft(null);
         }
 
         listAmount = (int) ((scroll.getWidth() + 12) / 188);
+        if (listAmount<1){
+            listAmount = 1;
+        }
 
         ListView<Recipe>[] recipeList = new ListView[listAmount];
         ObservableList<Recipe>[] recipes = new ObservableList[listAmount];
@@ -357,14 +374,11 @@ public class RecipesController implements Initializable {
             recipeList[i] = new ListView<>();
         }
 
-        if (sort) {
-            List<Recipe> rrr = dm.getRecipes();
-            rrr.sort(comparator);
-            setRecipes(rrr, recipes);
+        if (comparator != null) {
+            shownRecipes.sort(comparator);
         }
-        else {
-            setRecipes(shownRecipes, recipes);
-        }
+        setRecipes(shownRecipes, recipes);
+
 
         for (int i = 0; i < listAmount; i++) {
             recipeList[i].setItems(recipes[i]);
@@ -379,12 +393,7 @@ public class RecipesController implements Initializable {
     }
 
     private void sortAction(Event event) {
-        if (sortChoiceBox.getSelectionModel().getSelectedIndex() == 1) {
-            setPane(Comparator.comparing(Recipe::getName), true, null);
-        }
-        else if (sortChoiceBox.getSelectionModel().getSelectedIndex() == 2){
-            setPane(Comparator.comparing(Recipe::getName).reversed(), true, null);
-        }
+        getCommonRecipes();
     }
 
     private void searchIngredientAction(KeyEvent keyEvent) {
@@ -394,7 +403,7 @@ public class RecipesController implements Initializable {
     }
 
     private void searchAction(KeyEvent keyEvent) {
-        setPane(null,false, dm.getSearchedRecipes(searchField.getText()));
+        getCommonRecipes();
     }
 
     private void setList(ListView<Recipe> recipeList, int i) {
