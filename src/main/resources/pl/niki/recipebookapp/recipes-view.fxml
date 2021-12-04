@@ -84,64 +84,68 @@
                     </ScrollPane>
                </center>
                <left>
-                      <AnchorPane fx:id="filterAnchor" maxWidth="202.0" minWidth="200.0" styleClass="greyBackground">
-                          <effect>
-                              <DropShadow />
-                          </effect>
-                     <VBox fx:id="filterVBox" spacing="5.0">
-                        <children>
-                           <AnchorPane>
+                  <ScrollPane fx:id="filterScroll" maxWidth="202.0" BorderPane.alignment="CENTER">
+                     <content>
+                            <AnchorPane fx:id="filterAnchor" maxWidth="202.0" minWidth="200.0" styleClass="greyBackground">
+                                <effect>
+                                    <DropShadow />
+                                </effect>
+                           <VBox fx:id="filterVBox" layoutY="40.0" spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                               <children>
-                                      <Label styleClass="main" text="FILTERS:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                    <padding>
-                                       <Insets bottom="10.0" top="10.0" />
-                                    </padding>
-                                 </Label>
-                                 <Button fx:id="cleanButton" layoutX="143.0" layoutY="6.0" mnemonicParsing="false" text="Clean" visible="false" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                 <AnchorPane>
+                                    <children>
+                                            <Label styleClass="main" text="FILTERS:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                          <padding>
+                                             <Insets bottom="10.0" top="10.0" />
+                                          </padding>
+                                       </Label>
+                                       <Button fx:id="cleanButton" layoutX="143.0" layoutY="6.0" mnemonicParsing="false" text="Clean" visible="false" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                    </children>
+                                 </AnchorPane>
+                                      <Accordion>
+                                          <panes>
+                                              <TitledPane animated="false" text="COURSE">
+                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                                                      <ListView fx:id="courseList" layoutX="-32.0" layoutY="-20.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                  </AnchorPane>
+                                              </TitledPane>
+                                              <TitledPane animated="false" text="CUISINE">
+                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                                                      <ListView fx:id="cuisineList" layoutY="-10.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                                             <TextField fx:id="cuisineSearchField" promptText="Search cuisine ..." styleClass="search" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                  </AnchorPane>
+                                              </TitledPane>
+                                              <TitledPane animated="false" text="INGREDIENTS">
+                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
+                                                      <TextField fx:id="ingredientSearchField" layoutX="26.0" layoutY="14.0" promptText="Search ingredient ..." styleClass="search" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <ListView fx:id="ingredientsList" layoutX="14.0" layoutY="14.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                                                  </AnchorPane>
+                                              </TitledPane>
+                                              <TitledPane animated="false" text="TOTAL TIME">
+                                                  <AnchorPane fx:id="ratingAnchor11">
+                                                      <Slider fx:id="maxTimeSlider" blockIncrement="30.0" layoutX="14.0" layoutY="20.0" majorTickUnit="60.0" max="360.0" minorTickCount="0" showTickMarks="true" value="360.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0" />
+                                                      <Slider fx:id="minTimeSlider" blockIncrement="30.0" layoutX="14.0" layoutY="43.0" majorTickUnit="60.0" max="360.0" minorTickCount="0" showTickMarks="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="maxTimeLabel" alignment="CENTER" layoutX="165.0" layoutY="19.0" text="to 1h 40min" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
+                                             <Label fx:id="minTimeLabel" alignment="CENTER" layoutX="84.0" layoutY="70.0" text="from 1h 30min" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
+                                             <Button fx:id="timeFilterButton" layoutX="144.0" layoutY="86.0" mnemonicParsing="false" text="Add filter" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
+                                                  </AnchorPane>
+                                              </TitledPane>
+                                              <TitledPane animated="false" text="CALORIFIC VALUE">
+                                                  <AnchorPane fx:id="ratingAnchor1">
+                                                      <Slider fx:id="maxKcalSlider" blockIncrement="50.0" layoutX="14.0" layoutY="20.0" majorTickUnit="250.0" max="2000.0" minorTickCount="0" showTickMarks="true" value="2000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0" />
+                                                      <Slider fx:id="minKcalSlider" blockIncrement="50.0" layoutX="14.0" layoutY="43.0" majorTickUnit="250.0" max="2000.0" minorTickCount="0" showTickMarks="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Label fx:id="maxKcalLabel" alignment="CENTER" layoutX="165.0" layoutY="19.0" prefWidth="38.0" text="to 1000 kcal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
+                                                      <Label fx:id="minKcalLabel" alignment="CENTER" layoutX="14.0" layoutY="18.0" prefWidth="38.0" text="from 0 kcal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
+                                             <Button fx:id="kcalFilterButton" layoutX="100.0" layoutY="86.0" mnemonicParsing="false" text="Add filter" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
+                                                  </AnchorPane>
+                                              </TitledPane>
+                                          </panes>
+                                      </Accordion>
                               </children>
-                           </AnchorPane>
-                                <Accordion>
-                                    <panes>
-                                        <TitledPane animated="false" text="COURSE">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
-                                                <ListView fx:id="courseList" layoutX="-32.0" layoutY="-20.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                            </AnchorPane>
-                                        </TitledPane>
-                                        <TitledPane animated="false" text="CUISINE">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
-                                                <ListView fx:id="cuisineList" layoutY="-10.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-                                       <TextField fx:id="cuisineSearchField" promptText="Search cuisine ..." styleClass="search" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                            </AnchorPane>
-                                        </TitledPane>
-                                        <TitledPane animated="false" text="INGREDIENTS">
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
-                                                <TextField fx:id="ingredientSearchField" layoutX="26.0" layoutY="14.0" promptText="Search ingredient ..." styleClass="search" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                <ListView fx:id="ingredientsList" layoutX="14.0" layoutY="14.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-                                            </AnchorPane>
-                                        </TitledPane>
-                                        <TitledPane animated="false" text="TOTAL TIME">
-                                            <AnchorPane fx:id="ratingAnchor11">
-                                                <Slider fx:id="maxTimeSlider" blockIncrement="30.0" layoutX="14.0" layoutY="20.0" majorTickUnit="60.0" max="360.0" minorTickCount="0" showTickMarks="true" value="360.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0" />
-                                                <Slider fx:id="minTimeSlider" blockIncrement="30.0" layoutX="14.0" layoutY="43.0" majorTickUnit="60.0" max="360.0" minorTickCount="0" showTickMarks="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                <Label fx:id="maxTimeLabel" alignment="CENTER" layoutX="165.0" layoutY="19.0" text="to 1h 40min" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
-                                       <Label fx:id="minTimeLabel" alignment="CENTER" layoutX="84.0" layoutY="70.0" text="from 1h 30min" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
-                                       <Button fx:id="timeFilterButton" layoutX="144.0" layoutY="86.0" mnemonicParsing="false" text="Add filter" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
-                                            </AnchorPane>
-                                        </TitledPane>
-                                        <TitledPane animated="false" text="CALORIFIC VALUE">
-                                            <AnchorPane fx:id="ratingAnchor1">
-                                                <Slider fx:id="maxKcalSlider" blockIncrement="50.0" layoutX="14.0" layoutY="20.0" majorTickUnit="250.0" max="2000.0" minorTickCount="0" showTickMarks="true" value="2000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0" />
-                                                <Slider fx:id="minKcalSlider" blockIncrement="50.0" layoutX="14.0" layoutY="43.0" majorTickUnit="250.0" max="2000.0" minorTickCount="0" showTickMarks="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                <Label fx:id="maxKcalLabel" alignment="CENTER" layoutX="165.0" layoutY="19.0" prefWidth="38.0" text="to 1000 kcal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
-                                                <Label fx:id="minKcalLabel" alignment="CENTER" layoutX="14.0" layoutY="18.0" prefWidth="38.0" text="from 0 kcal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
-                                       <Button fx:id="kcalFilterButton" layoutX="100.0" layoutY="86.0" mnemonicParsing="false" text="Add filter" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
-                                            </AnchorPane>
-                                        </TitledPane>
-                                    </panes>
-                                </Accordion>
-                        </children>
-                     </VBox>
-                      </AnchorPane>
+                           </VBox>
+                            </AnchorPane>
+                     </content>
+                  </ScrollPane>
                </left>
             </BorderPane>
          </children>

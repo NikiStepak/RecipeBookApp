@@ -30,7 +30,7 @@ public class RecipesController implements Initializable {
     public ListView<String> courseList, cuisineList;
     public Slider minTimeSlider, maxTimeSlider, minKcalSlider, maxKcalSlider;
     public Label minTimeLabel, maxTimeLabel, maxKcalLabel, minKcalLabel;
-    public ScrollPane scroll;
+    public ScrollPane scroll, filterScroll;
     public AnchorPane anchor, filterAnchor;
     public HBox listHBox;
     public VBox filterVBox;
@@ -338,9 +338,10 @@ public class RecipesController implements Initializable {
     }
 
     private void setPane(Comparator<Recipe> comparator, boolean sort, List<Recipe> shownRecipes){
+        filterAnchor.setMinHeight(filterVBox.getHeight()+50);
         listHBox.getChildren().clear();
         if (filterToggleButton.isSelected()) {
-            border.setLeft(filterAnchor);
+            border.setLeft(filterScroll);
         }
         else {
             border.setLeft(null);
@@ -373,7 +374,7 @@ public class RecipesController implements Initializable {
             listHBox.setPrefWidth(scroll.getWidth() - 15);
             listHBox.getChildren().add(recipeList[i]);
         }
-        System.out.println(filterAnchor.getWidth());
+//        System.out.println(filterAnchor.getWidth());
 
     }
 
