@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.*;
 
 public class RecipesController implements Initializable {
-    public Button backButton, homeButton, recipesButton, addButton, timeFilterButton, kcalFilterButton;
+    public Button backButton, homeButton, recipesButton, addButton, timeFilterButton, kcalFilterButton, cleanButton;
     public ToggleButton filterToggleButton;
     public TextField searchField, ingredientSearchField, cuisineSearchField;
     public ChoiceBox<String> sortChoiceBox;
@@ -222,6 +222,7 @@ public class RecipesController implements Initializable {
         }
         addButton.setOnAction(this::addAction);
 
+        cleanButton.setOnAction(this::cleanAction);
 
         // ScrollPane ====================================================================================================
         scroll.widthProperty().addListener(observable -> getCommonRecipes());
@@ -233,16 +234,24 @@ public class RecipesController implements Initializable {
         split.setPrefHeight(height);
     }
 
+    private void cleanAction(ActionEvent event) {
+        selectedCuisine.clear();
+        selectedCourse.clear();
+        selectedIngredient.clear();
+        minTimeSlider.setValue(0);
+        maxTimeSlider.setValue(maxTime);
+        minKcalSlider.setValue(0);
+        maxKcalSlider.setValue(maxKcal);
+        getCommonRecipes();
+    }
+
     private void searchCuisineAction(KeyEvent keyEvent) {
         ObservableList<String> searchedCuisine = FXCollections.observableArrayList(mm.getSearchedCuisine(cuisines, cuisineSearchField.getText()));
         searchedCuisine.sort(Comparator.naturalOrder());
         cuisineList.setItems(searchedCuisine);
     }
 
-    private boolean timeSet = false, kcalSet = false;
-
     private void kcalFilterButton(ActionEvent event) {
-        kcalSet = true;
         getCommonRecipes();
     }
 
@@ -296,7 +305,6 @@ public class RecipesController implements Initializable {
     }
 
     private void timeFilterAction(ActionEvent event) {
-        timeSet = true;
         getCommonRecipes();
     }
 
@@ -316,21 +324,29 @@ public class RecipesController implements Initializable {
 
     private void getCommonRecipes() {
         List<Recipe> commonRecipes = new ArrayList<>(dm.getRecipes());
+        isFilter = false;
         if (selectedCourse.size() > 0) {
+            isFilter = true;
             commonRecipes.retainAll(dm.getCourseFilteredRecipes(selectedCourse));
         }
         if (selectedCuisine.size() > 0) {
+            isFilter = true;
             commonRecipes.retainAll(dm.getCuisineFilteredRecipes(selectedCuisine));
         }
         if (selectedIngredient.size() > 0) {
+            isFilter = true;
             commonRecipes.retainAll(dm.getIngredientFilteredRecipes(selectedIngredient));
         }
         if ((int) minTimeSlider.getValue() > 0 || (int) maxTimeSlider.getValue() < maxTime) {
+            isFilter = true;
             commonRecipes.retainAll(dm.getTimeFilteredRecipes((int) (minTimeSlider.getValue()), (int) maxTimeSlider.getValue()));
         }
         if ((int) minKcalSlider.getValue() > 0 || (int) maxKcalSlider.getValue() < maxKcal) {
+            isFilter = true;
             commonRecipes.retainAll(dm.getKcalFilteredRecipes(minKcalSlider.getValue(), maxKcalSlider.getValue()));
         }
+
+        cleanButton.setVisible(isFilter);
 
         commonRecipes = dm.getSearchedRecipes(commonRecipes, searchField.getText());
 
