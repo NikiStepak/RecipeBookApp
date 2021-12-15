@@ -299,7 +299,7 @@ public class RecipeController implements Initializable {
         mm.show(getClass(), "recipe-view.fxml", refreshController, event);
 
         PrintController controller = new PrintController(screenshot);
-        mm.showAndWait(getClass(), "print-view.fxml",controller, printButton);
+        mm.showAndWait(getClass(), "print-view.fxml",controller, printButton.getScene().getWindow());
     }
 
     private void editAction(ActionEvent event) {

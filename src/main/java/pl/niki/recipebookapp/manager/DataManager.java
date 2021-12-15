@@ -75,28 +75,28 @@ public class DataManager {
     }
 
     public Product addProduct(String name, double kcal){
-        Product p = new Product(name, kcal, 100);
+        Product p = new Product(name, kcal, 100, false);
         this.products.add(p);
         return p;
     }
 
     private void addProducts() {
-        this.products.add(new Product("carrot",41.3,100));
-        this.products.add(new Product("tomato", 17.7, 100));
-        this.products.add(new Product("sugar", 386.7,100));
-        this.products.add(new Product("red pepper", 282.3, 100));
-        this.products.add(new Product("onion",39.7,100));
-        this.products.add(new Product("garlic",152,100));
-        this.products.add(new Product("pasta", 131, 100));
-        this.products.add(new Product("potato", 61,100));
-        this.products.add(new Product("sausage", 346.1, 100));
-        this.products.add(new Product("hard cheese",375,100));
-        this.products.add(new Product("cream 30%",292,100));
-        this.products.add(new Product("egg",155.1,100));
-        this.products.add(new Product("oil", 884.1, 100));
-        this.products.add(new Product("salt", 0,100));
-        this.products.add(new Product("sweet paprika", 282, 100));
-        this.products.add(new Product("pepper",251,100));
+        this.products.add(new Product("carrot",41.3,100, false));
+        this.products.add(new Product("tomato", 17.7, 100, false));
+        this.products.add(new Product("sugar", 386.7,100, false));
+        this.products.add(new Product("red pepper", 282.3, 100, false));
+        this.products.add(new Product("onion",39.7,100, false));
+        this.products.add(new Product("garlic",152,100, false));
+        this.products.add(new Product("pasta", 131, 100, false));
+        this.products.add(new Product("potato", 61,100, false));
+        this.products.add(new Product("sausage", 346.1, 100, false));
+        this.products.add(new Product("hard cheese",375,100, false));
+        this.products.add(new Product("cream 30%",292,100, false));
+        this.products.add(new Product("egg",155.1,100, false));
+        this.products.add(new Product("oil", 884.1, 100, false));
+        this.products.add(new Product("salt", 0,100, false));
+        this.products.add(new Product("sweet paprika", 282, 100, false));
+        this.products.add(new Product("pepper",251,100, false));
 
     }
 
@@ -259,5 +259,13 @@ public class DataManager {
 
     public int getRecipesSize(){
         return recipes.size();
+    }
+
+    public void editRecipe(int recipeKey, Recipe newRecipe) {
+        this.recipes.set(recipeKey, newRecipe);
+    }
+
+    public boolean addProduct(Product newProduct) {
+        return this.products.add(newProduct);
     }
 }

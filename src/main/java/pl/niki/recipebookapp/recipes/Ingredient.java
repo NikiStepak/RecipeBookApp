@@ -1,9 +1,22 @@
 package pl.niki.recipebookapp.recipes;
 
-public class Ingredient {
-    private final Product product;
+public class Ingredient implements Cloneable {
+    private Product product;
     private int amount;
     private double kcal;
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+//        Ingredient ingredient = new Ingredient(product,amount,kcal);
+//        ingredient.product = (Product) product.clone();
+        return new Ingredient(product,amount,kcal);
+    }
+
+    public Ingredient(Product product, int amount, double kcal) {
+        this.product = product;
+        this.amount = amount;
+        this.kcal = kcal;
+    }
 
     public Ingredient(Product product, int amount) {
         this.product = product;
@@ -27,6 +40,11 @@ public class Ingredient {
 
     public void setAmount(int amount) {
         this.amount = amount;
+        countKcal();
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public double getKcal() {

@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
@@ -31,7 +32,7 @@ public class MathManager {
     }
 
     public void setNewRecipe(Recipe newRecipe) {
-        this.newRecipe = newRecipe;
+        this.newRecipe = new Recipe(newRecipe);
     }
 
     public void setAddImage() {
@@ -183,11 +184,11 @@ public class MathManager {
         return r_d/100;
     }
 
-    public void setNewRecipe(String name, int id, int time, int servings, String description, Image image, String cuisine, String course, String url) {
+    public void setNewRecipe(double kcal, String name, int id, int time, int servings, String description, Image image, String cuisine, String course, String url) {
         //???????????????????????????????????????
         //check if cuisine exist in list
         //???????????????????????????????????????
-        this.newRecipe.set(name,id,time,servings,description,image,course,cuisine, url);
+        this.newRecipe.set(name, kcal, id,time,servings,description,image,course,cuisine, url);
     }
 
     private FXMLLoader setController(Class getC, String fxmlName, Object controller){
@@ -203,13 +204,13 @@ public class MathManager {
         return loader;
     }
 
-    public void showAndWait(Class getC, String fxmlName, Object controller, Button button){
+    public void showAndWait(Class getC, String fxmlName, Object controller, Window window){
         try {
             Parent parent = setController(getC,fxmlName,controller).load();
             Stage stage = new Stage();
             stage.setScene(new Scene(parent));
             stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(button.getScene().getWindow());
+            stage.initOwner(window);
             stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();

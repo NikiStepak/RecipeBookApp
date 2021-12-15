@@ -7,11 +7,16 @@ import javafx.scene.image.Image;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class Instruction {
+public class Instruction implements Cloneable{
     private StringProperty description;
     private String descriptionText;
     private int step;
     private Image image;
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
     public Instruction(String description, int step) {
         this.descriptionText = description;
@@ -34,11 +39,17 @@ public class Instruction {
     public StringProperty descriptionProperty() {
         if (description==null)
             description = new SimpleStringProperty(this, null);
+        else
+            description.set(step+".  "+descriptionText);
         return description;
     }
 
     public String getDescriptionText() {
         return descriptionText;
+    }
+
+    public int getStep() {
+        return step;
     }
 
     public void setDescriptionText(String descriptionText) {
@@ -59,5 +70,10 @@ public class Instruction {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    @Override
+    public String toString() {
+        return descriptionText + " - " + image;
     }
 }

@@ -6,7 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class Recipe {
+public class Recipe implements Cloneable {
     private String name, description;
     private List<Ingredient> ingredients;
     private List<Instruction> instructions;
@@ -16,6 +16,11 @@ public class Recipe {
     private Image image;
     private boolean instructionImage;
     private String cuisine, course, url;
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
     public Recipe() {
         this.ingredients = new ArrayList<>();
@@ -65,6 +70,30 @@ public class Recipe {
         this.course = "soup";
         this.id = id;
         this.url = null;
+    }
+
+    public Recipe(Recipe newRecipe) {
+        this.instructionImage = newRecipe.isInstructionImage();
+        this.ingredients = new ArrayList<>();
+        this.instructions = new ArrayList<>();
+        for (Ingredient ingredient: newRecipe.getIngredients()){
+            try {
+                this.ingredients.add((Ingredient) ingredient.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (Instruction instruction: newRecipe.getInstructions()){
+            try {
+                this.instructions.add((Instruction) instruction.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+//        this.ingredients.addAll(newRecipe.getIngredients());
+//        this.instructions.addAll(newRecipe.getInstructions());
+        set(newRecipe.name, newRecipe.kcal, newRecipe.id, newRecipe.time, newRecipe.amount, newRecipe.description, newRecipe.image, newRecipe.course, newRecipe.cuisine, newRecipe.url);
     }
 
     public int getId() {
@@ -144,7 +173,7 @@ public class Recipe {
     }
 
 
-    public void set(String name, int id, int time, int servings, String description, Image image, String course, String cuisine, String url) {
+    public void set(String name, double kcal, int id, int time, int servings, String description, Image image, String course, String cuisine, String url) {
         this.name = name;
         this.time = time;
         this.amount = servings;
@@ -154,6 +183,7 @@ public class Recipe {
         this.cuisine = cuisine;
         this.id = id;
         this.url = url;
+        this.kcal = kcal;
     }
 
     public void removeIngredient(int index) {
@@ -161,6 +191,7 @@ public class Recipe {
         if (kcal<0) this.kcal = 0;
         this.ingredients.remove(index);
     }
+
     public void removeIngredient(Ingredient ingredient) {
         this.kcal -= ingredient.getKcal();
         if (kcal<0) this.kcal = 0;
@@ -178,6 +209,7 @@ public class Recipe {
     public void removeInstruction(int index) {
         this.instructions.remove(index);
         setInstructionsStep();
+        checkInstructionsImage();
     }
 
     private void setInstructionsStep() {
@@ -197,5 +229,22 @@ public class Recipe {
             }
         }
         System.out.println(instructionImage);
+    }
+
+    public void addInstruction(Instruction instruction) {
+        this.instructions.add(instruction);
+        if (instruction.getImage()!=null){
+            this.instructionImage = true;
+        }
+    }
+
+    public void addIngredient(Ingredient ingredient) {
+        this.ingredients.add(ingredient);
+        this.kcal += ingredient.getKcal();
+    }
+
+    public void removeInstructionImage(int index) {
+        this.instructions.get(index).setImage(null);
+        checkInstructionsImage();
     }
 }
