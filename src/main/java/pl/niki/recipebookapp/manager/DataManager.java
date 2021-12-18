@@ -261,8 +261,8 @@ public class DataManager {
         return recipes.size();
     }
 
-    public void editRecipe(int recipeKey, Recipe newRecipe) {
-        this.recipes.set(recipeKey, newRecipe);
+    public void editRecipe(Recipe editRecipe, Recipe newRecipe) {
+        this.recipes.set(recipes.indexOf(editRecipe), newRecipe);
     }
 
     public boolean addProduct(Product newProduct) {

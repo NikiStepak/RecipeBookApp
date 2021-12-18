@@ -19,6 +19,7 @@ import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
+import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +48,8 @@ public class AddController implements Initializable {
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
     private final boolean edit;
-    private int recipeKey;
+    private Recipe editRecipe;
+//    private int recipeKey;
     private final double width, height;
     private Product selectedProduct = null;
 
@@ -55,17 +57,18 @@ public class AddController implements Initializable {
         this.dm = dm;
         this.mm = mm;
         this.edit = false;
-        mm.newRecipe();
+        mm.newRecipe(dm.getRecipes().size());
         this.width = width;
         this.height = height;
     }
 
-    public AddController(DataManager dm, MathManager mm, int recipeKey, double width, double height) {
+    public AddController(DataManager dm, MathManager mm, Recipe recipe, double width, double height) {
         this.dm = dm;
         this.mm = mm;
         this.edit = true;
-        this.recipeKey = recipeKey;
-        mm.setNewRecipe(dm.getRecipes().get(recipeKey));
+        this.editRecipe = recipe;
+//        this.recipeKey = recipeKey;
+        mm.setNewRecipe(recipe);
 //        System.out.println(mm.getNewRecipe().getInstructions().get(0).getDescriptionText());
         this.width = width;
         this.height = height;
@@ -522,19 +525,15 @@ public class AddController implements Initializable {
 //                                            url = websiteField.getText();
 //                                        }
 //                                        Double.parseDouble(this.kcalLabel.getText())
-                                        if (!edit){
-                                            recipeKey = dm.getRecipesSize();
-                                        }
-                                        mm.setNewRecipe(2000, recipeNameField.getText(), recipeKey, Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), recipeImage.getImage(), cuisine, courseChoiceBox.getSelectionModel().getSelectedItem(), url);
+                                        mm.setNewRecipe(2000, recipeNameField.getText(), Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), recipeImage.getImage(), cuisine, courseChoiceBox.getSelectionModel().getSelectedItem(), url);
                                         mm.getNewRecipe().checkInstructionsImage();
                                         RecipeController controller;
                                         if (edit) {
-                                            dm.editRecipe(this.recipeKey, mm.getNewRecipe());
-                                            controller = new RecipeController(dm, mm, recipeKey, split.getWidth(), split.getHeight());
+                                            dm.editRecipe(this.editRecipe, mm.getNewRecipe());
                                         } else {
                                             dm.addRecipe(mm.getNewRecipe());
-                                            controller = new RecipeController(dm, mm, dm.getRecipes().size() - 1, split.getWidth(), split.getHeight());
                                         }
+                                        controller = new RecipeController(dm, mm, mm.getNewRecipe(), split.getWidth(), split.getHeight());
                                         mm.show(getClass(), "recipe-view.fxml", controller, event);
                                     }
                                 }

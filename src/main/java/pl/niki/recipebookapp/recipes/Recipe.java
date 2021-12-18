@@ -22,9 +22,10 @@ public class Recipe implements Cloneable {
         return super.clone();
     }
 
-    public Recipe() {
+    public Recipe(int id) {
         this.ingredients = new ArrayList<>();
         this.instructions = new ArrayList<>();
+        this.id = id;
     }
 
     public Recipe(String name, String description, int time, int amount, int id) {
@@ -93,7 +94,7 @@ public class Recipe implements Cloneable {
         }
 //        this.ingredients.addAll(newRecipe.getIngredients());
 //        this.instructions.addAll(newRecipe.getInstructions());
-        set(newRecipe.name, newRecipe.kcal, newRecipe.id, newRecipe.time, newRecipe.amount, newRecipe.description, newRecipe.image, newRecipe.course, newRecipe.cuisine, newRecipe.url);
+        set(newRecipe.name, newRecipe.kcal, newRecipe.time, newRecipe.amount, newRecipe.description, newRecipe.image, newRecipe.course, newRecipe.cuisine, newRecipe.url);
     }
 
     public int getId() {
@@ -173,7 +174,7 @@ public class Recipe implements Cloneable {
     }
 
 
-    public void set(String name, double kcal, int id, int time, int servings, String description, Image image, String course, String cuisine, String url) {
+    public void set(String name, double kcal, int time, int servings, String description, Image image, String course, String cuisine, String url) {
         this.name = name;
         this.time = time;
         this.amount = servings;
@@ -181,7 +182,6 @@ public class Recipe implements Cloneable {
         this.image = image;
         this.course = course;
         this.cuisine = cuisine;
-        this.id = id;
         this.url = url;
         this.kcal = kcal;
     }

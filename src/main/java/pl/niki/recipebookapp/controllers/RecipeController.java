@@ -3,6 +3,7 @@ package pl.niki.recipebookapp.controllers;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
@@ -22,6 +23,7 @@ import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
+import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
 
 import java.net.URL;
@@ -47,24 +49,39 @@ public class RecipeController implements Initializable {
 
     private final DataManager dm;
     private final MathManager mm;
-    private final int recipeKey;
+    private final Recipe recipe;
     private final double width, height;
     private boolean close;
     private URL location;
     private ResourceBundle resource;
+    private ObservableSet<String> selectedCuisine, selectedCourse;
+    private ObservableSet<Product> selectedIngredient;
+    private int minTimeValue, maxTimeValue, minKcalValue, maxKcalValue;
+    private List<Recipe> recipeList;
+    private String searchText;
+    private int sortIndex;
 
-    public RecipeController(DataManager dm, MathManager mm, int recipeKey, double width, double height) {
+    public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height) {
         this.dm = dm;
         this.mm = mm;
-        this.recipeKey = recipeKey;
+        this.recipe = recipeKey;
         this.width = width;
         this.height = height;
+        selectedCuisine = FXCollections.observableSet();
+        selectedCourse = FXCollections.observableSet();
+        selectedIngredient = FXCollections.observableSet();
+        minKcalValue=0;
+        minTimeValue=0;
+        dm.setMax();
+        maxKcalValue = dm.getMaxKcal();
+        maxTimeValue = dm.getMaxTime();
+        recipeList = dm.getRecipes();
     }
 
-    public RecipeController(DataManager dm, MathManager mm, int recipeKey, double width, double height, ResourceBundle resourcePath, URL location, SplitPane splitPane) {
+    public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height, ResourceBundle resourcePath, URL location, SplitPane splitPane) {
         this.dm = dm;
         this.mm = mm;
-        this.recipeKey = recipeKey;
+        this.recipe = recipeKey;
         this.width = width;
         this.height = height;
         this.split = splitPane;
@@ -72,11 +89,39 @@ public class RecipeController implements Initializable {
         initialize(location, resourcePath);
     }
 
+    public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height, ObservableSet<String> selectedCourse, ObservableSet<String> selectedCuisine, ObservableSet<Product> selectedIngredient) {
+        this.dm = dm;
+        this.mm = mm;
+        this.recipe = recipeKey;
+        this.width = width;
+        this.height = height;
+        this.selectedCourse = selectedCourse;
+        this.selectedCuisine = selectedCuisine;
+        this.selectedIngredient = selectedIngredient;
+    }
+
+    public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height, ObservableSet<String> selectedCuisine, ObservableSet<String> selectedCourse, ObservableSet<Product> selectedIngredient, int minTimeValue, int maxTimeValue, int minKcalValue, int maxKcalValue, List<Recipe> recipeList, String searchText, int sortIndex) {
+        this.dm = dm;
+        this.mm = mm;
+        this.recipe = recipeKey;
+        this.width = width;
+        this.height = height;
+        this.selectedCuisine = selectedCuisine;
+        this.selectedCourse = selectedCourse;
+        this.selectedIngredient = selectedIngredient;
+        this.minTimeValue = minTimeValue;
+        this.maxTimeValue = maxTimeValue;
+        this.minKcalValue = minKcalValue;
+        this.maxKcalValue = maxKcalValue;
+        this.recipeList = recipeList;
+        this.searchText = searchText;
+        this.sortIndex = sortIndex;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         location = url;
         resource = resourceBundle;
-        Recipe recipe = dm.getRecipes().get(recipeKey);
 
         // HyperLink ===================================================================================================
         if (recipe.getUrl()!=null){
@@ -201,7 +246,7 @@ public class RecipeController implements Initializable {
         else {
             nextButton.setText("Next");
         }
-        if (recipeKey < (dm.getRecipes().size()-1)) {
+        if (recipeList.indexOf(recipe) < (recipeList.size()-1)) {
             nextButton.setOnAction(this::nextAction);
         }
         else {
@@ -219,7 +264,7 @@ public class RecipeController implements Initializable {
             prevButton.setText("Prev");
         }
         backButton.setOnAction(this::backAction);
-        if (recipeKey > 0){
+        if (recipeList.indexOf(recipe) > 0){
             prevButton.setOnAction(this::prevAction);
         }
         else {
@@ -295,7 +340,7 @@ public class RecipeController implements Initializable {
             screenshot.add(border.snapshot(null, null));
         }
 
-        RecipeController refreshController = new RecipeController(dm,mm, recipeKey, split.getWidth(),split.getHeight());
+        RecipeController refreshController = new RecipeController(dm,mm, recipe, split.getWidth(),split.getHeight(),selectedCourse,selectedCuisine,selectedIngredient,minTimeValue,maxTimeValue,minKcalValue,maxKcalValue,recipeList, searchText, sortIndex);
         mm.show(getClass(), "recipe-view.fxml", refreshController, event);
 
         PrintController controller = new PrintController(screenshot);
@@ -303,7 +348,7 @@ public class RecipeController implements Initializable {
     }
 
     private void editAction(ActionEvent event) {
-        AddController controller = new AddController(dm,mm,recipeKey, split.getWidth(), split.getHeight());
+        AddController controller = new AddController(dm,mm, recipe, split.getWidth(), split.getHeight());
         mm.show(getClass(),"add-view.fxml",controller,event);
     }
 
@@ -312,25 +357,36 @@ public class RecipeController implements Initializable {
         alert.setHeaderText("Are you sure you want to delete this recipe?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            dm.getRecipes().remove(recipeKey);
-            RecipeController controller = new RecipeController(dm, mm, recipeKey, split.getWidth(), split.getHeight());
-            mm.show(getClass(), "recipe-view.fxml", controller, event);
+            int recipeKey = recipeList.indexOf(recipe);
+            recipeList.remove(recipe);
+            dm.getRecipes().remove(recipe);
+            if (recipeKey >= recipeList.size()){
+                recipeKey = recipeList.size()-1;
+            }
+            if (recipeList.size()>0) {
+                RecipeController controller = new RecipeController(dm, mm, recipeList.get(recipeKey), split.getWidth(), split.getHeight(), selectedCourse, selectedCuisine, selectedIngredient, minTimeValue, maxTimeValue, minKcalValue, maxKcalValue, recipeList,searchText, sortIndex);
+                mm.show(getClass(), "recipe-view.fxml", controller, event);
+            }
+            else {
+                RecipesController controller = new RecipesController(dm,mm,split.getWidth(),split.getHeight(),selectedCourse,selectedCuisine,selectedIngredient,minTimeValue,maxTimeValue,minKcalValue,maxKcalValue,searchText, sortIndex);
+                mm.show(getClass(),"recipes-view.fxml", controller, event);
+            }
         }
     }
 
     private void nextAction(ActionEvent event) {
-        RecipeController controller = new RecipeController(dm,mm,recipeKey+1, split.getWidth(), split.getHeight());
+        RecipeController controller = new RecipeController(dm,mm,recipeList.get(recipeList.indexOf(recipe)+1), split.getWidth(), split.getHeight(), selectedCourse,selectedCuisine,selectedIngredient,minTimeValue,maxTimeValue,minKcalValue,maxKcalValue,recipeList,searchText, sortIndex);
         mm.show(getClass(),"recipe-view.fxml",controller,event);
     }
 
     private void prevAction(ActionEvent event) {
-        RecipeController controller = new RecipeController(dm,mm,recipeKey-1, split.getWidth(), split.getHeight());
+        RecipeController controller = new RecipeController(dm,mm,recipeList.get(recipeList.indexOf(recipe)-1), split.getWidth(), split.getHeight(),selectedCourse,selectedCuisine,selectedIngredient,minTimeValue,maxTimeValue,minKcalValue,maxKcalValue,recipeList,searchText, sortIndex);
         mm.show(getClass(),"recipe-view.fxml",controller,event);
     }
 
     // menu's buttons action
     private void recipesAction(ActionEvent event) {
-        RecipesController controller = new RecipesController(dm,mm, split.getWidth(), split.getHeight());
+        RecipesController controller = new RecipesController(dm,mm, split.getWidth(), split.getHeight(), selectedCourse, selectedCuisine, selectedIngredient, minTimeValue,maxTimeValue,minKcalValue,maxKcalValue,searchText, sortIndex);
         mm.show(getClass(),"recipes-view.fxml",controller,event);
     }
 

@@ -79,8 +79,8 @@ public class MathManager {
         return ingredients;
     }
 
-    public void newRecipe(){
-        newRecipe = new Recipe();
+    public void newRecipe(int id){
+        newRecipe = new Recipe(id);
     }
 
     public MathManager() {
@@ -184,11 +184,11 @@ public class MathManager {
         return r_d/100;
     }
 
-    public void setNewRecipe(double kcal, String name, int id, int time, int servings, String description, Image image, String cuisine, String course, String url) {
+    public void setNewRecipe(double kcal, String name, int time, int servings, String description, Image image, String cuisine, String course, String url) {
         //???????????????????????????????????????
         //check if cuisine exist in list
         //???????????????????????????????????????
-        this.newRecipe.set(name, kcal, id,time,servings,description,image,course,cuisine, url);
+        this.newRecipe.set(name, kcal, time,servings,description,image,course,cuisine, url);
     }
 
     private FXMLLoader setController(Class getC, String fxmlName, Object controller){

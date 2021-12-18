@@ -49,7 +49,12 @@ public class RecipesController implements Initializable {
     private ObservableSet<String> selectedCuisine = FXCollections.observableSet();
     private ObservableSet<Product> selectedIngredient = FXCollections.observableSet();
     private boolean isFilter;
-    private int maxTime, maxKcal;
+    private boolean isTimeSet, isKcalSet;
+    private int maxTime, maxKcal, minTimeValue, maxTimeValue, minKcalValue, maxKcalValue;
+    private String searchText;
+    private int sortIndex;
+    List<Recipe> commonRecipes;
+
 
     public RecipesController() {
         dm = new DataManager();
@@ -57,6 +62,19 @@ public class RecipesController implements Initializable {
         this.width = 1100;
         this.height = 602;
         this.isFilter = false;
+        this.isTimeSet = false;
+        this.isKcalSet = false;
+
+        dm.setMax();
+        this.maxKcal = dm.getMaxKcal();
+        this.maxTime = dm.getMaxTime();
+        this.minTimeValue = 0;
+        this.maxTimeValue = maxTime;
+        this.minKcalValue = 0;
+        this.maxKcalValue = maxKcal;
+        this.commonRecipes = new ArrayList<>(dm.getRecipes());
+        this.sortIndex = 0;
+        this.searchText = "";
     }
 
     public RecipesController(DataManager dm, MathManager mm, double width, double height) {
@@ -65,18 +83,57 @@ public class RecipesController implements Initializable {
         this.width = width;
         this.height = height;
         this.isFilter = false;
+        this.isTimeSet = false;
+        this.isKcalSet = false;
+
+        dm.setMax();
+        this.maxKcal = dm.getMaxKcal();
+        this.maxTime = dm.getMaxTime();
+        this.minTimeValue = 0;
+        this.maxTimeValue = maxTime;
+        this.minKcalValue = 0;
+        this.maxKcalValue = maxKcal;
+        this.commonRecipes = new ArrayList<>(dm.getRecipes());
+        this.sortIndex = 0;
+        this.searchText = "";
+
+    }
+
+    public RecipesController(DataManager dm, MathManager mm, double width, double height, ObservableSet<String> selectedCourse, ObservableSet<String> selectedCuisine, ObservableSet<Product> selectedIngredient, int minTimeValue, int maxTimeValue, int minKcalValue, int maxKcalValue, String searchText, int sortIndex) {
+        this.dm = dm;
+        this.mm = mm;
+        this.width = width;
+        this.height = height;
+        this.selectedCourse = selectedCourse;
+        this.selectedCuisine = selectedCuisine;
+        this.selectedIngredient = selectedIngredient;
+        this.isFilter = false;
+        dm.setMax();
+        maxKcal = dm.getMaxKcal();
+        maxTime = dm.getMaxTime();
+        this.minTimeValue = minTimeValue;
+        this.maxTimeValue = maxTimeValue;
+        this.minKcalValue = minKcalValue;
+        this.maxKcalValue = maxKcalValue;
+        isTimeSet = true;
+        isKcalSet = true;
+        commonRecipes = new ArrayList<>(dm.getRecipes());
+        this.searchText = searchText;
+        this.sortIndex = sortIndex;
+
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        dm.setMax();
-        minKcalLabel.setText("from " + (int) minKcalSlider.getValue() + " kcal");
-        maxKcal = dm.getMaxKcal();
+
         maxKcalSlider.setMax(maxKcal);
-        maxKcalSlider.setValue(maxKcal);
+            minKcalSlider.setValue(minKcalValue);
+            maxKcalSlider.setValue(maxKcalValue);
         minKcalSlider.setMax(maxKcal);
         minKcalSlider.setMajorTickUnit(maxKcal/5);
         maxKcalSlider.setMajorTickUnit(maxKcal/5);
+
+        minKcalLabel.setText("from " + (int) minKcalSlider.getValue() + " kcal");
         maxKcalLabel.setText("to " + (int) maxKcalSlider.getValue() + " kcal");
 
         minKcalSlider.valueProperty().addListener(((observableValue, oldNumber, newNumber) -> {
@@ -95,15 +152,16 @@ public class RecipesController implements Initializable {
             maxKcalLabel.setText("to " + (int) (newNumber.doubleValue()) + " kcal");
         });
 
-        kcalFilterButton.setOnAction(this::kcalFilterButton);
+        kcalFilterButton.setOnAction(this::kcalFilterAction);
 
-        minTimeLabel.setText("from " + mm.countTime((int) minTimeSlider.getValue()));
-        maxTime = dm.getMaxTime();
         maxTimeSlider.setMax(maxTime);
-        maxTimeSlider.setValue(maxTime);
+            minTimeSlider.valueProperty().set(minTimeValue);
+            maxTimeSlider.setValue(maxTimeValue);
         minTimeSlider.setMax(maxTime);
         minTimeSlider.setMajorTickUnit(maxTime/5);
         maxTimeSlider.setMajorTickUnit(maxTime/5);
+
+        minTimeLabel.setText("from " + mm.countTime((int) minTimeSlider.getValue()));
         maxTimeLabel.setText("to " + mm.countTime((int) maxTimeSlider.getValue()));
 
         minTimeSlider.valueProperty().addListener((observableValue, oldNumber, newNumber) -> {
@@ -111,6 +169,8 @@ public class RecipesController implements Initializable {
                 minTimeSlider.setValue(maxTimeSlider.getValue());
                 newNumber = maxTimeSlider.getValue();
             }
+            System.out.println("T"+minTimeValue);
+
             minTimeLabel.setText("from " + mm.countTime((int) newNumber.doubleValue()));
         });
 
@@ -187,10 +247,11 @@ public class RecipesController implements Initializable {
         ingredientSearchField.setOnKeyTyped(this::searchIngredientAction);
         cuisineSearchField.setOnKeyTyped(this::searchCuisineAction);
 
+        searchField.setText(searchText);
         searchField.setOnKeyTyped(this::searchAction);
         sortChoiceBox.setItems(choice);
         sortChoiceBox.setOnAction(this::sortAction);
-        sortChoiceBox.getSelectionModel().select(0);
+        sortChoiceBox.getSelectionModel().select(sortIndex);
         if(mm.getFilterIcon()!=null) {
             filterToggleButton.setGraphic(mm.getFilterIcon());
         }
@@ -242,6 +303,8 @@ public class RecipesController implements Initializable {
         maxTimeSlider.setValue(maxTime);
         minKcalSlider.setValue(0);
         maxKcalSlider.setValue(maxKcal);
+        isKcalSet = false;
+        isTimeSet = false;
         getCommonRecipes();
     }
 
@@ -251,7 +314,10 @@ public class RecipesController implements Initializable {
         cuisineList.setItems(searchedCuisine);
     }
 
-    private void kcalFilterButton(ActionEvent event) {
+    private void kcalFilterAction(ActionEvent event) {
+        isKcalSet = true;
+        minKcalValue = (int) minKcalSlider.getValue();
+        maxKcalValue = (int) maxKcalSlider.getValue();
         getCommonRecipes();
     }
 
@@ -305,6 +371,9 @@ public class RecipesController implements Initializable {
     }
 
     private void timeFilterAction(ActionEvent event) {
+        isTimeSet = true;
+        minTimeValue = (int) minTimeSlider.getValue();
+        maxTimeValue = (int) maxTimeSlider.getValue();
         getCommonRecipes();
     }
 
@@ -321,9 +390,8 @@ public class RecipesController implements Initializable {
         getCommonRecipes();
     }
 
-
     private void getCommonRecipes() {
-        List<Recipe> commonRecipes = new ArrayList<>(dm.getRecipes());
+        commonRecipes = new ArrayList<>(dm.getRecipes());
         isFilter = false;
         if (selectedCourse.size() > 0) {
             isFilter = true;
@@ -337,13 +405,23 @@ public class RecipesController implements Initializable {
             isFilter = true;
             commonRecipes.retainAll(dm.getIngredientFilteredRecipes(selectedIngredient));
         }
-        if ((int) minTimeSlider.getValue() > 0 || (int) maxTimeSlider.getValue() < maxTime) {
-            isFilter = true;
-            commonRecipes.retainAll(dm.getTimeFilteredRecipes((int) (minTimeSlider.getValue()), (int) maxTimeSlider.getValue()));
+        if (isTimeSet) {
+            if (minTimeValue > 0 || maxTimeValue < maxTime) {
+                isFilter = true;
+                commonRecipes.retainAll(dm.getTimeFilteredRecipes(minTimeValue, maxTimeValue));
+            }
+            else {
+                isTimeSet = false;
+            }
         }
-        if ((int) minKcalSlider.getValue() > 0 || (int) maxKcalSlider.getValue() < maxKcal) {
-            isFilter = true;
-            commonRecipes.retainAll(dm.getKcalFilteredRecipes(minKcalSlider.getValue(), maxKcalSlider.getValue()));
+        if (isKcalSet) {
+            if (minKcalValue > 0 || maxKcalValue < maxKcal) {
+                isFilter = true;
+                commonRecipes.retainAll(dm.getKcalFilteredRecipes(minKcalValue, maxKcalValue));
+            }
+            else {
+                isKcalSet = false;
+            }
         }
 
         cleanButton.setVisible(isFilter);
@@ -460,7 +538,8 @@ public class RecipesController implements Initializable {
         recipeList.prefHeightProperty().bind(recipeList.fixedCellSizeProperty().multiply(Bindings.size(recipeList.getItems()).add(0.2)));
 
         recipeList.setOnMouseClicked(event -> {
-            int selectedRecipe = recipeList.getSelectionModel().getSelectedItem().getId();
+
+            Recipe selectedRecipe = recipeList.getSelectionModel().getSelectedItem();
             click(selectedRecipe, event);
         });
     }
@@ -471,10 +550,12 @@ public class RecipesController implements Initializable {
         }
     }
 
-    public void click(int selectedRecipe, MouseEvent mouseEvent) {
-        System.out.println("click" + selectedRecipe);
-        if(selectedRecipe >= 0) {
-            RecipeController controller = new RecipeController(dm, mm, selectedRecipe, split.getWidth(), split.getHeight());
+    public void click(Recipe selectedRecipe, MouseEvent mouseEvent) {
+//        System.out.println("click" + selectedRecipe);
+        if(selectedRecipe != null) {
+//            System.out.println(minTimeValue);
+//            System.out.println(maxKcalValue);
+            RecipeController controller = new RecipeController(dm, mm, selectedRecipe, split.getWidth(), split.getHeight(), selectedCourse, selectedCuisine, selectedIngredient, minTimeValue, maxTimeValue, minKcalValue, maxKcalValue, commonRecipes, searchField.getText(), sortChoiceBox.getSelectionModel().getSelectedIndex());
             mm.show(getClass(),"recipe-view.fxml",controller,mouseEvent);
         }
     }
