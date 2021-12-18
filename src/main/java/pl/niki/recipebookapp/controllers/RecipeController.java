@@ -76,6 +76,8 @@ public class RecipeController implements Initializable {
         maxKcalValue = dm.getMaxKcal();
         maxTimeValue = dm.getMaxTime();
         recipeList = dm.getRecipes();
+        this.searchText = "";
+        this.sortIndex = 0;
     }
 
     public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height, ResourceBundle resourcePath, URL location, SplitPane splitPane) {
