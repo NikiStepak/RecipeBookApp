@@ -3,21 +3,21 @@ package pl.niki.recipebookapp.recipes;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Instruction implements Cloneable{
+    // =================================================================================================================
+    // Private fields
+    // =================================================================================================================
     private StringProperty description;
     private String descriptionText;
     private int step;
     private Image image;
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
+    // =================================================================================================================
+    // Constructors
+    // =================================================================================================================
     public Instruction(String description, int step) {
         this.descriptionText = description;
         this.step = step;
@@ -36,6 +36,9 @@ public class Instruction implements Cloneable{
         this.image = image;
     }
 
+    // =================================================================================================================
+    // Getters
+    // =================================================================================================================
     public StringProperty descriptionProperty() {
         if (description==null)
             description = new SimpleStringProperty(this, null);
@@ -48,10 +51,13 @@ public class Instruction implements Cloneable{
         return descriptionText;
     }
 
-    public int getStep() {
-        return step;
+    public Image getImage() {
+        return image;
     }
 
+    // =================================================================================================================
+    // Setters
+    // =================================================================================================================
     public void setDescriptionText(String descriptionText) {
         this.descriptionText = descriptionText;
     }
@@ -60,16 +66,16 @@ public class Instruction implements Cloneable{
         this.step = step;
     }
 
-    public void setDescription(String description) {
-        this.description.set(this.step+".  "+description);
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    // =================================================================================================================
+    // Override methods
+    // =================================================================================================================
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override

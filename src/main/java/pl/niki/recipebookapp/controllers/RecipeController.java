@@ -14,7 +14,6 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -25,7 +24,6 @@ import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +31,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class RecipeController implements Initializable {
+    // =================================================================================================================
+    // Public fields - elements of the recipe-view.fxml
+    // =================================================================================================================
     public ListView<Ingredient> ingredientsList;
     public TableView<Instruction> instructionTable;
     public TableColumn<Instruction,String> descriptionColumn;
@@ -43,63 +44,42 @@ public class RecipeController implements Initializable {
     public SplitPane split;
     public ScrollPane scroll;
     public ToolBar tool;
-    public AnchorPane anchor;
     public BorderPane border;
     public Hyperlink webSiteHyperLink;
 
+    // =================================================================================================================
+    // Private fields
+    // =================================================================================================================
     private final DataManager dm;
     private final MathManager mm;
     private final Recipe recipe;
     private final double width, height;
-    private boolean close;
-    private URL location;
-    private ResourceBundle resource;
-    private ObservableSet<String> selectedCuisine, selectedCourse;
-    private ObservableSet<Product> selectedIngredient;
-    private int minTimeValue, maxTimeValue, minKcalValue, maxKcalValue;
-    private List<Recipe> recipeList;
-    private String searchText;
-    private int sortIndex;
+    private final ObservableSet<String> selectedCuisine, selectedCourse;
+    private final ObservableSet<Product> selectedIngredient;
+    private final int minTimeValue, maxTimeValue, minKcalValue, maxKcalValue, sortIndex;
+    private final List<Recipe> recipeList;
+    private final String searchText;
 
+    // =================================================================================================================
+    // Constructors
+    // =================================================================================================================
     public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height) {
         this.dm = dm;
         this.mm = mm;
         this.recipe = recipeKey;
         this.width = width;
         this.height = height;
-        selectedCuisine = FXCollections.observableSet();
-        selectedCourse = FXCollections.observableSet();
-        selectedIngredient = FXCollections.observableSet();
-        minKcalValue=0;
-        minTimeValue=0;
+        this.selectedCuisine = FXCollections.observableSet();
+        this.selectedCourse = FXCollections.observableSet();
+        this.selectedIngredient = FXCollections.observableSet();
+        this.minKcalValue=0;
+        this.minTimeValue=0;
         dm.setMax();
-        maxKcalValue = dm.getMaxKcal();
-        maxTimeValue = dm.getMaxTime();
-        recipeList = dm.getRecipes();
+        this.maxKcalValue = dm.getMaxKcal();
+        this.maxTimeValue = dm.getMaxTime();
+        this.recipeList = dm.getRecipes();
         this.searchText = "";
         this.sortIndex = 0;
-    }
-
-    public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height, ResourceBundle resourcePath, URL location, SplitPane splitPane) {
-        this.dm = dm;
-        this.mm = mm;
-        this.recipe = recipeKey;
-        this.width = width;
-        this.height = height;
-        this.split = splitPane;
-        this.split.getItems().addAll(splitPane.getItems());
-        initialize(location, resourcePath);
-    }
-
-    public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height, ObservableSet<String> selectedCourse, ObservableSet<String> selectedCuisine, ObservableSet<Product> selectedIngredient) {
-        this.dm = dm;
-        this.mm = mm;
-        this.recipe = recipeKey;
-        this.width = width;
-        this.height = height;
-        this.selectedCourse = selectedCourse;
-        this.selectedCuisine = selectedCuisine;
-        this.selectedIngredient = selectedIngredient;
     }
 
     public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height, ObservableSet<String> selectedCuisine, ObservableSet<String> selectedCourse, ObservableSet<Product> selectedIngredient, int minTimeValue, int maxTimeValue, int minKcalValue, int maxKcalValue, List<Recipe> recipeList, String searchText, int sortIndex) {
@@ -120,22 +100,25 @@ public class RecipeController implements Initializable {
         this.sortIndex = sortIndex;
     }
 
+    // =================================================================================================================
+    // Override methods
+    // =================================================================================================================
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        location = url;
-        resource = resourceBundle;
+        // height of window
+        split.heightProperty().addListener(listener -> scroll.setPrefHeight(split.getHeight()-tool.getHeight()));
+        split.setPrefHeight(height);
+        split.setPrefWidth(width);
 
         // HyperLink ===================================================================================================
         if (recipe.getUrl()!=null){
-            webSiteHyperLink.setOnAction(event -> {
-                dm.getHostServices().showDocument(recipe.getUrl());
-            });
+            webSiteHyperLink.setOnAction(event -> dm.getHostServices().showDocument(recipe.getUrl()));
         }
         else {
             webSiteHyperLink.setVisible(false);
         }
 
-        // labels ======================================================================================================
+        // Labels ======================================================================================================
         recipeNameLabel.setText(recipe.getName().toUpperCase());
         servingsLabel.setText(String.valueOf(recipe.getAmount()));
         kcalLabel.setText(mm.round_double(recipe.getKcal()) + " kcal");
@@ -160,13 +143,24 @@ public class RecipeController implements Initializable {
             }
         });
 
+        // no scroll, no focus
+        ingredientsList.setMouseTransparent(true);
+        ingredientsList.setFocusTraversable(false);
+
+        // height of list
+        ingredientsList.setFixedCellSize(30);
+        ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
+
         // TableView ===================================================================================================
         ObservableList<Instruction> instructions = FXCollections.observableArrayList(recipe.getInstructions());
         instructionTable.setItems(instructions);
+
+        // height of table
         instructionTable.setFixedCellSize(150);
         instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.3)));
 
-        descriptionColumn.setCellValueFactory(cell -> cell.getValue().descriptionProperty());
+        // description column - 1st column
+        descriptionColumn.setCellValueFactory(cell -> cell.getValue().descriptionProperty());                           // ?????????????????????????????????????????????????????????---
         descriptionColumn.setCellFactory(param -> {
             TableCell<Instruction,String> cell = new TableCell<>();
             Text text = new Text();
@@ -177,27 +171,24 @@ public class RecipeController implements Initializable {
             return cell;
         });
 
+        // image column - 2nd column
         if(recipe.isInstructionImage()) {
-            imageColumn.setCellFactory(param -> {
-                // set ImageView
-                final ImageView descriptionImage = new ImageView();
-
-                // set cell
-                TableCell<Instruction, Image> cell = new TableCell<>() {
-                    @Override
-                    protected void updateItem(Image image, boolean b) {
-//                    super.updateItem(image, b);
-                        if (image != null) {
-                            descriptionImage.setFitHeight(150);
-                            descriptionImage.setFitWidth(200);
-                            descriptionImage.setImage(image);
-                        }
+            imageColumn.setCellFactory(cell -> new TableCell<>() {
+                @Override
+                protected void updateItem(Image image, boolean b) {
+                    super.updateItem(image, b);
+                    if (b || image == null) {
+                        setGraphic(null);
+                    } else {
+                        ImageView descriptionImage = new ImageView();
+                        descriptionImage.setFitHeight(150);
+                        descriptionImage.setFitWidth(200);
+                        descriptionImage.setImage(image);
+                        setGraphic(descriptionImage);
                     }
-                };
-                cell.setGraphic(descriptionImage);
-                return cell;
+                }
             });
-            imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
+            imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));                                    // ---???????????????????????????????????????????????????????????????
         }
         else {
             imageColumn.setPrefWidth(0);
@@ -205,16 +196,9 @@ public class RecipeController implements Initializable {
             imageColumn.setMinWidth(0);
         }
 
-        // no scroll, no focus list and table
-        ingredientsList.setMouseTransparent(true);
-        ingredientsList.setFocusTraversable(false);
-
+        // no scroll, no focus
         instructionTable.setMouseTransparent(true);
         instructionTable.setFocusTraversable(false);
-
-        // height of list
-        ingredientsList.setFixedCellSize(30);
-        ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.3)));
 
         // ImageView ===================================================================================================
         recipeImage.setImage(recipe.getImage());
@@ -235,12 +219,7 @@ public class RecipeController implements Initializable {
 
         recipeImage.setImage(image);
 
-        // height of window ===============
-        split.heightProperty().addListener(listener -> scroll.setPrefHeight(split.getHeight()-tool.getHeight()));
-        split.setPrefHeight(height);
-        split.setPrefWidth(width);
-
-        // Button ======================================================================================================
+        // Buttons =====================================================================================================
         // next button
         if (mm.getNextIcon() != null) {
             nextButton.setGraphic(mm.getNextIcon());
@@ -292,8 +271,8 @@ public class RecipeController implements Initializable {
         addButton.setOnAction(this::addAction);
 
         // delete button
-        if (mm.getDeleteIcon()!=null){
-            deleteButton.setGraphic(mm.getDeleteIcon());
+        if (mm.getDeleteIcon(false)!=null){
+            deleteButton.setGraphic(mm.getDeleteIcon(false));
         }
         else {
             deleteButton.setText("Delete");
@@ -313,10 +292,9 @@ public class RecipeController implements Initializable {
         printButton.setOnAction(this::printAction);
     }
 
-    private BorderPane getBorder(){
-        return border;
-    }
-
+    // =================================================================================================================
+    // Private methods
+    // =================================================================================================================
     private void printAction(ActionEvent event) {
         // Select printer
 //        final PrinterJob job = Objects.requireNonNull(PrinterJob.createPrinterJob(), "Cannot create printer job");
@@ -347,12 +325,12 @@ public class RecipeController implements Initializable {
 
         PrintController controller = new PrintController(screenshot);
         mm.showAndWait(getClass(), "print-view.fxml",controller, printButton.getScene().getWindow());
-    }
+    } // Print Button Action
 
     private void editAction(ActionEvent event) {
         AddController controller = new AddController(dm,mm, recipe, split.getWidth(), split.getHeight());
         mm.show(getClass(),"add-view.fxml",controller,event);
-    }
+    } // Edit Button Action
 
     private void deleteAction(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -374,34 +352,34 @@ public class RecipeController implements Initializable {
                 mm.show(getClass(),"recipes-view.fxml", controller, event);
             }
         }
-    }
+    } // Delete Button Action
 
     private void nextAction(ActionEvent event) {
         RecipeController controller = new RecipeController(dm,mm,recipeList.get(recipeList.indexOf(recipe)+1), split.getWidth(), split.getHeight(), selectedCourse,selectedCuisine,selectedIngredient,minTimeValue,maxTimeValue,minKcalValue,maxKcalValue,recipeList,searchText, sortIndex);
         mm.show(getClass(),"recipe-view.fxml",controller,event);
-    }
+    } // Next Button Action
 
     private void prevAction(ActionEvent event) {
         RecipeController controller = new RecipeController(dm,mm,recipeList.get(recipeList.indexOf(recipe)-1), split.getWidth(), split.getHeight(),selectedCourse,selectedCuisine,selectedIngredient,minTimeValue,maxTimeValue,minKcalValue,maxKcalValue,recipeList,searchText, sortIndex);
         mm.show(getClass(),"recipe-view.fxml",controller,event);
-    }
+    } // Prev Button Action
 
-    // menu's buttons action
-    private void recipesAction(ActionEvent event) {
+    // Menu's Buttons Actions ==========================================================================================
+    private void recipesAction(ActionEvent event) { //
         RecipesController controller = new RecipesController(dm,mm, split.getWidth(), split.getHeight(), selectedCourse, selectedCuisine, selectedIngredient, minTimeValue,maxTimeValue,minKcalValue,maxKcalValue,searchText, sortIndex);
         mm.show(getClass(),"recipes-view.fxml",controller,event);
-    }
+    } // Recipes Button Action
 
     private void addAction(ActionEvent event) {
         AddController controller = new AddController(dm, mm, split.getWidth(), split.getHeight());
         mm.show(getClass(),"add-view.fxml",controller,event);
-    }
+    } // Add Recipes Button Action
 
     private void homeAction(ActionEvent event) {
         recipesAction(event);
-    }
+    } // Home Button Action
 
     private void backAction(ActionEvent event) {
         recipesAction(event);
-    }
+    } // Back Button Action
 }

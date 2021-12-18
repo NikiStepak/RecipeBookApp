@@ -1,27 +1,27 @@
 package pl.niki.recipebookapp.recipes;
 
 import javafx.scene.image.Image;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Recipe implements Cloneable {
-    private String name, description;
+    // =================================================================================================================
+    // Private fields
+    // =================================================================================================================
+    private String name, description, cuisine, course, url;
     private List<Ingredient> ingredients;
     private List<Instruction> instructions;
-    //private  photo;
-    private int amount, time, id;
-    private double kcal;
     private Image image;
+    private int amount, time;
+    private double kcal;
     private boolean instructionImage;
-    private String cuisine, course, url;
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
+    private final int id;
 
+    // =================================================================================================================
+    // Constructors
+    // =================================================================================================================
     public Recipe(int id) {
         this.ingredients = new ArrayList<>();
         this.instructions = new ArrayList<>();
@@ -73,7 +73,9 @@ public class Recipe implements Cloneable {
         this.url = null;
     }
 
+    // Copy Constructor
     public Recipe(Recipe newRecipe) {
+        this.id = newRecipe.id;
         this.instructionImage = newRecipe.isInstructionImage();
         this.ingredients = new ArrayList<>();
         this.instructions = new ArrayList<>();
@@ -92,25 +94,18 @@ public class Recipe implements Cloneable {
                 e.printStackTrace();
             }
         }
-//        this.ingredients.addAll(newRecipe.getIngredients());
-//        this.instructions.addAll(newRecipe.getInstructions());
         set(newRecipe.name, newRecipe.kcal, newRecipe.time, newRecipe.amount, newRecipe.description, newRecipe.image, newRecipe.course, newRecipe.cuisine, newRecipe.url);
     }
 
-    public int getId() {
-        return id;
-    }
-
+    // =================================================================================================================
+    // Getters
+    // =================================================================================================================
     public String getUrl() {
         return url;
     }
 
     public Image getImage() {
         return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
     }
 
     public String getName() {
@@ -126,11 +121,11 @@ public class Recipe implements Cloneable {
     }
 
     public List<Ingredient> getIngredients() {
-        return ingredients;
+        return Collections.unmodifiableList(ingredients);
     }
 
     public List<Instruction> getInstructions() {
-        return instructions;
+        return Collections.unmodifiableList(instructions);
     }
 
     public int getAmount() {
@@ -153,27 +148,24 @@ public class Recipe implements Cloneable {
         return instructionImage;
     }
 
-    public void setInstructionImage(boolean instructionImage) {
-        this.instructionImage = instructionImage;
+    // =================================================================================================================
+    // Setters
+    // =================================================================================================================
+    public void setImage(Image image) {
+        this.image = image;
     }
 
-    public void addIngredient(Product product, int amount){
-        Ingredient ingredient = new Ingredient(product,amount);
-        this.kcal += ingredient.countKcal();
-        ingredients.add(ingredient);
+    // =================================================================================================================
+    // Override methods
+    // =================================================================================================================
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
-    public void  addInstruction(String instruction, Image image){
-        this.instructionImage = image != null;
-        instructions.add(new Instruction(instruction, (instructions.size()+1), image));
-    }
-
-    public void  addInstruction(String instruction){
-        this.instructionImage = true;
-        instructions.add(new Instruction(instruction, this.instructions.size()+1));
-    }
-
-
+    // =================================================================================================================
+    // Public methods
+    // =================================================================================================================
     public void set(String name, double kcal, int time, int servings, String description, Image image, String course, String cuisine, String url) {
         this.name = name;
         this.time = time;
@@ -186,10 +178,23 @@ public class Recipe implements Cloneable {
         this.kcal = kcal;
     }
 
-    public void removeIngredient(int index) {
-        this.kcal -= this.ingredients.get(index).getKcal();
-        if (kcal<0) this.kcal = 0;
-        this.ingredients.remove(index);
+    public void countKcal(){
+        this.kcal = 0;
+        for (Ingredient ingredient: this.ingredients){
+            this.kcal += ingredient.getKcal();
+        }
+    }
+
+    // Ingredient List functions =======================================================================================
+    public void addIngredient(Product product, int amount){
+        Ingredient ingredient = new Ingredient(product,amount);
+        this.kcal += ingredient.countKcal();
+        ingredients.add(ingredient);
+    }
+
+    public void addIngredient(Ingredient ingredient) {
+        this.ingredients.add(ingredient);
+        this.kcal += ingredient.getKcal();
     }
 
     public void removeIngredient(Ingredient ingredient) {
@@ -198,26 +203,23 @@ public class Recipe implements Cloneable {
         this.ingredients.remove(ingredient);
     }
 
-    public double countKcal(){
-        this.kcal = 0;
-        for (Ingredient ingredient: this.ingredients){
-            this.kcal += ingredient.getKcal();
+    // Instruction List functions ======================================================================================
+    public void  addInstruction(String instruction){
+        this.instructionImage = true;
+        instructions.add(new Instruction(instruction, this.instructions.size()+1));
+    }
+
+    public void addInstruction(Instruction instruction) {
+        this.instructions.add(instruction);
+        if (instruction.getImage()!=null){
+            this.instructionImage = true;
         }
-        return kcal;
     }
 
     public void removeInstruction(int index) {
         this.instructions.remove(index);
         setInstructionsStep();
         checkInstructionsImage();
-    }
-
-    private void setInstructionsStep() {
-        int i = 1;
-        for (Instruction instruction: this.instructions){
-            instruction.setStep(i);
-            i++;
-        }
     }
 
     public void checkInstructionsImage(){
@@ -231,20 +233,19 @@ public class Recipe implements Cloneable {
         System.out.println(instructionImage);
     }
 
-    public void addInstruction(Instruction instruction) {
-        this.instructions.add(instruction);
-        if (instruction.getImage()!=null){
-            this.instructionImage = true;
-        }
-    }
-
-    public void addIngredient(Ingredient ingredient) {
-        this.ingredients.add(ingredient);
-        this.kcal += ingredient.getKcal();
-    }
-
     public void removeInstructionImage(int index) {
         this.instructions.get(index).setImage(null);
         checkInstructionsImage();
+    }
+
+    // =================================================================================================================
+    // Private methods
+    // =================================================================================================================
+    private void setInstructionsStep() {
+        int i = 1;
+        for (Instruction instruction: this.instructions){
+            instruction.setStep(i);
+            i++;
+        }
     }
 }

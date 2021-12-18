@@ -1,23 +1,18 @@
 package pl.niki.recipebookapp.recipes;
 
 public class Product implements Cloneable {
+    // =================================================================================================================
+    // Private fields
+    // =================================================================================================================
     private String name;
     private double kcal;
-    private int amount;
     private boolean newNull;
 
-    public Product(Product newProduct) {
-        this.name = newProduct.name;
-        this.kcal = newProduct.kcal;
-        this.amount = newProduct.amount;
-        this.newNull = newProduct.newNull;
-    }
+    private final int amount;
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
+    // =================================================================================================================
+    // Constructors
+    // =================================================================================================================
     public Product(String name, double kcal, int amount, boolean newNull) {
         this.name = name;
         this.kcal = kcal;
@@ -25,6 +20,9 @@ public class Product implements Cloneable {
         this.newNull = newNull;
     }
 
+    // =================================================================================================================
+    // Getters
+    // =================================================================================================================
     public boolean isNewNull() {
         return newNull;
     }
@@ -41,6 +39,9 @@ public class Product implements Cloneable {
         return amount;
     }
 
+    // =================================================================================================================
+    // Setters
+    // =================================================================================================================
     public void setNewNull(boolean newNull) {
         this.newNull = newNull;
     }
@@ -51,6 +52,14 @@ public class Product implements Cloneable {
 
     public void setKcal(double kcal) {
         this.kcal = kcal;
+    }
+
+    // =================================================================================================================
+    // Override methods
+    // =================================================================================================================
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override

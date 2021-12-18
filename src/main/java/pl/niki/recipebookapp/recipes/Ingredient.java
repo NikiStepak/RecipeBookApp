@@ -1,17 +1,16 @@
 package pl.niki.recipebookapp.recipes;
 
 public class Ingredient implements Cloneable {
+    // =================================================================================================================
+    // Private fields
+    // =================================================================================================================
     private Product product;
     private int amount;
     private double kcal;
 
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-//        Ingredient ingredient = new Ingredient(product,amount,kcal);
-//        ingredient.product = (Product) product.clone();
-        return new Ingredient(product,amount,kcal);
-    }
-
+    // =================================================================================================================
+    // Constructors
+    // =================================================================================================================
     public Ingredient(Product product, int amount, double kcal) {
         this.product = product;
         this.amount = amount;
@@ -24,12 +23,9 @@ public class Ingredient implements Cloneable {
         countKcal();
     }
 
-    public double countKcal(){
-        double ingredientKcal = this.product.getKcal() * this.amount / this.product.getAmount();
-        this.kcal = ingredientKcal;
-        return ingredientKcal;
-    }
-
+    // =================================================================================================================
+    // Getters
+    // =================================================================================================================
     public Product getProduct() {
         return product;
     }
@@ -38,6 +34,13 @@ public class Ingredient implements Cloneable {
         return amount;
     }
 
+    public double getKcal() {
+        return kcal;
+    }
+
+    // =================================================================================================================
+    // Setters
+    // =================================================================================================================
     public void setAmount(int amount) {
         this.amount = amount;
         countKcal();
@@ -47,13 +50,25 @@ public class Ingredient implements Cloneable {
         this.product = product;
     }
 
-    public double getKcal() {
-        return kcal;
+    // =================================================================================================================
+    // Override methods
+    // =================================================================================================================
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
-
 
     @Override
     public String toString() {
         return amount + "g " + product.getName();
+    }
+
+    // =================================================================================================================
+    // Public methods
+    // =================================================================================================================
+    public double countKcal(){
+        double ingredientKcal = this.product.getKcal() * this.amount / this.product.getAmount();
+        this.kcal = ingredientKcal;
+        return ingredientKcal;
     }
 }

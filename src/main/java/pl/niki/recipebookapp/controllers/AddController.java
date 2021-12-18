@@ -20,7 +20,6 @@ import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -28,6 +27,9 @@ import java.nio.file.Files;
 import java.util.ResourceBundle;
 
 public class AddController implements Initializable {
+    // =================================================================================================================
+    // Public fields - elements of the add-view.fxml
+    // =================================================================================================================
     public Button backButton, addRecipeButton, homeButton, recipesButton, addButton;
     public ImageView recipeImage;
     public ListView<Ingredient> ingredientsList;
@@ -38,44 +40,60 @@ public class AddController implements Initializable {
     public TextArea descriptionArea;
     public Label kcalLabel;
     public ChoiceBox<String> courseChoiceBox;
-
     public SplitPane split;
     public ScrollPane scroll;
     public ToolBar tool;
+
+    // =================================================================================================================
+    // Private fields
+    // =================================================================================================================
+    private final double width, height;
+    private final boolean edit;
 
     private DataManager dm;
     private MathManager mm;
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
-    private final boolean edit;
     private Recipe editRecipe;
-//    private int recipeKey;
-    private final double width, height;
-    private Product selectedProduct = null;
+    private Product selectedProduct;
 
+    // =================================================================================================================
+    // Controllers
+    // =================================================================================================================
     public AddController(DataManager dm, MathManager mm, double width, double height) {
-        this.dm = dm;
-        this.mm = mm;
-        this.edit = false;
-        mm.newRecipe(dm.getRecipes().size());
         this.width = width;
         this.height = height;
+        this.edit = false;
+
+        this.dm = dm;
+        this.mm = mm;
+        mm.newRecipe(dm.getRecipes().size());
+        this.selectedProduct = null;
     }
 
     public AddController(DataManager dm, MathManager mm, Recipe recipe, double width, double height) {
-        this.dm = dm;
-        this.mm = mm;
-        this.edit = true;
-        this.editRecipe = recipe;
-//        this.recipeKey = recipeKey;
-        mm.setNewRecipe(recipe);
-//        System.out.println(mm.getNewRecipe().getInstructions().get(0).getDescriptionText());
         this.width = width;
         this.height = height;
+        this.edit = true;
+
+        this.dm = dm;
+        this.mm = mm;
+        this.editRecipe = recipe;
+        mm.setNewRecipe(recipe);
+        this.selectedProduct = null;
     }
 
+    // =================================================================================================================
+    // Override methods
+    // =================================================================================================================
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // size of window
+        split.heightProperty().addListener(l -> scroll.setPrefHeight(split.getHeight() - tool.getHeight()));
+        split.setPrefHeight(height);
+        split.setPrefWidth(width);
+
+        // ChoiceBox ===================================================================================================
         ObservableList<String> course = FXCollections.observableArrayList(dm.getCourses());
         courseChoiceBox.setItems(course);
         if (edit) {
@@ -90,7 +108,7 @@ public class AddController implements Initializable {
         }
         recipeImage.setOnMouseClicked(event -> imageAction(recipeImage));
 
-        // Label, Fields and Area ========================================
+        // Label, Fields and Area ======================================================================================
         if (edit) {
             kcalLabel.setText(mm.round_double(mm.getNewRecipe().getKcal()) + " kcal");
             recipeNameField.setText(mm.getNewRecipe().getName());
@@ -170,7 +188,7 @@ public class AddController implements Initializable {
                             }
                         });
 
-                        productComboBox.setOnAction(event -> ingredientComboBoxAction(productComboBox));
+                        productComboBox.setOnAction(event -> productComboBoxAction(productComboBox));
                         productComboBox.getEditor().setOnMousePressed(mouseEvent -> showComboBox(productComboBox));
                         productComboBox.getEditor().setOnKeyTyped(keyEvent -> searchComboBoxEditor(productComboBox, products));
 
@@ -181,8 +199,8 @@ public class AddController implements Initializable {
                     }
                     else {
                         // delete Button
-                        if (mm.getSmallDeleteIcon() != null) {
-                            ingredientButton.setGraphic(mm.getSmallDeleteIcon());
+                        if (mm.getDeleteIcon(true) != null) {
+                            ingredientButton.setGraphic(mm.getDeleteIcon(true));
                         } else {
                             ingredientButton.setText("Delete");
                         }
@@ -207,6 +225,7 @@ public class AddController implements Initializable {
             }
         });
 
+        // height of list
         ingredientsList.setFixedCellSize(35);
         ingredientsList.prefHeightProperty().bind(ingredientsList.fixedCellSizeProperty().multiply(Bindings.size(ingredientsList.getItems()).add(0.4)));
 
@@ -214,6 +233,8 @@ public class AddController implements Initializable {
         instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
         instructionTable.setItems(instructions);
         instructionTable.getItems().add(new Instruction(null, instructionTable.getItems().size() + 1, null));
+
+        // Description Column - 1st Column
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("descriptionText"));
         descriptionColumn.setCellFactory(param -> {
             TextArea instructionArea = new TextArea();
@@ -264,6 +285,7 @@ public class AddController implements Initializable {
             return cell;
         });
 
+        // Image Column - 2nd Column
         imageColumn.setPrefWidth(250);
         imageColumn.setMaxWidth(250);
         imageColumn.setMinWidth(250);
@@ -294,8 +316,8 @@ public class AddController implements Initializable {
                         instructionButton.setOnAction(event -> addInstructionAction(instructionTable.getItems().get(getIndex())));
                         tooltip.setText("Add Instruction");
                     } else {
-                        if (mm.getDeleteIcon() != null) { // delete Button
-                            instructionButton.setGraphic(mm.getDeleteIcon());
+                        if (mm.getDeleteIcon(false) != null) { // delete Button
+                            instructionButton.setGraphic(mm.getDeleteIcon(false));
                         }
                         instructionButton.setOnAction(event -> deleteInstructionAction(getIndex()));
                         tooltip.setText("Delete Instruction");
@@ -307,7 +329,7 @@ public class AddController implements Initializable {
                     hBox.getChildren().addAll(descriptionImage, instructionButton);
                     setGraphic(hBox);
                     setOnMouseClicked(event -> {
-                        ContextMenu contextMenu = imageAction(event, descriptionImage, getIndex());
+                        ContextMenu contextMenu = instructionImageAction(event, descriptionImage, getIndex());
                         if (contextMenu != null) {
                             setContextMenu(contextMenu);
                         }
@@ -320,29 +342,25 @@ public class AddController implements Initializable {
         });
         imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
 
+        // height of table
         instructionTable.setFixedCellSize(150);
         instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.2)));
 
-        // ========================
-        split.heightProperty().addListener(l -> scroll.setPrefHeight(split.getHeight() - tool.getHeight()));
-        split.setPrefHeight(height);
-        split.setPrefWidth(width);
-
-        // Button ======================================================================================================
-        //back button
+        // Buttons =====================================================================================================
+        // back button
         if (mm.getBackIcon() != null) {
             backButton.setGraphic(mm.getBackIcon());
         } else
             backButton.setText("Back");
         backButton.setOnAction(this::backAction);
 
-        //home button
+        // home button
         if (mm.getHomeIcon() != null) {
             homeButton.setGraphic(mm.getHomeIcon());
         }
         homeButton.setOnAction(this::homeAction);
 
-        //recipes button
+        // recipes button
         if (mm.getRecipesIcon() != null) {
             recipesButton.setGraphic(mm.getRecipesIcon());
         }
@@ -360,9 +378,73 @@ public class AddController implements Initializable {
         if (mm.getAddIcon() != null) {
             addButton.setGraphic(mm.getAddIcon());
         }
+        addButton.setOnAction(this::addAction);
     }
 
-    private void ingredientComboBoxAction(ComboBox<Product> comboBox) {
+    // =================================================================================================================
+    // Private methods
+    // =================================================================================================================
+    private void imageAction(ImageView imageView) {
+        FileChooser fileChooser = new FileChooser();
+        File file = fileChooser.showOpenDialog(imageView.getScene().getWindow());
+        try {
+            if (file!=null) {
+                String type = Files.probeContentType(file.toPath());
+                type = type.split("/")[0];
+                if (type.equals("image")){
+                    Image newImage = new Image(file.toURI().toString());
+                    imageView.setImage(newImage);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void addRecipeAction(ActionEvent event) {
+        if (recipeNameField.getText().length() > 2){
+            if(minTimeField.getText().length() > 0 || hTimeField.getText().length() > 0){
+                if (servingsField.getText().length() > 0){
+                    if (descriptionArea.getText().length() > 2){
+                        if (courseChoiceBox.getSelectionModel().getSelectedIndex()>=0) {
+                            if (mm.getNewRecipe().getIngredients().size() > 0) {
+                                if (mm.getNewRecipe().getInstructions().size() > 0) {
+                                    if (recipeImage.getImage() != null) {
+                                        String cuisine = cuisineField.getText();
+                                        if (cuisine.length() < 1) {
+                                            cuisine = "-";
+                                        } else {
+                                            dm.addCuisine(cuisine);
+                                        }
+                                        String url = null;
+                                        if (websiteField.getText() != null && websiteField.getText().length() > 0){
+                                            url = websiteField.getText();
+                                        }
+//                                        Double.parseDouble(this.kcalLabel.getText())
+                                        mm.setNewRecipe(2000, recipeNameField.getText(), Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), recipeImage.getImage(), cuisine, courseChoiceBox.getSelectionModel().getSelectedItem(), url);
+                                        mm.getNewRecipe().checkInstructionsImage();
+                                        RecipeController controller;
+                                        if (edit) {
+                                            dm.editRecipe(this.editRecipe, mm.getNewRecipe());
+                                        } else {
+                                            dm.addRecipe(mm.getNewRecipe());
+                                        }
+                                        controller = new RecipeController(dm, mm, mm.getNewRecipe(), split.getWidth(), split.getHeight());
+                                        mm.show(getClass(), "recipe-view.fxml", controller, event);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } // Add (this) Recipe Button Action
+
+    // Product ComboBox functions ======================================================================================
+    private void productComboBoxAction(ComboBox<Product> comboBox) {
         if (comboBox.getSelectionModel().getSelectedIndex() >= 0 && comboBox.getSelectionModel().getSelectedItem() != null && comboBox.getSelectionModel().getSelectedItem().isNewNull()) {
             Product newProduct = comboBox.getSelectionModel().getSelectedItem();
             AddIngredientController controller = new AddIngredientController(dm, mm, newProduct);
@@ -407,7 +489,6 @@ public class AddController implements Initializable {
     }
 
     private void setProduct(Product selectedItem) {
-        System.out.println(selectedItem);
         if (dm.getProducts().contains(selectedItem)){
             selectedProduct = selectedItem;
         }
@@ -416,66 +497,7 @@ public class AddController implements Initializable {
         }
     }
 
-    private ContextMenu imageAction(MouseEvent mouseEvent, ImageView imageView, int index) {
-        if (mouseEvent.getButton() == MouseButton.SECONDARY){
-            ContextMenu contextMenu = new ContextMenu();
-            MenuItem menuItem = new MenuItem();
-            menuItem.setText("Delete");
-            menuItem.setOnAction(event -> deleteAction(imageView, index));
-            contextMenu.getItems().add(menuItem);
-            return contextMenu;
-        }
-        else {
-            imageAction(imageView);
-            return null;
-        }
-    }
-
-    private void deleteAction(ImageView imageView, int index) {
-        imageView.setImage(mm.getAddImage());
-        mm.getNewRecipe().removeInstructionImage(index);
-    }
-
-    private void imageAction(ImageView imageView) {
-        FileChooser fileChooser = new FileChooser();
-        File file = fileChooser.showOpenDialog(imageView.getScene().getWindow());
-        try {
-            if (file!=null) {
-                String type = Files.probeContentType(file.toPath());
-                type = type.split("/")[0];
-                if (type.equals("image")){
-                    Image newImage = new Image(file.toURI().toString());
-                    imageView.setImage(newImage);
-                }
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void addInstructionAction(Instruction instruction) {
-        if (instruction.getDescriptionText()!=null && instruction.getDescriptionText().length()>0){
-            mm.getNewRecipe().addInstruction(instruction);
-            setTable();
-        }
-    }
-
-    private void setTable(){
-        instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
-        instructionTable.getItems().clear();
-        instructionTable.setItems(instructions);
-        instructionTable.getItems().add(new Instruction(null,instructionTable.getItems().size()+1,null));
-        instructionTable.setFixedCellSize(150);
-        instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.2)));
-    }
-
-    private void deleteInstructionAction(int index) {
-        mm.getNewRecipe().removeInstruction(index);
-        setTable();
-    }
-
+    // Ingredient List functions =======================================================================================
     private void setList(){
         ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
         ingredientsList.setItems(ingredients);
@@ -505,57 +527,64 @@ public class AddController implements Initializable {
         setList();
     }
 
-    private void addRecipeAction(ActionEvent event) {
-        if (recipeNameField.getText().length() > 2){
-            if(minTimeField.getText().length() > 0 || hTimeField.getText().length() > 0){
-                if (servingsField.getText().length() > 0){
-                    if (descriptionArea.getText().length() > 2){
-                        if (courseChoiceBox.getSelectionModel().getSelectedIndex()>=0) {
-                            if (mm.getNewRecipe().getIngredients().size() > 0) {
-                                if (mm.getNewRecipe().getInstructions().size() > 0) {
-                                    if (recipeImage.getImage() != null) {
-                                        String cuisine = cuisineField.getText();
-                                        if (cuisine.length() < 1) {
-                                            cuisine = "-";
-                                        } else {
-                                            dm.addCuisine(cuisine);
-                                        }
-                                        String url = null;
-//                                        if (websiteField.getText().length() > 0){
-//                                            url = websiteField.getText();
-//                                        }
-//                                        Double.parseDouble(this.kcalLabel.getText())
-                                        mm.setNewRecipe(2000, recipeNameField.getText(), Integer.parseInt(hTimeField.getText()) * 60 + Integer.parseInt(minTimeField.getText()), Integer.parseInt(servingsField.getText()), descriptionArea.getText(), recipeImage.getImage(), cuisine, courseChoiceBox.getSelectionModel().getSelectedItem(), url);
-                                        mm.getNewRecipe().checkInstructionsImage();
-                                        RecipeController controller;
-                                        if (edit) {
-                                            dm.editRecipe(this.editRecipe, mm.getNewRecipe());
-                                        } else {
-                                            dm.addRecipe(mm.getNewRecipe());
-                                        }
-                                        controller = new RecipeController(dm, mm, mm.getNewRecipe(), split.getWidth(), split.getHeight());
-                                        mm.show(getClass(), "recipe-view.fxml", controller, event);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    // Instruction Table functions =====================================================================================
+    private void setTable(){
+        instructions = FXCollections.observableArrayList(mm.getNewRecipe().getInstructions());
+        instructionTable.getItems().clear();
+        instructionTable.setItems(instructions);
+        instructionTable.getItems().add(new Instruction(null,instructionTable.getItems().size()+1,null));
+        instructionTable.setFixedCellSize(150);
+        instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.2)));
+    }
+
+    private void addInstructionAction(Instruction instruction) {
+        if (instruction.getDescriptionText()!=null && instruction.getDescriptionText().length()>0){
+            mm.getNewRecipe().addInstruction(instruction);
+            setTable();
         }
     }
 
-    // menu's buttons action
+    private void deleteInstructionAction(int index) {
+        mm.getNewRecipe().removeInstruction(index);
+        setTable();
+    }
+
+    private ContextMenu instructionImageAction(MouseEvent mouseEvent, ImageView imageView, int index) {
+        if (mouseEvent.getButton() == MouseButton.SECONDARY){
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem menuItem = new MenuItem();
+            menuItem.setText("Delete");
+            menuItem.setOnAction(event -> deleteInstructionImageAction(imageView, index));
+            contextMenu.getItems().add(menuItem);
+            return contextMenu;
+        }
+        else {
+            imageAction(imageView);
+            return null;
+        }
+    }
+
+    private void deleteInstructionImageAction(ImageView imageView, int index) {
+        imageView.setImage(mm.getAddImage());
+        mm.getNewRecipe().removeInstructionImage(index);
+    }
+
+    // Menu's Buttons Actions ==========================================================================================
     private void recipesAction(ActionEvent event) {
         RecipesController controller = new RecipesController(dm, mm, split.getWidth(),split.getHeight());
         mm.show(getClass(),"recipes-view.fxml",controller, event);
-    }
+    } // Recipes Button Action
 
     private void homeAction(ActionEvent event) {
         recipesAction(event);
-    }
+    } // Home Button Action
 
     private void backAction(ActionEvent event) {
         recipesAction(event);
-    }
+    } // Back Button Action
+
+    private void addAction(ActionEvent event){
+        AddController controller = new AddController(dm, mm, split.getWidth(), split.getHeight());
+        mm.show(getClass(),"add-view.fxml",controller,event);
+    } // Add Recipe Button Action
 }

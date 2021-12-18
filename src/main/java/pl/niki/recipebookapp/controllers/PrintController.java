@@ -18,6 +18,9 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class PrintController implements Initializable {
+    // =================================================================================================================
+    // Public fields - elements of the print-view.fxml
+    // =================================================================================================================
     public ImageView pageImage;
     public Button printButton;
     public ChoiceBox<Printer> printerChoiceBox;
@@ -25,12 +28,21 @@ public class PrintController implements Initializable {
     public RadioButton landscapeRadioButton, portraitRadioButton, highRadioButton, normalRadioButton, lowRadioButton, colorRadioButton, monoRadioButton;
     public VBox vBox;
 
+    // =================================================================================================================
+    // Private fields
+    // =================================================================================================================
     private final List<WritableImage> screenshotTab;
 
+    // =================================================================================================================
+    // Controllers
+    // =================================================================================================================
     public PrintController(List<WritableImage> screenshot) {
         this.screenshotTab = screenshot;
     }
 
+    // =================================================================================================================
+    // Override methods
+    // =================================================================================================================
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // ImageView ===================================================================================================
@@ -77,9 +89,9 @@ public class PrintController implements Initializable {
         copiesSpinner.setValueFactory(valueFactory);
     }
 
-    // ===============================================================================================================//
-    // print button action function                                                                                   //
-    // ===============================================================================================================//
+    // =================================================================================================================
+    // Private methods
+    // =================================================================================================================
     public void printAction(ActionEvent event) {
 
         // Create printer job ==========================================================================================
@@ -151,5 +163,5 @@ public class PrintController implements Initializable {
             job.endJob();
             ((Stage) printButton.getScene().getWindow()).close();
         }
-    }
+    } // Print Button Action
 }

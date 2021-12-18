@@ -5,7 +5,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -22,6 +21,9 @@ import java.net.URL;
 import java.util.*;
 
 public class RecipesController implements Initializable {
+    // =================================================================================================================
+    // Public fields - elements of the recipes-view.fxml
+    // =================================================================================================================
     public Button backButton, homeButton, recipesButton, addButton, timeFilterButton, kcalFilterButton, cleanButton;
     public ToggleButton filterToggleButton;
     public TextField searchField, ingredientSearchField, cuisineSearchField;
@@ -29,7 +31,7 @@ public class RecipesController implements Initializable {
     public ListView<Product> ingredientsList;
     public ListView<String> courseList, cuisineList;
     public Slider minTimeSlider, maxTimeSlider, minKcalSlider, maxKcalSlider;
-    public Label minTimeLabel, maxTimeLabel, maxKcalLabel, minKcalLabel;
+    public Label minTimeLabel, maxTimeLabel, maxKcalLabel, minKcalLabel, courseLabel, cuisineLabel, ingredientLabel, timeLabel, kcalLabel;
     public ScrollPane scroll, filterScroll;
     public AnchorPane anchor, filterAnchor;
     public HBox listHBox;
@@ -37,44 +39,52 @@ public class RecipesController implements Initializable {
     public SplitPane split;
     public ToolBar tool;
     public BorderPane border;
+    public VBox vBox;
 
+    // =================================================================================================================
+    // Private fields
+    // =================================================================================================================
     private final DataManager dm;
     private final MathManager mm;
-    private int listAmount;
     private final double width, height;
-    private ObservableList<String> courses, cuisines;
     private final ObservableList<String> choice = FXCollections.observableArrayList("Sort by ...", "A -> Z", "Z -> A");
-    private ObservableSet<String> selectedCourse = FXCollections.observableSet();
+    private final ObservableSet<String> selectedCourse, selectedCuisine;
+    private final ObservableSet<Product> selectedIngredient;
+    private final int maxTime, maxKcal, sortIndex;
+    private final String searchText;
+
+    private ObservableList<String> cuisines;
     private ObservableList<Product> ingredients;
-    private ObservableSet<String> selectedCuisine = FXCollections.observableSet();
-    private ObservableSet<Product> selectedIngredient = FXCollections.observableSet();
-    private boolean isFilter;
-    private boolean isTimeSet, isKcalSet;
-    private int maxTime, maxKcal, minTimeValue, maxTimeValue, minKcalValue, maxKcalValue;
-    private String searchText;
-    private int sortIndex;
-    List<Recipe> commonRecipes;
+    private boolean isFilter, isTimeSet, isKcalSet, addedVBox;
+    private int minTimeValue, maxTimeValue,minKcalValue, maxKcalValue, listAmount;
+    private List<Recipe> commonRecipes;
 
-
+    // =================================================================================================================
+    // Constructors
+    // =================================================================================================================
     public RecipesController() {
-        dm = new DataManager();
-        mm = new MathManager();
+        this.dm = new DataManager();
+        this.mm = new MathManager();
         this.width = 1100;
         this.height = 602;
-        this.isFilter = false;
-        this.isTimeSet = false;
-        this.isKcalSet = false;
-
+        this.selectedCourse = FXCollections.observableSet();
+        this.selectedCuisine = FXCollections.observableSet();
+        this.selectedIngredient = FXCollections.observableSet();
         dm.setMax();
         this.maxKcal = dm.getMaxKcal();
         this.maxTime = dm.getMaxTime();
+        this.sortIndex = 0;
+        this.searchText = "";
+
+        this.isFilter = false;
+        this.isTimeSet = false;
+        this.isKcalSet = false;
+        this.addedVBox = false;
         this.minTimeValue = 0;
         this.maxTimeValue = maxTime;
         this.minKcalValue = 0;
         this.maxKcalValue = maxKcal;
         this.commonRecipes = new ArrayList<>(dm.getRecipes());
-        this.sortIndex = 0;
-        this.searchText = "";
     }
 
     public RecipesController(DataManager dm, MathManager mm, double width, double height) {
@@ -82,21 +92,24 @@ public class RecipesController implements Initializable {
         this.mm = mm;
         this.width = width;
         this.height = height;
-        this.isFilter = false;
-        this.isTimeSet = false;
-        this.isKcalSet = false;
-
+        this.selectedCourse = FXCollections.observableSet();
+        this.selectedCuisine = FXCollections.observableSet();
+        this.selectedIngredient = FXCollections.observableSet();
         dm.setMax();
         this.maxKcal = dm.getMaxKcal();
         this.maxTime = dm.getMaxTime();
+        this.sortIndex = 0;
+        this.searchText = "";
+
+        this.isFilter = false;
+        this.isTimeSet = false;
+        this.isKcalSet = false;
+        this.addedVBox = false;
         this.minTimeValue = 0;
         this.maxTimeValue = maxTime;
         this.minKcalValue = 0;
         this.maxKcalValue = maxKcal;
         this.commonRecipes = new ArrayList<>(dm.getRecipes());
-        this.sortIndex = 0;
-        this.searchText = "";
-
     }
 
     public RecipesController(DataManager dm, MathManager mm, double width, double height, ObservableSet<String> selectedCourse, ObservableSet<String> selectedCuisine, ObservableSet<Product> selectedIngredient, int minTimeValue, int maxTimeValue, int minKcalValue, int maxKcalValue, String searchText, int sortIndex) {
@@ -107,37 +120,65 @@ public class RecipesController implements Initializable {
         this.selectedCourse = selectedCourse;
         this.selectedCuisine = selectedCuisine;
         this.selectedIngredient = selectedIngredient;
-        this.isFilter = false;
         dm.setMax();
-        maxKcal = dm.getMaxKcal();
-        maxTime = dm.getMaxTime();
+        this.maxKcal = dm.getMaxKcal();
+        this.maxTime = dm.getMaxTime();
+        this.searchText = searchText;
+        this.sortIndex = sortIndex;
+
+        this.isFilter = false;
+        this.isTimeSet = true;
+        this.isKcalSet = true;
+        this.addedVBox = false;
         this.minTimeValue = minTimeValue;
         this.maxTimeValue = maxTimeValue;
         this.minKcalValue = minKcalValue;
         this.maxKcalValue = maxKcalValue;
-        isTimeSet = true;
-        isKcalSet = true;
-        commonRecipes = new ArrayList<>(dm.getRecipes());
-        this.searchText = searchText;
-        this.sortIndex = sortIndex;
-
+        this.commonRecipes = new ArrayList<>(dm.getRecipes());
     }
 
+    // =================================================================================================================
+    // Override methods
+    // =================================================================================================================
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Size of window
+        split.setPrefWidth(width);
+        split.setPrefHeight(height);
+        split.heightProperty().addListener(l -> scroll.setPrefHeight(split.getHeight() - tool.getHeight()));
 
+        // Sliders =====================================================================================================
+        // Kcal sliders
         maxKcalSlider.setMax(maxKcal);
-            minKcalSlider.setValue(minKcalValue);
-            maxKcalSlider.setValue(maxKcalValue);
-        minKcalSlider.setMax(maxKcal);
-        minKcalSlider.setMajorTickUnit(maxKcal/5);
-        maxKcalSlider.setMajorTickUnit(maxKcal/5);
+        maxKcalSlider.setValue(maxKcalValue);
+        maxKcalSlider.setMajorTickUnit((double) maxKcal / 5);
 
+        minKcalSlider.setValue(minKcalValue);
+        minKcalSlider.setMax(maxKcal);
+        minKcalSlider.setMajorTickUnit((double) maxKcal / 5);
+
+        // Time sliders
+        minTimeSlider.setValue(minTimeValue);
+        minTimeSlider.setMax(maxTime);
+        minTimeSlider.setMajorTickUnit((double) maxTime / 5);
+
+        maxTimeSlider.setValue(maxTimeValue);
+        maxTimeSlider.setMax(maxTime);
+        maxTimeSlider.setMajorTickUnit((double) maxTime / 5);
+
+        // Sliders' labels
         minKcalLabel.setText("from " + (int) minKcalSlider.getValue() + " kcal");
         maxKcalLabel.setText("to " + (int) maxKcalSlider.getValue() + " kcal");
+        minTimeLabel.setText("from " + mm.countTime((int) minTimeSlider.getValue()));
+        maxTimeLabel.setText("to " + mm.countTime((int) maxTimeSlider.getValue()));
 
+        // Sliders' buttons
+        kcalFilterButton.setOnAction(this::kcalFilterAction);
+        timeFilterButton.setOnAction(this::timeFilterAction);
+
+        // Sliders' listeners
         minKcalSlider.valueProperty().addListener(((observableValue, oldNumber, newNumber) -> {
-            if ((int) (newNumber.doubleValue()) > (int) (maxKcalSlider.getValue())){
+            if ((int) (newNumber.doubleValue()) > (int) (maxKcalSlider.getValue())) {
                 minKcalSlider.setValue(maxKcalSlider.getValue());
                 newNumber = maxKcalSlider.getValue();
             }
@@ -145,140 +186,85 @@ public class RecipesController implements Initializable {
         }));
 
         maxKcalSlider.valueProperty().addListener((observableValue, oldNumber, newNumber) -> {
-            if ((int)(newNumber.doubleValue()) < (int) (minKcalSlider.getValue())){
+            if ((int) (newNumber.doubleValue()) < (int) (minKcalSlider.getValue())) {
                 maxKcalSlider.setValue(minKcalSlider.getValue());
                 newNumber = minKcalSlider.getValue();
             }
             maxKcalLabel.setText("to " + (int) (newNumber.doubleValue()) + " kcal");
         });
 
-        kcalFilterButton.setOnAction(this::kcalFilterAction);
-
-        maxTimeSlider.setMax(maxTime);
-            minTimeSlider.valueProperty().set(minTimeValue);
-            maxTimeSlider.setValue(maxTimeValue);
-        minTimeSlider.setMax(maxTime);
-        minTimeSlider.setMajorTickUnit(maxTime/5);
-        maxTimeSlider.setMajorTickUnit(maxTime/5);
-
-        minTimeLabel.setText("from " + mm.countTime((int) minTimeSlider.getValue()));
-        maxTimeLabel.setText("to " + mm.countTime((int) maxTimeSlider.getValue()));
-
         minTimeSlider.valueProperty().addListener((observableValue, oldNumber, newNumber) -> {
             if ((int) (newNumber.doubleValue()) > (int) (maxTimeSlider.getValue())) {
                 minTimeSlider.setValue(maxTimeSlider.getValue());
                 newNumber = maxTimeSlider.getValue();
             }
-            System.out.println("T"+minTimeValue);
+            System.out.println("T" + minTimeValue);
 
             minTimeLabel.setText("from " + mm.countTime((int) newNumber.doubleValue()));
         });
 
-        timeFilterButton.setOnAction(this::timeFilterAction);
-
         maxTimeSlider.valueProperty().addListener((observableValue, oldNumber, newNumber) -> {
-            if ((int)(newNumber.doubleValue()) < (int) (minTimeSlider.getValue())){
+            if ((int) (newNumber.doubleValue()) < (int) (minTimeSlider.getValue())) {
                 maxTimeSlider.setValue(minTimeSlider.getValue());
                 newNumber = minTimeSlider.getValue();
             }
             maxTimeLabel.setText("to " + mm.countTime((int) newNumber.doubleValue()));
         });
 
-        courses = FXCollections.observableArrayList(dm.getCourses());
-        courses.sort(Comparator.naturalOrder());
-        courseList.setItems(courses);
-        courseList.setCellFactory(CheckBoxListCell.forListView(course -> {
-            BooleanProperty property = new SimpleBooleanProperty();
-            property.addListener((obs, wasSelected, isNowSelected) -> {
-                if (isNowSelected){
-                    selectedCourse.add(course);
-                }
-                else {
-                    selectedCourse.remove(course);
-                }
-                courseFilterAction();
-            });
-            property.set(selectedCourse.contains(course));
-            selectedCourse.addListener((SetChangeListener.Change<? extends String> c) -> property.set(selectedCourse.contains(course)));
-            return property;
-        }));
+        // ListViews ===================================================================================================
+        // Course list
+        ObservableList<String> courses = FXCollections.observableArrayList(dm.getCourses());
+        setFilterList(courseList, selectedCourse,courses,Comparator.naturalOrder());
         courseList.setFixedCellSize(25);
         courseList.prefHeightProperty().bind(courseList.fixedCellSizeProperty().multiply(Bindings.size(courseList.getItems()).add(0.3)));
 
+        // Cuisine list
         cuisines = FXCollections.observableArrayList(dm.getCuisines());
-        cuisines.sort(Comparator.naturalOrder());
-        cuisineList.setItems(cuisines);
-        cuisineList.setCellFactory(CheckBoxListCell.forListView(cuisine->{
-            BooleanProperty property = new SimpleBooleanProperty();
-            property.addListener((obs,wasSelected,isNowSelected)->{
-                if (isNowSelected){
-                    selectedCuisine.add(cuisine);
-                }
-                else {
-                    selectedCuisine.remove(cuisine);
-                }
-                cuisineFilterAction();
-            });
-            property.set(selectedCuisine.contains(cuisine));
-            selectedCuisine.addListener((SetChangeListener.Change<? extends String> c) -> property.set(selectedCuisine.contains(cuisine)));
-            return property;
-        }));
+        setFilterList(cuisineList,selectedCuisine,cuisines,Comparator.naturalOrder());
 
-
+        // Ingredient list
         ingredients = FXCollections.observableArrayList(mm.getIngredients(dm.getRecipes()));
-        ingredients.sort(Comparator.comparing(Product::getName));
-        ingredientsList.setItems(ingredients);
-        ingredientsList.setCellFactory(CheckBoxListCell.forListView(product -> {
-            BooleanProperty observable = new SimpleBooleanProperty();
-            observable.addListener((obs, wasSelected, isNowSelected) -> {
-                if (isNowSelected){
-                    selectedIngredient.add(product);
-                }
-                else {
-                    selectedIngredient.remove(product);
-                }
-                ingredientsFilterAction();
-            });
-            observable.set(selectedIngredient.contains(product));
-            selectedIngredient.addListener((SetChangeListener.Change<? extends Product> c)->observable.set(selectedIngredient.contains(product)));
-            return observable;
-        }));
+        setFilterList(ingredientsList, selectedIngredient, ingredients, Comparator.comparing(Product::getName));
 
+        // Search TextFields ===========================================================================================
         ingredientSearchField.setOnKeyTyped(this::searchIngredientAction);
         cuisineSearchField.setOnKeyTyped(this::searchCuisineAction);
-
         searchField.setText(searchText);
-        searchField.setOnKeyTyped(this::searchAction);
+        searchField.setOnKeyTyped(keyEvent -> getCommonRecipes());
+
+        // Sort ChoiceBox ==============================================================================================
         sortChoiceBox.setItems(choice);
-        sortChoiceBox.setOnAction(this::sortAction);
+        sortChoiceBox.setOnAction(event -> getCommonRecipes());
         sortChoiceBox.getSelectionModel().select(sortIndex);
-        if(mm.getFilterIcon()!=null) {
+
+        // ToggleButton ================================================================================================
+        if (mm.getFilterIcon() != null) {
             filterToggleButton.setGraphic(mm.getFilterIcon());
         }
+        filterToggleButton.setOnAction(event -> getCommonRecipes());
 
-        filterToggleButton.setOnAction(this::filterAction);
-        // Button ======================================================================================================
+        // Buttons =====================================================================================================
         //back button
-        if(mm.getBackIcon()!=null) {
+        if (mm.getBackIcon() != null) {
             backButton.setGraphic(mm.getBackIcon());
-        }
-        else
+        } else
             backButton.setText("Back");
         backButton.setOnAction(this::backAction);
 
         //home button
-        if(mm.getHomeIcon()!=null){
+        if (mm.getHomeIcon() != null) {
             homeButton.setGraphic(mm.getHomeIcon());
         }
         homeButton.setOnAction(this::homeAction);
 
         //recipes button
-        if (mm.getRecipesIcon()!=null){
+        if (mm.getRecipesIcon() != null) {
             recipesButton.setGraphic(mm.getRecipesIcon());
         }
+        recipesButton.setOnAction(this::recipesAction);
 
         //add button
-        if (mm.getAddIcon()!=null){
+        if (mm.getAddIcon() != null) {
             addButton.setGraphic(mm.getAddIcon());
         }
         addButton.setOnAction(this::addAction);
@@ -288,13 +274,126 @@ public class RecipesController implements Initializable {
         // ScrollPane ====================================================================================================
         scroll.widthProperty().addListener(observable -> getCommonRecipes());
         scroll.setMinWidth(200);
-
-        split.heightProperty().addListener(l -> scroll.setPrefHeight(split.getHeight()-tool.getHeight()));
-
-        split.setPrefWidth(width);
-        split.setPrefHeight(height);
     }
 
+    // =================================================================================================================
+    // Private methods
+    // =================================================================================================================
+    private <T> void setFilterList(ListView<T> itemsList, ObservableSet<T> selectedItems, ObservableList<T> items, Comparator<T> comparator) {
+        items.sort(comparator);
+        itemsList.setItems(items);
+        itemsList.setCellFactory(CheckBoxListCell.forListView(item -> {
+            BooleanProperty property = new SimpleBooleanProperty();
+            property.addListener((obs, wasSelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    selectedItems.add(item);
+                } else {
+                    selectedItems.remove(item);
+                }
+                getCommonRecipes();
+            });
+            property.set(selectedItems.contains(item));
+            selectedItems.addListener((SetChangeListener.Change<? extends T> c) -> property.set(selectedItems.contains(item)));
+
+            return property;
+        }));
+    }
+
+    private void setList(ListView<Recipe> recipeList) {
+        recipeList.setCellFactory(cell -> new ListCell<>(){
+            final Tooltip tooltip = new Tooltip();
+            @Override
+            protected void updateItem(Recipe recipe, boolean b) {
+                super.updateItem(recipe, b);
+                if (b || recipe == null || recipe.getName() == null){
+                    setText(null);
+                    setTooltip(null);
+                }
+                else {
+                    if (recipe.getImage()!=null){
+                        final VBox vBox = new VBox();
+                        final Label label = new Label(recipe.getName());
+                        label.getStyleClass().add("blackText");
+                        final ImageView recipeImage = new ImageView();
+                        recipeImage.setFitHeight(150);
+                        recipeImage.setFitWidth(150);
+                        recipeImage.setImage(recipe.getImage());
+                        vBox.setAlignment(Pos.CENTER);
+                        vBox.getChildren().add(recipeImage);
+                        vBox.getChildren().add(label);
+                        setGraphic(vBox);
+                    }
+                    else {
+                        setText(recipe.getName());
+                    }
+                    tooltip.setText(recipe.getName());
+                    setTooltip(tooltip);
+                }
+            }
+        });
+
+        recipeList.setMinWidth(180);
+        recipeList.setFixedCellSize(190);
+        recipeList.prefHeightProperty().bind(recipeList.fixedCellSizeProperty().multiply(Bindings.size(recipeList.getItems()).add(0.2)));
+
+        recipeList.setOnMouseClicked(event -> click(recipeList.getSelectionModel().getSelectedItem(), event));
+    }
+
+    private void setPane(Comparator<Recipe> comparator, List<Recipe> shownRecipes) {
+        filterAnchor.setMinHeight(filterVBox.getHeight() + 50);
+        listHBox.getChildren().clear();
+        if (filterToggleButton.isSelected()) {
+            border.setLeft(filterScroll);
+        } else {
+            border.setLeft(null);
+        }
+
+        listAmount = (int) ((scroll.getWidth() + 12) / 188);
+        if (listAmount<1){
+            listAmount = 1;
+        }
+
+        ListView<Recipe>[] recipeList = new ListView[listAmount];
+        ObservableList<Recipe>[] recipes = new ObservableList[listAmount];
+
+        for (int i = 0; i < listAmount; i++) {
+            recipes[i] = FXCollections.observableArrayList();
+            recipeList[i] = new ListView<>();
+        }
+
+        if (comparator != null) {
+            shownRecipes.sort(comparator);
+        }
+        setRecipes(shownRecipes, recipes);
+
+
+        for (int i = 0; i < listAmount; i++) {
+            recipeList[i].setItems(recipes[i]);
+            setList(recipeList[i]);
+
+            anchor.setPrefWidth(scroll.getWidth() - 15);
+            listHBox.setPrefWidth(scroll.getWidth() - 15);
+            listHBox.getChildren().add(recipeList[i]);
+        }
+//        System.out.println(filterAnchor.getWidth());
+
+    }
+
+    private void setRecipes(List<Recipe> dmList, List<Recipe>[] recipes) {
+        for (int i=0; i<dmList.size();i++){
+            recipes[i%this.listAmount].add(dmList.get(i));
+        }
+    }
+
+    private void click(Recipe selectedRecipe, MouseEvent mouseEvent) {
+//        System.out.println("click" + selectedRecipe);
+        if(selectedRecipe != null) {
+            RecipeController controller = new RecipeController(dm, mm, selectedRecipe, split.getWidth(), split.getHeight(), selectedCourse, selectedCuisine, selectedIngredient, minTimeValue, maxTimeValue, minKcalValue, maxKcalValue, commonRecipes, searchField.getText(), sortChoiceBox.getSelectionModel().getSelectedIndex());
+            mm.show(getClass(),"recipe-view.fxml",controller,mouseEvent);
+        }
+    }
+
+    // Filter, Search TextField and Sort ChoiceBox Action ==============================================================
     private void cleanAction(ActionEvent event) {
         selectedCuisine.clear();
         selectedCourse.clear();
@@ -306,24 +405,7 @@ public class RecipesController implements Initializable {
         isKcalSet = false;
         isTimeSet = false;
         getCommonRecipes();
-    }
-
-    private void searchCuisineAction(KeyEvent keyEvent) {
-        ObservableList<String> searchedCuisine = FXCollections.observableArrayList(mm.getSearchedCuisine(cuisines, cuisineSearchField.getText()));
-        searchedCuisine.sort(Comparator.naturalOrder());
-        cuisineList.setItems(searchedCuisine);
-    }
-
-    private void kcalFilterAction(ActionEvent event) {
-        isKcalSet = true;
-        minKcalValue = (int) minKcalSlider.getValue();
-        maxKcalValue = (int) maxKcalSlider.getValue();
-        getCommonRecipes();
-    }
-
-    public Label courseLabel, cuisineLabel, ingredientLabel, timeLabel, kcalLabel;
-    private boolean addedVBox = false;
-    public VBox vBox;
+    } // Clean Button Action
 
     private void setLabel(){
         courseLabel = new Label();
@@ -370,26 +452,6 @@ public class RecipesController implements Initializable {
         }
     }
 
-    private void timeFilterAction(ActionEvent event) {
-        isTimeSet = true;
-        minTimeValue = (int) minTimeSlider.getValue();
-        maxTimeValue = (int) maxTimeSlider.getValue();
-        getCommonRecipes();
-    }
-
-    private void courseFilterAction() {
-        getCommonRecipes();
-    }
-
-    private void cuisineFilterAction() {
-        getCommonRecipes();
-
-    }
-
-    private void ingredientsFilterAction() {
-        getCommonRecipes();
-    }
-
     private void getCommonRecipes() {
         commonRecipes = new ArrayList<>(dm.getRecipes());
         isFilter = false;
@@ -431,63 +493,22 @@ public class RecipesController implements Initializable {
         filterTextAction();
 
         if (sortChoiceBox.getSelectionModel().getSelectedIndex() == 1) {
-            setPane(Comparator.comparing(Recipe::getName), true, commonRecipes);
+            setPane(Comparator.comparing(Recipe::getName), commonRecipes);
 
         }
         else if (sortChoiceBox.getSelectionModel().getSelectedIndex() == 2){
-            setPane(Comparator.comparing(Recipe::getName).reversed(), true, commonRecipes);
+            setPane(Comparator.comparing(Recipe::getName).reversed(), commonRecipes);
         }
         else {
-            setPane(null, false, commonRecipes);
+            setPane(null, commonRecipes);
         }
     }
 
-    private void filterAction(ActionEvent event) {
-        getCommonRecipes();
-    }
-
-    private void setPane(Comparator<Recipe> comparator, boolean sort, List<Recipe> shownRecipes) {
-        filterAnchor.setMinHeight(filterVBox.getHeight() + 50);
-        listHBox.getChildren().clear();
-        if (filterToggleButton.isSelected()) {
-            border.setLeft(filterScroll);
-        } else {
-            border.setLeft(null);
-        }
-
-        listAmount = (int) ((scroll.getWidth() + 12) / 188);
-        if (listAmount<1){
-            listAmount = 1;
-        }
-
-        ListView<Recipe>[] recipeList = new ListView[listAmount];
-        ObservableList<Recipe>[] recipes = new ObservableList[listAmount];
-
-        for (int i = 0; i < listAmount; i++) {
-            recipes[i] = FXCollections.observableArrayList();
-            recipeList[i] = new ListView<>();
-        }
-
-        if (comparator != null) {
-            shownRecipes.sort(comparator);
-        }
-        setRecipes(shownRecipes, recipes);
-
-
-        for (int i = 0; i < listAmount; i++) {
-            recipeList[i].setItems(recipes[i]);
-            setList(recipeList[i], i);
-
-            anchor.setPrefWidth(scroll.getWidth() - 15);
-            listHBox.setPrefWidth(scroll.getWidth() - 15);
-            listHBox.getChildren().add(recipeList[i]);
-        }
-//        System.out.println(filterAnchor.getWidth());
-
-    }
-
-    private void sortAction(Event event) {
-        getCommonRecipes();
+    // Search TextField Action =========================================================================================
+    private void searchCuisineAction(KeyEvent keyEvent) {
+        ObservableList<String> searchedCuisine = FXCollections.observableArrayList(mm.getSearchedCuisine(cuisines, cuisineSearchField.getText()));
+        searchedCuisine.sort(Comparator.naturalOrder());
+        cuisineList.setItems(searchedCuisine);
     }
 
     private void searchIngredientAction(KeyEvent keyEvent) {
@@ -496,82 +517,37 @@ public class RecipesController implements Initializable {
         ingredientsList.setItems(searchedIngredients);
     }
 
-    private void searchAction(KeyEvent keyEvent) {
+    // Filter Buttons Action ===========================================================================================
+    private void kcalFilterAction(ActionEvent event) {
+        isKcalSet = true;
+        minKcalValue = (int) minKcalSlider.getValue();
+        maxKcalValue = (int) maxKcalSlider.getValue();
         getCommonRecipes();
     }
 
-    private void setList(ListView<Recipe> recipeList, int i) {
-        recipeList.setCellFactory(cell -> new ListCell<>(){
-            final Tooltip tooltip = new Tooltip();
-            @Override
-            protected void updateItem(Recipe recipe, boolean b) {
-                super.updateItem(recipe, b);
-                if (b || recipe == null || recipe.getName() == null){
-                    setText(null);
-                    setTooltip(null);
-                }
-                else {
-                    if (recipe.getImage()!=null){
-                        final VBox vBox = new VBox();
-                        final Label label = new Label(recipe.getName());
-                        label.getStyleClass().add("blackText");
-                        final ImageView recipeImage = new ImageView();
-                        recipeImage.setFitHeight(150);
-                        recipeImage.setFitWidth(150);
-                        recipeImage.setImage(recipe.getImage());
-                        vBox.setAlignment(Pos.CENTER);
-                        vBox.getChildren().add(recipeImage);
-                        vBox.getChildren().add(label);
-                        setGraphic(vBox);
-                    }
-                    else {
-                        setText(recipe.getName());
-                    }
-                    tooltip.setText(recipe.getName());
-                    setTooltip(tooltip);
-                }
-            }
-        });
-
-        recipeList.setMinWidth(180);
-        recipeList.setFixedCellSize(190);
-        recipeList.prefHeightProperty().bind(recipeList.fixedCellSizeProperty().multiply(Bindings.size(recipeList.getItems()).add(0.2)));
-
-        recipeList.setOnMouseClicked(event -> {
-
-            Recipe selectedRecipe = recipeList.getSelectionModel().getSelectedItem();
-            click(selectedRecipe, event);
-        });
+    private void timeFilterAction(ActionEvent event) {
+        isTimeSet = true;
+        minTimeValue = (int) minTimeSlider.getValue();
+        maxTimeValue = (int) maxTimeSlider.getValue();
+        getCommonRecipes();
     }
 
-    private void setRecipes(List<Recipe> dmList, List<Recipe>[] recipes) {
-        for (int i=0; i<dmList.size();i++){
-            recipes[i%this.listAmount].add(dmList.get(i));
-        }
-    }
-
-    public void click(Recipe selectedRecipe, MouseEvent mouseEvent) {
-//        System.out.println("click" + selectedRecipe);
-        if(selectedRecipe != null) {
-//            System.out.println(minTimeValue);
-//            System.out.println(maxKcalValue);
-            RecipeController controller = new RecipeController(dm, mm, selectedRecipe, split.getWidth(), split.getHeight(), selectedCourse, selectedCuisine, selectedIngredient, minTimeValue, maxTimeValue, minKcalValue, maxKcalValue, commonRecipes, searchField.getText(), sortChoiceBox.getSelectionModel().getSelectedIndex());
-            mm.show(getClass(),"recipe-view.fxml",controller,mouseEvent);
-        }
-    }
-
-
-    // menu's buttons action
+    // Menu's Buttons Actions ==========================================================================================
     private void addAction(ActionEvent event) {
         AddController controller = new AddController(dm, mm, split.getWidth(), split.getHeight());
         mm.show(getClass(),"add-view.fxml",controller,event);
-    }
+    } // Add Recipe Button Action
 
     private void homeAction(ActionEvent event) {
 //        backAction(event);
-    }
+    } // Home Button Action
 
     private void backAction(ActionEvent event) {
 //        mm.show(getClass(), "recipes-view.fxml", event);
-    }
+    } // Back Button Action
+
+    private void recipesAction(ActionEvent event) {
+        RecipesController controller = new RecipesController(dm, mm,split.getWidth(),split.getHeight());
+        mm.show(getClass(),"recipes-view.fxml",controller,event);
+    } // Recipes Button Action
 }
