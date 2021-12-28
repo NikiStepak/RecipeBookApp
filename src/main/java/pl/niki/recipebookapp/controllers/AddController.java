@@ -368,6 +368,7 @@ public class AddController implements Initializable {
         // Buttons =====================================================================================================
         // refresh Button
         refreshButton.setGraphic(mm.getRefreshIcon());
+        refreshButton.setOnAction(this::refreshAction);
 
         // back button
         if (mm.getBackIcon() != null) {
@@ -401,6 +402,17 @@ public class AddController implements Initializable {
             addButton.setGraphic(mm.getAddIcon());
         }
         addButton.setOnAction(this::addAction);
+    }
+
+    private void refreshAction(ActionEvent event) {
+        AddController controller;
+        if (edit){
+            controller = new AddController(dm, mm, editRecipe, split.getWidth(), split.getHeight());
+        }
+        else {
+            controller = new AddController(dm, mm, split.getWidth(), split.getHeight());
+        }
+        mm.show(getClass(),"add-view.fxml",controller,event);
     }
 
     // =================================================================================================================
