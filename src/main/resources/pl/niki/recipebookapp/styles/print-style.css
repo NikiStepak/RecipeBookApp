@@ -1,0 +1,112 @@
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-font-size: 18;
+}
+
+.split-pane:horizontal > .split-pane-divider {
+    -fx-background-color: linear-gradient(to left, #ffffff, #1f2a34);
+}
+
+VBox {
+    -fx-background-color: #1f2a34;
+}
+
+.choice-box .label {
+    -fx-font-size: 13;
+    -fx-text-fill: #1f2a34;
+}
+
+.choice-box {
+    -fx-background-color: #ffffff;
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.1, 0, 0);
+    -fx-mark-color: #1f2a34;
+    -fx-cursor: hand;
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: #1f2a34;
+}
+
+.spinner {
+    -fx-body-color: transparent;
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.1, 0, 0);
+    -fx-font-family: "Comic Sans MS";
+    -fx-text-fill: #1f2a34;
+}
+
+.spinner:focused .increment-arrow-button,
+.spinner:focused .decrement-arrow-button {
+    -fx-body-color: #ffffff;
+}
+
+.spinner .text-field {
+    -fx-background-color: #ffffff;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.1, 0, 0);
+    -fx-cursor: hand;
+}
+
+.radio-button {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+}
+
+.radio-button:selected .radio .dot {
+    -fx-background-color: #1f2a34;
+}
+
+.button {
+    -fx-effect: innershadow(gaussian, #1f2a34, 25, 0.3, 0, 0);
+    -fx-font-weight: bold;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 18;
+}
+
+.choice-box .menu-item:focused .label {
+    -fx-text-fill: #ffffff;
+}
+
+.radio-button:hover,
+.button:hover {
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #1f2a34;
+    -fx-effect: innershadow(gaussian, #ffffff, 25, 0.3, 0, 0);
+
+}
+
+.separator:vertical {
+    -fx-background-color: linear-gradient(to right, #ffffff, #1f2a34);
+    -fx-pref-width: 20;
+
+}
+
+HBox,
+AnchorPane.main {
+    -fx-background-color: #ffffff;
+}
+
+VBox Group {
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, #ffffff, 25, 0.05, 0, 0);
+}
+
+VBox Group:hover {
+    -fx-effect: dropshadow(gaussian, #ffffff, 25, 0.3, 0, 0);
+
+}
+
+.image-view.main {
+    -fx-effect: dropshadow(gaussian, #1f2a34, 1, 1, 0, 0);
+
+}

@@ -1,5 +1,7 @@
 package pl.niki.recipebookapp.recipes;
 
+import java.util.Locale;
+
 public class Product implements Cloneable {
     // =================================================================================================================
     // Private fields
@@ -14,7 +16,7 @@ public class Product implements Cloneable {
     // Constructors
     // =================================================================================================================
     public Product(String name, double kcal, int amount, boolean newNull) {
-        this.name = name;
+        setName(name);
         this.kcal = kcal;
         this.amount = amount; //gram
         this.newNull = newNull;
@@ -47,7 +49,12 @@ public class Product implements Cloneable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name.length()>1){
+            this.name = name.substring(0,1).toUpperCase() + name.substring(1);
+        }
+        else {
+            this.name = name;
+        }
     }
 
     public void setKcal(double kcal) {
@@ -64,6 +71,10 @@ public class Product implements Cloneable {
 
     @Override
     public String toString() {
-        return getName();
+        return name;
     }
+
+    // =================================================================================================================
+    // Private methods
+    // =================================================================================================================
 }

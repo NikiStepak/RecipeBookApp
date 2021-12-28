@@ -1,39 +1,136 @@
-SplitPane:horizontal > .split-pane-divider {
-    -fx-background-color:linear-gradient(to right, #EAEAEA, #1f2a34);
-}
-
-SplitPane {
+.scroll-pane,
+BorderPane.color {
     -fx-background-color: #1f2a34;
 }
 
-Label {
-    -fx-text-fill: #ffffff;
-}
-
-.blackText {
-    -fx-text-fill: #000000;
-}
-
-.title {
-    /*-fx-background-color: darkslateblue;*/
-    -fx-font-size: 24;
-    -fx-label-padding: 10;
-}
-
-ListView {
-    -fx-end-margin: 25;
-}
-
-.color {
-    -fx-background-color: #1f2a34;
-}
-
-.whiteBackground {
+AnchorPane.color {
     -fx-background-color: #ffffff;
+    -fx-effect: innershadow(gaussian, #1f2a34, 15, 0.5, 0, 0);
 }
 
-TableView Label {
-    -fx-text-fill: black;
+AnchorPane.color .label {
+    -fx-text-fill: #1f2a34;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+}
+
+BorderPane.color .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 14;
+}
+
+BorderPane.color .label.main {
+    -fx-font-weight: bold;
+}
+
+BorderPane.color .label.title {
+    -fx-font-size: 30;
+}
+
+.list-cell {
+    -fx-font-weight: bold;
+}
+
+.list-cell,
+.table-cell {
+    -fx-background-color: transparent;
+    -fx-font-family: "Comic Sans MS";
+    -fx-text-fill: #1f2a34;
+    -fx-font-size: 14;
     -fx-alignment: CENTER-LEFT;
 }
 
+.list-view {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background,
+.table-view .column-header,
+.table-view .table-row-cell,
+.table-view {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tool-bar.color {
+    -fx-background-color: #1f2a34;
+}
+
+.tool-bar {
+    -fx-background-color: linear-gradient(to right, #ffffff, #1f2a34);
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+
+.tool-bar.color .button {
+    -fx-text-fill: #ffffff;
+}
+
+.tool-bar .button {
+    -fx-text-fill: #1f2a34;
+}
+
+.tool-bar.color .button .image-view {
+    -fx-effect: innershadow(gaussian, #ffffff, 10, 1, 0, 0);
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
+
+.tool-bar.color .button:hover {
+    -fx-effect: dropshadow(gaussian, #ffffff, 20, 0.5, 0, 0);
+}
+
+.separator {
+    -fx-background-color: #ffffff;
+}
+
+.tool-bar .button:hover {
+    -fx-effect: dropshadow(gaussian, #1f2a34, 20, 0.5, 0, 0);
+}
+
+.scroll-pane .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar .thumb {
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.1, 0, 0);
+}
+
+.scroll-pane .scroll-bar:vertical .decrement-button,
+.scroll-pane .scroll-bar:vertical .increment-button,
+.scroll-pane .scroll-bar:vertical .decrement-button .decrement-arrow,
+.scroll-pane .scroll-bar:vertical .increment-button .increment-arrow {
+    -fx-padding: 0 3 0 3;
+    -fx-background-color: transparent;
+
+}
+
+.hyperlink {
+    -fx-font-family: "Comic Sans MS";
+    -fx-text-fill: #1f2a34;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+}
+
+.hyperlink .image-view {
+    -fx-effect: innershadow(gaussian, #1f2a34, 10, 1, 0, 0);
+}
+
+.hyperlink:focused {
+    -fx-border-color: #ffffff;
+    -fx-border-style: dashed;
+
+}

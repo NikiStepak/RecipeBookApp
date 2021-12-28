@@ -1,32 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <ImageView fx:id="pageImage" fitHeight="150.0" fitWidth="200.0" layoutX="170.0" layoutY="115.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="printButton" layoutX="42.0" layoutY="327.0" mnemonicParsing="false" text="Print" />
-      <Label layoutX="20.0" layoutY="21.0" text="Printer:" />
-      <ChoiceBox fx:id="printerChoiceBox" layoutX="29.0" layoutY="48.0" prefWidth="150.0" />
-      <Label layoutX="15.0" layoutY="91.0" text="Copies:" />
-      <Spinner fx:id="copiesSpinner" editable="true" layoutX="20.0" layoutY="115.0" />
-      <Label layoutX="15.0" layoutY="154.0" text="Orientation:" />
-      <RadioButton fx:id="landscapeRadioButton" layoutX="19.0" layoutY="182.0" mnemonicParsing="false" text="Landscape" />
-      <RadioButton fx:id="portraitRadioButton" layoutX="19.0" layoutY="209.0" mnemonicParsing="false" selected="true" text="Portrait" />
-      <Label layoutX="25.0" layoutY="235.0" text="Color:" />
-      <Label layoutX="170.0" layoutY="331.0" text="Print Quality:" />
-      <RadioButton fx:id="normalRadioButton" layoutX="300.0" layoutY="331.0" mnemonicParsing="false" selected="true" text="Normal" />
-      <RadioButton fx:id="highRadioButton" layoutX="300.0" layoutY="359.0" mnemonicParsing="false" text="High" />
-      <RadioButton fx:id="lowRadioButton" layoutX="294.0" layoutY="310.0" mnemonicParsing="false" text="Low" />
-      <RadioButton fx:id="colorRadioButton" layoutX="19.0" layoutY="265.0" mnemonicParsing="false" selected="true" text="Color" />
-      <RadioButton fx:id="monoRadioButton" layoutX="19.0" layoutY="293.0" mnemonicParsing="false" text="Monochrome" />
-      <VBox fx:id="vBox" layoutX="476.0" layoutY="38.0" prefHeight="200.0" prefWidth="100.0" />
-   </children>
-</AnchorPane>
+<SplitPane dividerPositions="0.3080260303687636" stylesheets="@styles/print-style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <items>
+      <AnchorPane maxWidth="254.0" minWidth="254.0" prefWidth="254.0">
+         <children>
+            <VBox layoutY="151.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <Label layoutX="10.0" layoutY="35.0" text="Printer:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <ChoiceBox fx:id="printerChoiceBox" layoutX="-23.0" layoutY="79.0" prefWidth="150.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="45.0" />
+                     </children>
+                  </AnchorPane>
+                  <Separator prefWidth="200.0" />
+                  <AnchorPane>
+                     <children>
+                        <Label layoutX="9.0" layoutY="2.0" text="Copies:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <Spinner fx:id="copiesSpinner" editable="true" layoutX="-15.0" layoutY="43.0" prefWidth="70.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="45.0" />
+                     </children>
+                  </AnchorPane>
+                  <Separator prefWidth="200.0" />
+                  <AnchorPane>
+                     <children>
+                        <Label layoutX="2.0" layoutY="10.0" text="Orientation:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <RadioButton fx:id="landscapeRadioButton" layoutX="69.0" layoutY="25.0" mnemonicParsing="false" text="Landscape" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="45.0" />
+                        <RadioButton fx:id="portraitRadioButton" layoutX="29.0" layoutY="38.0" mnemonicParsing="false" selected="true" text="Portrait" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="70.0" />
+                     </children>
+                  </AnchorPane>
+                  <Separator prefWidth="200.0" />
+                  <AnchorPane>
+                     <children>
+                        <Label layoutX="31.0" layoutY="-6.0" text="Color:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <RadioButton fx:id="colorRadioButton" layoutX="76.0" layoutY="-2.0" mnemonicParsing="false" selected="true" text="Color" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="70.0" />
+                        <RadioButton fx:id="monoRadioButton" layoutX="19.0" layoutY="3.0" mnemonicParsing="false" text="Monochrome" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="45.0" />
+                     </children>
+                  </AnchorPane>
+                  <Separator prefWidth="200.0" />
+                  <AnchorPane>
+                     <children>
+                        <Label layoutX="55.0" layoutY="-8.0" text="Print Quality:" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                        <RadioButton fx:id="lowRadioButton" layoutX="30.0" layoutY="-7.0" mnemonicParsing="false" text="Low" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="45.0" />
+                        <RadioButton fx:id="normalRadioButton" layoutX="18.0" layoutY="-3.0" mnemonicParsing="false" selected="true" text="Normal" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="70.0" />
+                        <RadioButton fx:id="highRadioButton" layoutX="30.0" layoutY="3.0" mnemonicParsing="false" text="High" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="95.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="printButton" mnemonicParsing="false" text="Print" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane styleClass="main">
+         <children>
+            <HBox fx:id="hBox" layoutX="10.0" layoutY="10.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <ImageView fx:id="backgroundView" fitHeight="525.0" fitWidth="372.0" pickOnBounds="true" styleClass="main" />
+                  <VBox fx:id="vBox" alignment="TOP_CENTER" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" spacing="20.0">
+                     <padding>
+                        <Insets left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </items>
+</SplitPane>

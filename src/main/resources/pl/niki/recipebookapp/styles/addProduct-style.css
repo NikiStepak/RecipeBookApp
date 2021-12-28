@@ -1,0 +1,43 @@
+AnchorPane {
+    -fx-background-color: #1f2a34;
+}
+
+VBox {
+    -fx-effect: innershadow(gaussian, #ffffff, 10, 0.1, 0, 0);
+}
+
+.tool-bar {
+    -fx-background-color: #1f2a34;
+}
+
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+}
+
+.text-field {
+    -fx-font-family: "Comic Sans MS";
+    -fx-text-fill: #1f2a34;
+    -fx-font-weight: bold;
+    -fx-effect: innershadow(gaussian, #1f2a34, 15, 0.05, 0, 0);
+}
+
+.button {
+    -fx-background-color: #ffffff;
+    -fx-effect: innershadow(gaussian, #1f2a34, 15, 0.05, 0, 0);
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+    -fx-text-fill: #1f2a34;
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
+
+.button:hover .text {
+    -fx-effect: dropshadow(gaussian, #1f2a34, 15, 0.5, 0, 0);
+    -fx-fill: #ffffff;
+}

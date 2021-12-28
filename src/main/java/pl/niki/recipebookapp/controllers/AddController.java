@@ -6,13 +6,19 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
@@ -30,7 +36,7 @@ public class AddController implements Initializable {
     // =================================================================================================================
     // Public fields - elements of the add-view.fxml
     // =================================================================================================================
-    public Button backButton, addRecipeButton, homeButton, recipesButton, addButton;
+    public Button backButton, addRecipeButton, homeButton, recipesButton, addButton, refreshButton;
     public ImageView recipeImage;
     public ListView<Ingredient> ingredientsList;
     public TableView<Instruction> instructionTable;
@@ -103,8 +109,20 @@ public class AddController implements Initializable {
         // ImageView ===================================================================================================
         if (edit) {
             recipeImage.setImage(mm.getNewRecipe().getImage());
+            Rectangle rectangle = new Rectangle(recipeImage.getFitWidth(), recipeImage.getFitHeight());
+            rectangle.setArcHeight(25);
+            rectangle.setArcWidth(25);
+            recipeImage.setClip(rectangle);
+            SnapshotParameters parameters = new SnapshotParameters();
+            parameters.setFill(Color.TRANSPARENT);
+            WritableImage image = recipeImage.snapshot(parameters, null);
+            recipeImage.setClip(null);
+            recipeImage.setEffect(new DropShadow(30, Color.WHITE));
+            recipeImage.setImage(image);
+
         } else {
             recipeImage.setImage(mm.getAddImage());
+            recipeImage.setEffect(new InnerShadow(100,Color.WHITE));
         }
         recipeImage.setOnMouseClicked(event -> imageAction(recipeImage));
 
@@ -153,8 +171,8 @@ public class AddController implements Initializable {
                     if (ingredient.getProduct() == null) {
                         selectedProduct = null;
                         // add Button
-                        if (mm.getDoneIcon() != null) {
-                            ingredientButton.setGraphic(mm.getDoneIcon());
+                        if (mm.getDoneIcon(false) != null) {
+                            ingredientButton.setGraphic(mm.getDoneIcon(false));
                         }
                         ingredientButton.setOnAction(event -> addIngredientAction(amountField.getText(), ingredient));
                         ingredientButton.setMaxWidth(40);
@@ -255,15 +273,16 @@ public class AddController implements Initializable {
                                     instructionTable.getItems().get(getIndex()).setDescriptionText(newText);
                                 }
                             });
+                            instructionArea.setText("");
                         } else {
                             instructionArea.setText(instructionTable.getItems().get(getIndex()).getDescriptionText());
                             instructionArea.textProperty().addListener((observableValue, oldText, newText) -> {
-                                if (!newText.equals(mm.getNewRecipe().getInstructions().get(getIndex()).getDescriptionText())) {
+                                if (getIndex() < mm.getNewRecipe().getInstructions().size() && !newText.equals(mm.getNewRecipe().getInstructions().get(getIndex()).getDescriptionText())) {
                                     instructionTable.getItems().get(getIndex()).setDescriptionText(newText);
                                 }
                             });
                         }
-                        instructionArea.setMaxWidth(descriptionColumn.getWidth() - 30);
+                        instructionArea.setMaxWidth(descriptionColumn.getWidth() - 40);
 
                         HBox hBox = new HBox();
 
@@ -277,9 +296,9 @@ public class AddController implements Initializable {
             };
 
             descriptionColumn.widthProperty().addListener( (observableValue, oldWidth, newWidth) -> {
-                instructionArea.setMinWidth(descriptionColumn.getWidth() - 30);
-                instructionArea.setPrefWidth(descriptionColumn.getWidth() - 30);
-                instructionArea.setMaxWidth(descriptionColumn.getWidth() - 30);
+                instructionArea.setMinWidth(descriptionColumn.getWidth() - 40);
+                instructionArea.setPrefWidth(descriptionColumn.getWidth() - 40);
+                instructionArea.setMaxWidth(descriptionColumn.getWidth() - 40);
             });
 
             return cell;
@@ -310,8 +329,8 @@ public class AddController implements Initializable {
                     Button instructionButton = new Button();
                     Tooltip tooltip = new Tooltip();
                     if (instructionTable.getItems().get(getIndex()).getDescriptionText() == null) {
-                        if (mm.getDoneIcon() != null) { // add Button
-                            instructionButton.setGraphic(mm.getDoneIcon());
+                        if (mm.getDoneIcon(false) != null) { // add Button
+                            instructionButton.setGraphic(mm.getDoneIcon(false));
                         }
                         instructionButton.setOnAction(event -> addInstructionAction(instructionTable.getItems().get(getIndex())));
                         tooltip.setText("Add Instruction");
@@ -343,10 +362,13 @@ public class AddController implements Initializable {
         imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));
 
         // height of table
-        instructionTable.setFixedCellSize(150);
+        instructionTable.setFixedCellSize(155);
         instructionTable.prefHeightProperty().bind(instructionTable.fixedCellSizeProperty().multiply(Bindings.size(instructionTable.getItems()).add(0.2)));
 
         // Buttons =====================================================================================================
+        // refresh Button
+        refreshButton.setGraphic(mm.getRefreshIcon());
+
         // back button
         if (mm.getBackIcon() != null) {
             backButton.setGraphic(mm.getBackIcon());
@@ -367,8 +389,8 @@ public class AddController implements Initializable {
         recipesButton.setOnAction(this::recipesAction);
 
         // add recipe button
-        if (mm.getDoneIcon() != null) {
-            addRecipeButton.setGraphic(mm.getDoneIcon());
+        if (mm.getDoneIcon(false) != null) {
+            addRecipeButton.setGraphic(mm.getDoneIcon(false));
         } else {
             addRecipeButton.setText("Add Recipe");
         }
@@ -447,8 +469,8 @@ public class AddController implements Initializable {
     private void productComboBoxAction(ComboBox<Product> comboBox) {
         if (comboBox.getSelectionModel().getSelectedIndex() >= 0 && comboBox.getSelectionModel().getSelectedItem() != null && comboBox.getSelectionModel().getSelectedItem().isNewNull()) {
             Product newProduct = comboBox.getSelectionModel().getSelectedItem();
-            AddIngredientController controller = new AddIngredientController(dm, mm, newProduct);
-            mm.showAndWait(getClass(), "addIngredient-view.fxml", controller, comboBox.getScene().getWindow());
+            AddProductController controller = new AddProductController(dm, mm, newProduct);
+            mm.showAndWait(getClass(), "addProduct-view.fxml", controller, comboBox.getScene().getWindow(), "Add New Product");
             mm = controller.getMm();
             dm = controller.getDm();
             if (controller.isAdded()) {
@@ -472,7 +494,7 @@ public class AddController implements Initializable {
 
         ObservableList<Product> list = FXCollections.observableArrayList();
         for (Product product : allObjects) {
-            if (product.getName().toLowerCase().contains(comboBox.getEditor().getText().toLowerCase().trim())) {
+            if (product != null && product.getName().toLowerCase().contains(comboBox.getEditor().getText().toLowerCase().trim())) {
                 list.add(product);
             }
         }

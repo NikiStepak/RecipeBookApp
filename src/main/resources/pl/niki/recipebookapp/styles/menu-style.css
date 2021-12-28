@@ -1,0 +1,27 @@
+.button {
+    -fx-alignment: CENTER-LEFT;
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2a34;
+    -fx-background-radius: 0;
+    -fx-font-size: 14;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to right, #1f2a34, #ffffff);
+}
+
+.button:hover .text{
+    -fx-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, #ffffff, 15, 0.05, 0, 0);
+}
+
+.button:hover .image-view {
+    -fx-effect: innershadow(gaussian, #ffffff, 10, 1, 0, 0);
+}
+
+VBox {
+    -fx-background-color: #ffffff;
+}

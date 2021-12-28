@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.String?>
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
@@ -9,13 +8,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -23,16 +22,10 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane fx:id="split" dividerPositions="0.5" minWidth="500.0" prefHeight="602.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
-    <stylesheets>
-        <URL value="@styles/recipes-style.css" />
-        <URL value="@styles/main-style.css" />
-    </stylesheets>
-    <AnchorPane maxWidth="150.0" minWidth="150.0" prefWidth="150.0">
-        <VBox layoutX="7.0" layoutY="51.0" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" styleClass="greyBackground" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <ToolBar maxWidth="150.0" minWidth="150.0" prefHeight="40.0" prefWidth="150.0">
-                <Button fx:id="backButton" focusTraversable="false" mnemonicParsing="false" styleClass="main" text="Back" />
-            </ToolBar>
+<SplitPane fx:id="split" dividerPositions="0.5" minWidth="500.0" prefHeight="602.0" prefWidth="1100.0" stylesheets="@styles/main-style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+    <AnchorPane maxWidth="150.0" minWidth="150.0" prefWidth="150.0" stylesheets="@styles/menu-style.css">
+        <VBox layoutX="7.0" layoutY="51.0" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+             <Button fx:id="backButton" focusTraversable="false" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="Back" />
             <AnchorPane>
                 <ImageView fx:id="userImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="10.0">
                     <Image url="@../../../../java/pl/niki/recipebookapp/images/pancake.jpg" />
@@ -44,32 +37,34 @@
                     </styleClass>
                 </Label>
             </AnchorPane>
-            <Button fx:id="homeButton" focusTraversable="false" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" styleClass="main" text="HOME" />
-            <Button fx:id="recipesButton" focusTraversable="false" maxWidth="150.0" minWidth="150.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="150.0" styleClass="main" text="RECIPES">
+            <Button fx:id="homeButton" focusTraversable="false" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="HOME" />
+            <Button fx:id="recipesButton" focusTraversable="false" maxWidth="150.0" minWidth="150.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" styleClass="main" text="RECIPES">
                 <VBox.margin>
                     <Insets />
                 </VBox.margin>
             </Button>
-            <Button fx:id="addButton" minWidth="150.0" mnemonicParsing="false" styleClass="main" text="ADD RECIPE" />
+            <Button fx:id="addButton" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" styleClass="main" text="ADD RECIPE" />
         </VBox>
     </AnchorPane>
-    <VBox>
+    <VBox stylesheets="@styles/recipes-style.css">
       <BorderPane>
          <center>
-            <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="40.0" prefWidth="551.0">
+            <ToolBar fx:id="tool" minWidth="500.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="45.0">
                <items>
-                     <ToggleButton fx:id="filterToggleButton" contentDisplay="RIGHT" mnemonicParsing="false" styleClass="main" text="Filter" />
+                     <ChoiceBox fx:id="sortChoiceBox" maxWidth="203.0" nodeOrientation="LEFT_TO_RIGHT" styleClass="main" />
+                  <Separator fx:id="toolSeparator" orientation="VERTICAL" visible="false" />
+                     <TextField fx:id="searchField" nodeOrientation="LEFT_TO_RIGHT" prefWidth="400.0" promptText="Search recipe">
+                         <opaqueInsets>
+                             <Insets />
+                         </opaqueInsets>
+                     </TextField>
                </items>
             </ToolBar>
          </center>
          <left>
-              <ToolBar fx:id="tool" prefHeight="40.0" BorderPane.alignment="CENTER">
-                  <ChoiceBox fx:id="sortChoiceBox" prefWidth="150.0" styleClass="main" />
-                  <TextField fx:id="searchField" promptText="Search recipe" styleClass="search">
-                      <opaqueInsets>
-                          <Insets />
-                      </opaqueInsets>
-                  </TextField>
+              <ToolBar fx:id="filterToolBar" maxWidth="203.0" minWidth="203.0" prefHeight="45.0" prefWidth="203.0" styleClass="filter" BorderPane.alignment="CENTER">
+                  <ToggleButton fx:id="filterToggleButton" alignment="CENTER_LEFT" mnemonicParsing="false" prefWidth="140.0" text="Filters" />
+               <Button fx:id="cleanButton" mnemonicParsing="false" text="Clean" visible="false" />
               </ToolBar>
          </left>
       </BorderPane>
@@ -77,66 +72,53 @@
          <children>
             <BorderPane fx:id="border" layoutX="-9.0" layoutY="-9.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <center>
-                    <ScrollPane fx:id="scroll" prefHeight="600.0" prefWidth="1024.0">
-                        <AnchorPane fx:id="anchor" minHeight="600.0" prefWidth="942.0">
-                            <HBox fx:id="listHBox" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <ScrollPane fx:id="scroll" prefHeight="600.0" prefWidth="1024.0" styleClass="main">
+                        <AnchorPane fx:id="anchor" minHeight="600.0" prefWidth="942.0" styleClass="main">
+                            <HBox fx:id="listHBox" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0" />
                         </AnchorPane>
                     </ScrollPane>
                </center>
                <left>
-                  <ScrollPane fx:id="filterScroll" maxWidth="202.0" BorderPane.alignment="CENTER">
+                  <ScrollPane fx:id="filterScroll" prefWidth="215.0" BorderPane.alignment="CENTER">
                      <content>
-                            <AnchorPane fx:id="filterAnchor" maxWidth="202.0" minWidth="200.0" styleClass="greyBackground">
-                                <effect>
-                                    <DropShadow />
-                                </effect>
+                            <AnchorPane fx:id="filterAnchor" maxWidth="200.0" minHeight="553.0" minWidth="200.0" styleClass="filter">
                            <VBox fx:id="filterVBox" layoutY="40.0" spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                               <children>
-                                 <AnchorPane>
-                                    <children>
-                                            <Label styleClass="main" text="FILTERS:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                          <padding>
-                                             <Insets bottom="10.0" top="10.0" />
-                                          </padding>
-                                       </Label>
-                                       <Button fx:id="cleanButton" layoutX="143.0" layoutY="6.0" mnemonicParsing="false" text="Clean" visible="false" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
-                                    </children>
-                                 </AnchorPane>
                                       <Accordion>
                                           <panes>
                                               <TitledPane animated="false" text="COURSE">
                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
-                                                      <ListView fx:id="courseList" layoutX="-32.0" layoutY="-20.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <ListView fx:id="courseList" layoutX="-32.0" layoutY="-20.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                                                   </AnchorPane>
                                               </TitledPane>
                                               <TitledPane animated="false" text="CUISINE">
                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
-                                                      <ListView fx:id="cuisineList" layoutY="-10.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
-                                             <TextField fx:id="cuisineSearchField" promptText="Search cuisine ..." styleClass="search" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <ListView fx:id="cuisineList" layoutY="-10.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="42.0" />
+                                             <TextField fx:id="cuisineSearchField" promptText="Search cuisine ..." AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="7.0" />
                                                   </AnchorPane>
                                               </TitledPane>
                                               <TitledPane animated="false" text="INGREDIENTS">
                                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
-                                                      <TextField fx:id="ingredientSearchField" layoutX="26.0" layoutY="14.0" promptText="Search ingredient ..." styleClass="search" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <ListView fx:id="ingredientsList" layoutX="14.0" layoutY="14.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                                                      <TextField fx:id="ingredientSearchField" layoutX="26.0" layoutY="14.0" prefHeight="25.0" promptText="Search ingredient ..." AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="7.0" />
+                                                      <ListView fx:id="ingredientsList" layoutX="14.0" layoutY="14.0" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="42.0" />
                                                   </AnchorPane>
                                               </TitledPane>
                                               <TitledPane animated="false" text="TOTAL TIME">
                                                   <AnchorPane fx:id="ratingAnchor11">
-                                                      <Slider fx:id="maxTimeSlider" blockIncrement="30.0" layoutX="14.0" layoutY="20.0" majorTickUnit="60.0" max="360.0" minorTickCount="0" showTickMarks="true" value="360.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0" />
-                                                      <Slider fx:id="minTimeSlider" blockIncrement="30.0" layoutX="14.0" layoutY="43.0" majorTickUnit="60.0" max="360.0" minorTickCount="0" showTickMarks="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <Label fx:id="maxTimeLabel" alignment="CENTER" layoutX="165.0" layoutY="19.0" text="to 1h 40min" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
-                                             <Label fx:id="minTimeLabel" alignment="CENTER" layoutX="84.0" layoutY="70.0" text="from 1h 30min" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
-                                             <Button fx:id="timeFilterButton" layoutX="144.0" layoutY="86.0" mnemonicParsing="false" text="Add filter" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
+                                                      <Slider fx:id="maxTimeSlider" blockIncrement="30.0" layoutX="14.0" layoutY="20.0" majorTickUnit="60.0" max="360.0" minorTickCount="0" showTickMarks="true" value="360.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0" />
+                                                      <Slider fx:id="minTimeSlider" blockIncrement="30.0" layoutX="14.0" layoutY="43.0" majorTickUnit="60.0" max="360.0" minorTickCount="0" showTickMarks="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                                      <Label fx:id="maxTimeLabel" alignment="CENTER" layoutX="165.0" layoutY="19.0" styleClass="main" text="to 1h 40min" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="83.0" />
+                                             <Label fx:id="minTimeLabel" alignment="CENTER" layoutX="84.0" layoutY="70.0" styleClass="main" text="from 1h 30min" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
+                                             <Button fx:id="timeFilterButton" layoutX="144.0" layoutY="86.0" mnemonicParsing="false" text="Add filter" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="115.0" />
                                                   </AnchorPane>
                                               </TitledPane>
                                               <TitledPane animated="false" text="CALORIFIC VALUE">
                                                   <AnchorPane fx:id="ratingAnchor1">
-                                                      <Slider fx:id="maxKcalSlider" blockIncrement="50.0" layoutX="14.0" layoutY="20.0" majorTickUnit="250.0" max="2000.0" minorTickCount="0" showTickMarks="true" value="2000.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="55.0" />
-                                                      <Slider fx:id="minKcalSlider" blockIncrement="50.0" layoutX="14.0" layoutY="43.0" majorTickUnit="250.0" max="2000.0" minorTickCount="0" showTickMarks="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                      <Label fx:id="maxKcalLabel" alignment="CENTER" layoutX="165.0" layoutY="19.0" prefWidth="38.0" text="to 1000 kcal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0" />
-                                                      <Label fx:id="minKcalLabel" alignment="CENTER" layoutX="14.0" layoutY="18.0" prefWidth="38.0" text="from 0 kcal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
-                                             <Button fx:id="kcalFilterButton" layoutX="100.0" layoutY="86.0" mnemonicParsing="false" text="Add filter" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
+                                                      <Slider fx:id="maxKcalSlider" blockIncrement="50.0" layoutX="14.0" layoutY="20.0" majorTickUnit="250.0" max="2000.0" minorTickCount="0" showTickMarks="true" value="2000.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0" />
+                                                      <Slider fx:id="minKcalSlider" blockIncrement="50.0" layoutX="14.0" layoutY="43.0" majorTickUnit="250.0" max="2000.0" minorTickCount="0" showTickMarks="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                                      <Label fx:id="maxKcalLabel" alignment="CENTER" layoutX="165.0" layoutY="19.0" prefWidth="38.0" styleClass="main" text="to 1000 kcal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="83.0" />
+                                                      <Label fx:id="minKcalLabel" alignment="CENTER" layoutX="14.0" layoutY="18.0" prefWidth="38.0" styleClass="main" text="from 0 kcal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0" />
+                                             <Button fx:id="kcalFilterButton" layoutX="100.0" layoutY="86.0" mnemonicParsing="false" text="Add filter" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="115.0" />
                                                   </AnchorPane>
                                               </TitledPane>
                                           </panes>

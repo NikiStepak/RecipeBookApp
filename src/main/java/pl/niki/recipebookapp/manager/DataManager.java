@@ -15,8 +15,8 @@ public class DataManager {
     private final List<Recipe> recipes;
     private final List<Product> products;
     private final List<String> cuisines;
-    private final String[] courses = {"soup", "side dish", "salad", "main dish", "drink", "dessert",
-            "bread", "snack", "cake", "breakfast", "brunch", "supper"};
+    private final String[] courses = {"Soup", "Side Dish", "Salad", "Main Dish", "Drink", "Dessert",
+            "Dread", "Snack", "Cake", "Breakfast", "Brunch", "Supper"};
 
     private HostServices hostServices;
     private int maxTime, maxKcal;
@@ -97,7 +97,7 @@ public class DataManager {
     public void addCuisine(String cuisine){
         int exist = checkIfCuisineExist(cuisine);
         if (exist<0){
-            cuisines.add(cuisine);
+            cuisines.add(cuisine.substring(0,1).toUpperCase()+cuisine.substring(1));
         }
     }
 

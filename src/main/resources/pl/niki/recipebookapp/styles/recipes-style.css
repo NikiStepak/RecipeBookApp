@@ -1,29 +1,247 @@
-Label {
-    -fx-padding: 3;
+AnchorPane.filter {
+    -fx-background-color: #1f2a34;
 }
 
-.list-cell:hover {
-    -fx-cursor: HAND;
-    -fx-effect: dropshadow(gaussian, #000000, 12, 0.05, 0.0, 2);
+VBox {
+    -fx-background-color: transparent;
 }
 
-.list-cell:focused Label {
-    -fx-text-fill: #000000;
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-border-color: transparent;
 }
 
-.list-cell:hover ImageView{
-
+BorderPane {
+    -fx-background-color: #1f2a34;
 }
 
-.tooltip {
+.label {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
     -fx-text-fill: #ffffff;
-    -fx-padding: 5;
 }
 
-.search {
+.button {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2a34;
+}
+
+.titled-pane .title {
+    -fx-background-color: #1f2a34;
+    -fx-padding: 10;
+}
+
+.titled-pane .title:hover .text,
+.titled-pane .title:hover .arrow-button .arrow{
+    -fx-effect: dropshadow(gaussian, #1f2a34, 10, 0.05, 0, 0);
+}
+
+.titled-pane .title:hover .text {
+    -fx-fill: #1f2a34;
+}
+
+.titled-pane .title .text {
+    -fx-fill: #ffffff;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+}
+
+.titled-pane .title .arrow-button .arrow {
+    -fx-background-color: #ffffff;
+}
+
+.toggle-button {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+}
+
+.tool-bar.filter,
+.titled-pane .title:hover .arrow-button .arrow {
+    -fx-background-color: #1f2a34;
+}
+
+.tool-bar {
+    -fx-background-color: linear-gradient(to right, #ffffff, #1f2a34);
+}
+
+.tool-bar.filter:hover,
+.titled-pane .title:hover {
+    -fx-background-color: #ffffff;
+    -fx-effect: innershadow(gaussian, #1f2a34, 30, 0.4, 0, 0);
+}
+
+.tool-bar.filter:hover .toggle-button {
+    -fx-text-fill: #1f2a34;
+    -fx-effect: dropshadow(gaussian, #1f2a34, 10, 0.05, 0, 0);
+}
+
+.tool-bar.filter:hover .toggle-button .image-view {
+    -fx-effect: innershadow(gaussian, #1f2a34, 10, 1, 0, 0);
+}
+
+.toggle-button .image-view {
+    -fx-effect: innershadow(gaussian, #ffffff, 10, 1, 0, 0);
+}
+
+AnchorPane.filter .accordion AnchorPane {
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.5, 0, 0);
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+.titled-pane .content {
+    -fx-border-color: #1f2a34;
+    -fx-effect: innershadow(gaussian, #1f2a34, 15, 0.4, 0, 0);
+}
+
+.list-cell:even, .list-cell:odd {
+    -fx-background-color: transparent;
+}
+
+.list-cell .text{
+    -fx-fill: #1f2a34;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-font-size: 13;
+}
+
+.list-cell .check-box:selected .box {
+    -fx-background-color: #1f2a34;
+}
+
+.list-cell .check-box:selected .mark {
+    -fx-background-color: #ffffff;
+}
+
+.list-view .scroll-bar .decrement-button,
+.list-view .scroll-bar .increment-button,
+.list-view .scroll-bar .decrement-button .decrement-arrow,
+.list-view .scroll-bar .increment-button .increment-arrow {
+    -fx-padding: 0 3.5 0 3.5;
+    -fx-background-color: transparent;
+
+}
+
+.scroll-bar:vertical .decrement-button,
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button .decrement-arrow,
+.scroll-bar:vertical .increment-button .increment-arrow {
+    -fx-padding: 0 3 0 3;
+    -fx-background-color: transparent;
+
+}
+
+.list-view,
+.list-view .scroll-bar,
+.scroll-pane > .scroll-bar,
+.scroll-pane > .corner {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar .thumb {
+    -fx-background-color: #ffffff;
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.3, 0, 0);
+}
+
+.scroll-pane.main > .scroll-bar .thumb {
+    -fx-background-color: #ffffff;
+    -fx-effect: innershadow(gaussian, #ffffff, 1, 0.1, 0, 0);
+
+}
+
+VBox .scroll-pane.main {
+    -fx-background-color: transparent;
+    -fx-effect: innershadow(gaussian, #1f2a34, 15, 0.5, 0, 0);
+}
+
+VBox AnchorPane.main {
+    -fx-background-color: #ffffff;
+}
+
+.choice-box {
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 14;
+    -fx-mark-color: #1f2a34;
+}
+
+.choice-box .label {
+    -fx-text-fill: #1f2a34;
+}
+
+.choice-box:hover .label {
+    -fx-text-fill: #ffffff;
+}
+
+.choice-box:hover {
+    -fx-effect: dropshadow(gaussian, #1f2a34, 15, 0.6, 0, 0);
+    -fx-mark-color: #ffffff;
+    -fx-text-fill: #ffffff;
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: #1f2a34;
+    -fx-cursor: hand;
+}
+
+.choice-box .menu-item:focused .label {
+    -fx-text-fill: #ffffff;
+}
+
+.choice-box .menu-item .label {
+    -fx-text-fill: #1f2a34;
+}
+
+.label.main {
+    -fx-font-size: 14;
+}
+
+.text-field {
+    -fx-font-size: 13;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2a34;
     -fx-background-image: url("../images/search_icon.png");
     -fx-background-repeat: no-repeat;
     -fx-background-position: right center;
     -fx-background-size: 20;
-    /*-fx-background-insets: 0;*/
+    -fx-background-insets: -2;
+}
+
+.button:hover {
+    -fx-background-color: #1f2a34;
+    -fx-text-fill: #ffffff;
+    -fx-cursor: hand;
+}
+
+.tooltip .text {
+    -fx-fill: #ffffff;
+}
+
+.tooltip {
+    -fx-font-size: 12;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-weight: bold;
+    -fx-background-color: #1f2a34;
+}
+
+.list-cell:hover {
+    -fx-cursor: hand;
+}
+
+HBox .list-view .list-cell:hover {
+    -fx-effect: dropshadow(gaussian, #1f2a34, 30, 0.05,0,0);
+}
+
+HBox .list-view .list-cell .label {
+    -fx-effect: dropshadow(gaussian, #1f2a34, 30, 0.05,0,0);
+    -fx-padding: 4;
 }

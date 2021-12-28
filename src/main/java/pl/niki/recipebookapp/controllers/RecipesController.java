@@ -6,13 +6,19 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Product;
@@ -35,11 +41,11 @@ public class RecipesController implements Initializable {
     public ScrollPane scroll, filterScroll;
     public AnchorPane anchor, filterAnchor;
     public HBox listHBox;
-    public VBox filterVBox;
+    public VBox filterVBox, vBox;
     public SplitPane split;
-    public ToolBar tool;
+    public ToolBar filterToolBar, tool;
     public BorderPane border;
-    public VBox vBox;
+    public Separator toolSeparator;
 
     // =================================================================================================================
     // Private fields
@@ -145,7 +151,10 @@ public class RecipesController implements Initializable {
         // Size of window
         split.setPrefWidth(width);
         split.setPrefHeight(height);
-        split.heightProperty().addListener(l -> scroll.setPrefHeight(split.getHeight() - tool.getHeight()));
+        split.heightProperty().addListener(l -> {
+            scroll.setPrefHeight(split.getHeight() - filterToolBar.getHeight());
+            anchor.setMinHeight(split.getHeight() - filterToolBar.getHeight()-4);
+        });
 
         // Sliders =====================================================================================================
         // Kcal sliders
@@ -215,7 +224,6 @@ public class RecipesController implements Initializable {
         // Course list
         ObservableList<String> courses = FXCollections.observableArrayList(dm.getCourses());
         setFilterList(courseList, selectedCourse,courses,Comparator.naturalOrder());
-        courseList.setFixedCellSize(25);
         courseList.prefHeightProperty().bind(courseList.fixedCellSizeProperty().multiply(Bindings.size(courseList.getItems()).add(0.3)));
 
         // Cuisine list
@@ -274,6 +282,10 @@ public class RecipesController implements Initializable {
         // ScrollPane ====================================================================================================
         scroll.widthProperty().addListener(observable -> getCommonRecipes());
         scroll.setMinWidth(200);
+
+        tool.widthProperty().addListener((observableValue, number, t1) -> {
+            toolSeparator.setPrefWidth((t1.doubleValue() - 203) / 2 -110);
+        });
     }
 
     // =================================================================================================================
@@ -297,6 +309,7 @@ public class RecipesController implements Initializable {
 
             return property;
         }));
+        itemsList.setFixedCellSize(30);
     }
 
     private void setList(ListView<Recipe> recipeList) {
@@ -318,6 +331,16 @@ public class RecipesController implements Initializable {
                         recipeImage.setFitHeight(150);
                         recipeImage.setFitWidth(150);
                         recipeImage.setImage(recipe.getImage());
+                        Rectangle rectangle = new Rectangle(recipeImage.getFitWidth(), recipeImage.getFitHeight());
+                        rectangle.setArcWidth(25);
+                        rectangle.setArcHeight(25);
+                        recipeImage.setClip(rectangle);
+                        SnapshotParameters parameters = new SnapshotParameters();
+                        parameters.setFill(Color.TRANSPARENT);
+                        WritableImage image = recipeImage.snapshot(parameters, null);
+                        recipeImage.setClip(null);
+                        recipeImage.setEffect(new DropShadow(10, Color.web("#1f2a34")));
+                        recipeImage.setImage(image);
                         vBox.setAlignment(Pos.CENTER);
                         vBox.getChildren().add(recipeImage);
                         vBox.getChildren().add(label);
@@ -340,12 +363,14 @@ public class RecipesController implements Initializable {
     }
 
     private void setPane(Comparator<Recipe> comparator, List<Recipe> shownRecipes) {
-        filterAnchor.setMinHeight(filterVBox.getHeight() + 50);
+        filterAnchor.setMinHeight(Math.max(filterVBox.getHeight() + 50, split.getHeight() - filterToolBar.getHeight() - 4));
         listHBox.getChildren().clear();
         if (filterToggleButton.isSelected()) {
             border.setLeft(filterScroll);
+            filterToggleButton.setText("FILTERS:");
         } else {
             border.setLeft(null);
+            filterToggleButton.setText("Filters");
         }
 
         listAmount = (int) ((scroll.getWidth() + 12) / 188);
@@ -424,8 +449,9 @@ public class RecipesController implements Initializable {
         if (!addedVBox) {
             vBox = new VBox();
             setLabel();
+            vBox.setPadding(new Insets(0,10,0,10));
             addedVBox = true;
-            filterVBox.getChildren().add(1, vBox);
+            filterVBox.getChildren().add(0, vBox);
         }
         else {
             vBox.getChildren().clear();

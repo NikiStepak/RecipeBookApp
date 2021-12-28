@@ -25,10 +25,7 @@ import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class RecipeController implements Initializable {
     // =================================================================================================================
@@ -112,6 +109,7 @@ public class RecipeController implements Initializable {
 
         // HyperLink ===================================================================================================
         if (recipe.getUrl()!=null){
+            webSiteHyperLink.setGraphic(mm.getWebsiteIcon());
             webSiteHyperLink.setOnAction(event -> dm.getHostServices().showDocument(recipe.getUrl()));
         }
         else {
@@ -136,9 +134,11 @@ public class RecipeController implements Initializable {
                 super.updateItem(ingredient, b);
                 if (b || ingredient == null || ingredient.toString() == null){
                     setText(null);
+                    setGraphic(null);
                 }
                 else {
                     setText(ingredient.toString());
+                    setGraphic(mm.getDoneIcon(true));
                 }
             }
         });
@@ -215,7 +215,7 @@ public class RecipeController implements Initializable {
 
         //add shadow
         recipeImage.setClip(null);
-        recipeImage.setEffect(new DropShadow(20, Color.WHITE));
+        recipeImage.setEffect(new DropShadow(30, Color.WHITE));
 
         recipeImage.setImage(image);
 
@@ -289,6 +289,9 @@ public class RecipeController implements Initializable {
         editButton.setOnAction(this::editAction);
 
         // print button
+        if (mm.getPrintIcon()!=null){
+            printButton.setGraphic(mm.getPrintIcon());
+        }
         printButton.setOnAction(this::printAction);
     }
 
@@ -324,7 +327,7 @@ public class RecipeController implements Initializable {
         mm.show(getClass(), "recipe-view.fxml", refreshController, event);
 
         PrintController controller = new PrintController(screenshot);
-        mm.showAndWait(getClass(), "print-view.fxml",controller, printButton.getScene().getWindow());
+        mm.showAndWait(getClass(), "print-view.fxml",controller, printButton.getScene().getWindow(), "Print Recipe");
     } // Print Button Action
 
     private void editAction(ActionEvent event) {

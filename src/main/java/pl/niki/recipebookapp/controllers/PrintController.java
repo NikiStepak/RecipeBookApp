@@ -5,11 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.print.*;
-import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+import javafx.scene.control.Button;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.image.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import java.net.URL;
@@ -21,12 +24,13 @@ public class PrintController implements Initializable {
     // =================================================================================================================
     // Public fields - elements of the print-view.fxml
     // =================================================================================================================
-    public ImageView pageImage;
+    public ImageView pageImage, backgroundView;
     public Button printButton;
     public ChoiceBox<Printer> printerChoiceBox;
     public Spinner<Integer> copiesSpinner;
     public RadioButton landscapeRadioButton, portraitRadioButton, highRadioButton, normalRadioButton, lowRadioButton, colorRadioButton, monoRadioButton;
     public VBox vBox;
+    public HBox hBox;
 
     // =================================================================================================================
     // Private fields
@@ -48,18 +52,42 @@ public class PrintController implements Initializable {
         // ImageView ===================================================================================================
 
         // Set ImageView - first page
-        pageImage.setImage(screenshotTab.get(0));
+        WritableImage img = new WritableImage(1, 1);
+        PixelWriter pw = img.getPixelWriter();
+        pw.setColor(0, 0, Color.WHITE);
+        backgroundView.setImage(img);
+
+        pageImage = new ImageView(screenshotTab.get(0));
+        pageImage.setPreserveRatio(screenshotTab.get(0).getWidth() > screenshotTab.get(0).getHeight());
+        pageImage.setFitWidth(372);
+        pageImage.setFitHeight(525);
+        pageImage.setBlendMode(BlendMode.MULTIPLY);
+
+        Group blend = new Group(
+                backgroundView,
+                pageImage
+        );
+        hBox.getChildren().add(0,blend);
 
         // Set ImageViews - all pages
         for (WritableImage image: screenshotTab){
+            ImageView bottom = new ImageView(img);
+            bottom.setPreserveRatio(false);
+            bottom.setFitHeight(200);
+            bottom.setFitWidth(150);
+
             ImageView imageView = new ImageView(image);
             imageView.setFitHeight(200);
             imageView.setFitWidth(150);
+            imageView.setBlendMode(BlendMode.MULTIPLY);
+            imageView.setPreserveRatio(image.getHeight() < image.getWidth());
 
-            imageView.setOnMouseClicked(mouseEvent -> pageImage.setImage(imageView.getImage()));
-            imageView.setCursor(Cursor.HAND);
-
-            vBox.getChildren().add(imageView);
+            Group imageGroup = new Group(
+                    bottom,
+                    imageView
+            );
+            imageGroup.setOnMouseClicked(mouseEvent -> pageImage.setImage(imageView.getImage()));
+            vBox.getChildren().add(imageGroup);
         }
 
         // Print Button ================================================================================================

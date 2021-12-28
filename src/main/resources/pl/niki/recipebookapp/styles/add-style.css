@@ -1,4 +1,196 @@
-ImageView:hover {
-    -fx-effect: dropshadow(gaussian, #000000, 12, 0.05, 0.0, 2);
-    -fx-cursor: HAND;
+.scroll-pane,
+BorderPane.color {
+    -fx-background-color: #1f2a34;
+}
+
+.separator {
+    -fx-background-color: #ffffff;
+}
+
+AnchorPane.color {
+    -fx-background-color: #ffffff;
+    -fx-effect: innershadow(gaussian, #1f2a34, 15, 0.5, 0, 0);
+}
+
+BorderPane.color .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 14;
+}
+
+BorderPane.color .label.main {
+    -fx-font-weight: bold;
+}
+
+AnchorPane.color .label {
+    -fx-text-fill: #1f2a34;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+}
+
+.list-cell .label {
+    -fx-font-size: 14;
+}
+
+.list-view, .list-cell {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background,
+.table-view .column-header,
+.table-view .table-row-cell,
+.table-view {
+    -fx-background-color: transparent;
+}
+
+/*.table-cell {*/
+/*    -fx-background-color: transparent;*/
+/*    -fx-font-family: "Comic Sans MS";*/
+/*    -fx-text-fill: #1f2a34;*/
+/*    -fx-font-size: 12;*/
+/*    -fx-alignment: CENTER-LEFT;*/
+/*}*/
+
+.tool-bar.color {
+    -fx-background-color: #1f2a34;
+}
+
+.tool-bar {
+    -fx-background-color: linear-gradient(to right, #ffffff, #1f2a34);
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+}
+
+
+.tool-bar.color .button {
+    -fx-text-fill: #ffffff;
+}
+
+.tool-bar .button {
+    -fx-text-fill: #1f2a34;
+}
+
+.tool-bar.color .button .image-view {
+    -fx-effect: innershadow(gaussian, #ffffff, 10, 1, 0, 0);
+}
+
+.button:hover {
+    -fx-cursor: hand;
+}
+
+.tool-bar.color .button:hover {
+    -fx-effect: dropshadow(gaussian, #ffffff, 20, 0.5, 0, 0);
+}
+
+.button:hover {
+    -fx-effect: dropshadow(gaussian, #1f2a34, 20, 0.5, 0, 0);
+}
+
+.scroll-pane .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar .thumb {
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.1, 0, 0);
+}
+
+.scroll-pane .scroll-bar:vertical .decrement-button,
+.scroll-pane .scroll-bar:vertical .increment-button,
+.scroll-pane .scroll-bar:vertical .decrement-button .decrement-arrow,
+.scroll-pane .scroll-bar:vertical .increment-button .increment-arrow {
+    -fx-padding: 0 3 0 3;
+    -fx-background-color: transparent;
+
+}
+
+.text-field, .text-area {
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.1, 0, 0);
+    -fx-border-color: transparent;
+}
+
+.text-field.title, .text-area.main {
+    -fx-effect: innershadow(gaussian, #1f2a34, 15, 0.5, 0, 0);
+}
+
+.text-field, .text-area {
+    -fx-font-family: "Comic Sans MS";
+}
+
+.text-field.title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold
+}
+
+.combo-box, .choice-box,
+.combo-box .combo-box-popup .list-view {
+    -fx-effect: innershadow(gaussian, #1f2a34, 7, 0.1, 0, 0);
+    -fx-background-color: #ffffff;
+    -fx-cursor: hand;
+}
+
+.text-area .scroll-bar {
+    -fx-background-color: #ffffff;
+}
+
+.combo-box .combo-box-popup .list-view .list-cell:hover {
+    -fx-background-color: #1f2a34;
+}
+
+.combo-box .combo-box-popup .list-view .list-cell:hover .image-view {
+    -fx-effect: innershadow(gaussian, #ffffff, 10, 1, 0,0);
+}
+
+.combo-box .text-input {
+    -fx-background-color: transparent;
+}
+
+.combo-box {
+    -fx-font-weight: bold;
+    -fx-font-family: "Comic Sans MS";
+}
+
+.choice-box {
+    -fx-mark-color: #1f2a34;
+}
+
+.choice-box .label {
+    -fx-text-fill: #1f2a34;
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: #1f2a34;
+    -fx-cursor: hand;
+}
+
+.choice-box .menu-item:focused .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.image-view:hover {
+    -fx-effect: dropshadow(gaussian, #1f2a34, 25, 0.3, 0, 0);
+    -fx-cursor: hand;
+}
+
+.image-view.main:hover {
+    -fx-effect: dropshadow(gaussian, #ffffff, 35, 0.5, 0, 0);
+}
+
+.text-field.website {
+    -fx-background-image: url("../images/website_icon.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: right center;
+    -fx-background-size: 20;
+    -fx-background-insets: -3;
 }

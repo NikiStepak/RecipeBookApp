@@ -19,16 +19,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MathManager {
     // =================================================================================================================
     // Private fields
     // =================================================================================================================
-    private Image backIcon, deleteIcon, filterIcon, addIcon, editIcon, nextIcon, homeIcon, listIcon, doneIcon;
+    private Image backIcon, deleteIcon, filterIcon, addIcon, editIcon, nextIcon, homeIcon, listIcon, doneIcon, printIcon, refreshIcon, websiteIcon;
     private Image addImage;
     private Recipe newRecipe;
 
     private final String path = "D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\";
+    private final String path0 = "/pl/niki/recipebookapp/images/";
 
     // =================================================================================================================
     // Constructors
@@ -44,6 +46,9 @@ public class MathManager {
         setHomeIcon();
         setDoneIcon();
         setListIcon();
+        setPrintIcon();
+        setRefreshIcon();
+        setWebsiteIcon();
     }
 
     // =================================================================================================================
@@ -59,13 +64,19 @@ public class MathManager {
 
     public ImageView getFilterIcon() {
         ImageView imageView = new ImageView(filterIcon);
-        setIcon(imageView);
+        setImageView(imageView);
+        return imageView;
+    }
+
+    public ImageView getWebsiteIcon(){
+        ImageView imageView = new ImageView(websiteIcon);
+        setImageView(imageView);
         return imageView;
     }
 
     public ImageView getEditIcon() {
         ImageView imageView = new ImageView(editIcon);
-        setIcon(imageView);
+        setImageView(imageView);
         return imageView;
     }
 
@@ -75,44 +86,61 @@ public class MathManager {
             setSmallIcon(imageView);
         }
         else {
-            setIcon(imageView);
+            setImageView(imageView);
         }
         return imageView;
     }
 
     public ImageView getBackIcon() {
         ImageView imageView = new ImageView(backIcon);
-        setIcon(imageView);
+        setImageView(imageView);
         return imageView;
     }
 
     public ImageView getNextIcon() {
         ImageView imageView = new ImageView(nextIcon);
-        setIcon(imageView);
+        setImageView(imageView);
         return imageView;
     }
 
     public ImageView getHomeIcon() {
         ImageView imageView = new ImageView(homeIcon);
-        setIcon(imageView);
+        setImageView(imageView);
         return imageView;
     }
 
     public ImageView getAddIcon() {
         ImageView imageView = new ImageView(addIcon);
-        setIcon(imageView);
+        setImageView(imageView);
         return imageView;
     }
 
-    public ImageView getDoneIcon() {
+    public ImageView getRefreshIcon(){
+        ImageView imageView = new ImageView(refreshIcon);
+        setImageView(imageView);
+        return imageView;
+    }
+
+    public ImageView getDoneIcon(boolean small) {
         ImageView imageView = new ImageView(doneIcon);
-        setIcon(imageView);
+        if (small){
+            setSmallIcon(imageView);
+        }
+        else {
+            setImageView(imageView);
+        }
         return imageView;
     }
 
     public ImageView getRecipesIcon() {
         ImageView imageView = new ImageView(listIcon);
-        setIcon(imageView);
+        setImageView(imageView);
+        return imageView;
+    }
+
+    public ImageView getPrintIcon() {
+        ImageView imageView = new ImageView(printIcon);
+        setImageView(imageView);
         return imageView;
     }
 
@@ -123,12 +151,36 @@ public class MathManager {
         this.newRecipe = new Recipe(newRecipe);
     }
 
-    public void setListIcon(){
+    private void setListIcon(){
         try {
             this.listIcon = new Image(new FileInputStream(path+"reorder_icon.png"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             this.listIcon = null;
+        }
+    }
+
+    private void setWebsiteIcon(){
+        try {
+            this.websiteIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path0+"website_icon.png")));
+        } catch (NullPointerException e){
+            this.websiteIcon = null;
+        }
+    }
+
+    private void setRefreshIcon() {
+        try {
+            this.refreshIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path0+"refresh_icon.png")));
+        } catch (NullPointerException e){
+            this.refreshIcon = null;
+        }
+    }
+
+    public void setPrintIcon() {
+        try {
+            this.printIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path0 + "print_icon.png")));
+        } catch (NullPointerException e){
+            this.printIcon = null;
         }
     }
 
@@ -307,10 +359,13 @@ public class MathManager {
         return time;
     }
 
-    public <T> void showAndWait(Class<T> getC, String fxmlName, Object controller, Window window){
+    public <T> void showAndWait(Class<T> getC, String fxmlName, Object controller, Window window, String stageName){
         try {
             Parent parent = setController(getC,fxmlName,controller).load();
             Stage stage = new Stage();
+            stage.setResizable(false);
+            stage.setTitle(stageName);
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pl/niki/recipebookapp/images/recipes.png"))));
             stage.setScene(new Scene(parent));
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(window);
@@ -352,7 +407,7 @@ public class MathManager {
         }
     }
 
-    private void setIcon(ImageView imageView) {
+    private void setImageView(ImageView imageView) {
         int iconSize = 25;
         imageView.setFitWidth(iconSize);
         imageView.setFitHeight(iconSize);

@@ -3,16 +3,18 @@ package pl.niki.recipebookapp.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import pl.niki.recipebookapp.manager.DataManager;
 import pl.niki.recipebookapp.manager.MathManager;
 import pl.niki.recipebookapp.recipes.Product;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
-public class AddIngredientController implements Initializable {
+public class AddProductController implements Initializable {
     // =================================================================================================================
-    // Public fields - elements of the addIngredient-view.fxml
+    // Public fields - elements of the addProduct-view.fxml
     // =================================================================================================================
     public TextField productNameField, kcalField;
     public Button addButton, cancelButton;
@@ -29,7 +31,7 @@ public class AddIngredientController implements Initializable {
     // =================================================================================================================
     // Constructors
     // =================================================================================================================
-    public AddIngredientController(DataManager dm, MathManager mm, Product newProduct) {
+    public AddProductController(DataManager dm, MathManager mm, Product newProduct) {
         this.dm = dm;
         this.mm = mm;
         this.newProduct = newProduct;
@@ -41,8 +43,12 @@ public class AddIngredientController implements Initializable {
     // =================================================================================================================
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+//        Stage stage = (Stage) addButton.getScene().getWindow();
+//        stage.setTitle("Add New Product");
+//        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pl/niki/recipebookapp/images/recipes.png"))));
+
         // TextField ===================================================================================================
-        if (newProduct.getName().length()>0){
+        if (newProduct.getName().length() > 0) {
             productNameField.setText(newProduct.getName());
         }
 
@@ -79,8 +85,8 @@ public class AddIngredientController implements Initializable {
     } // Cancel Button Action
 
     private void addAction(ActionEvent event) {
-        if (productNameField.getText().length()>0){
-            if (kcalField.getText().length()>0){                                                                        //??????????? check if double value???????????????????????????
+        if (productNameField.getText().length() > 0) {
+            if (kcalField.getText().length() > 0) {                                                                        //??????????? check if double value???????????????????????????
                 newProduct.setName(productNameField.getText());
                 newProduct.setKcal(Double.parseDouble(kcalField.getText()));
                 newProduct.setNewNull(false);
