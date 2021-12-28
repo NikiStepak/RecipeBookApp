@@ -3,13 +3,11 @@ package pl.niki.recipebookapp.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import pl.niki.recipebookapp.manager.DataManager;
-import pl.niki.recipebookapp.manager.MathManager;
+import pl.niki.recipebookapp.manager.Manager;
 import pl.niki.recipebookapp.recipes.Product;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AddProductController implements Initializable {
@@ -23,7 +21,7 @@ public class AddProductController implements Initializable {
     // Private fields
     // =================================================================================================================
     private final DataManager dm;
-    private final MathManager mm;
+    private final Manager mm;
     private final Product newProduct;
 
     private boolean added;
@@ -31,7 +29,7 @@ public class AddProductController implements Initializable {
     // =================================================================================================================
     // Constructors
     // =================================================================================================================
-    public AddProductController(DataManager dm, MathManager mm, Product newProduct) {
+    public AddProductController(DataManager dm, Manager mm, Product newProduct) {
         this.dm = dm;
         this.mm = mm;
         this.newProduct = newProduct;
@@ -64,7 +62,7 @@ public class AddProductController implements Initializable {
     // =================================================================================================================
     // Public methods
     // =================================================================================================================
-    public MathManager getMm() {
+    public Manager getMm() {
         return mm;
     }
 

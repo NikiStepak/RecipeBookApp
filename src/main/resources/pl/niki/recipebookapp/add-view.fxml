@@ -22,7 +22,7 @@
 
 <SplitPane fx:id="split" dividerPositions="0.5" minWidth="500.0" prefHeight="602.0" prefWidth="1100.0" stylesheets="@styles/main-style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane maxWidth="150.0" minWidth="150.0" prefWidth="150.0" stylesheets="@styles/menu-style.css">
-        <VBox layoutX="7.0" layoutY="51.0" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" styleClass="greyBackground" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox layoutX="7.0" layoutY="51.0" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
              <Button fx:id="backButton" focusTraversable="false" mnemonicParsing="false" prefHeight="45.0" prefWidth="150.0" text="Back" />
             <AnchorPane>
                 <ImageView fx:id="userImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="10.0">
@@ -44,20 +44,18 @@
          <center>
               <ToolBar fx:id="tool" nodeOrientation="RIGHT_TO_LEFT" prefHeight="45.0" prefWidth="200.0">
                   <Button fx:id="addRecipeButton" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" styleClass="main" text="Add Recipe" />
-               <Separator focusTraversable="false" orientation="VERTICAL" prefWidth="50.0" visible="false" />
+               <Separator orientation="VERTICAL" prefWidth="50.0" visible="false" />
                <TextField fx:id="websiteField" focusTraversable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="350.0" promptText="Original website of the recipe URL" styleClass="website" />
               </ToolBar>
          </center>
          <left>
-            <ToolBar prefHeight="45.0" prefWidth="200.0" styleClass="color" BorderPane.alignment="CENTER">
-               <items>
-                  <Button fx:id="refreshButton" mnemonicParsing="false" text="Refresh" />
-               </items>
-            </ToolBar>
+             <ToolBar prefHeight="45.0" prefWidth="200.0" styleClass="color" BorderPane.alignment="CENTER">
+                 <Button fx:id="refreshButton" mnemonicParsing="false" text="Refresh"/>
+             </ToolBar>
          </left>
       </BorderPane>
       <Separator prefWidth="200.0" />
-        <ScrollPane fx:id="scroll" fitToHeight="true" fitToWidth="true" focusTraversable="false" prefHeight="600.0" prefWidth="1024.0" styleClass="color">
+        <ScrollPane fx:id="scroll" fitToHeight="true" fitToWidth="true" prefHeight="600.0" prefWidth="1024.0" styleClass="color">
             <AnchorPane>
                 <BorderPane layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <top>

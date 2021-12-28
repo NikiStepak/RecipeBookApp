@@ -10,16 +10,14 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import pl.niki.recipebookapp.manager.DataManager;
-import pl.niki.recipebookapp.manager.MathManager;
+import pl.niki.recipebookapp.manager.Manager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
@@ -48,7 +46,7 @@ public class RecipeController implements Initializable {
     // Private fields
     // =================================================================================================================
     private final DataManager dm;
-    private final MathManager mm;
+    private final Manager mm;
     private final Recipe recipe;
     private final double width, height;
     private final ObservableSet<String> selectedCuisine, selectedCourse;
@@ -60,7 +58,7 @@ public class RecipeController implements Initializable {
     // =================================================================================================================
     // Constructors
     // =================================================================================================================
-    public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height) {
+    public RecipeController(DataManager dm, Manager mm, Recipe recipeKey, double width, double height) {
         this.dm = dm;
         this.mm = mm;
         this.recipe = recipeKey;
@@ -79,7 +77,7 @@ public class RecipeController implements Initializable {
         this.sortIndex = 0;
     }
 
-    public RecipeController(DataManager dm, MathManager mm, Recipe recipeKey, double width, double height, ObservableSet<String> selectedCuisine, ObservableSet<String> selectedCourse, ObservableSet<Product> selectedIngredient, int minTimeValue, int maxTimeValue, int minKcalValue, int maxKcalValue, List<Recipe> recipeList, String searchText, int sortIndex) {
+    public RecipeController(DataManager dm, Manager mm, Recipe recipeKey, double width, double height, ObservableSet<String> selectedCuisine, ObservableSet<String> selectedCourse, ObservableSet<Product> selectedIngredient, int minTimeValue, int maxTimeValue, int minKcalValue, int maxKcalValue, List<Recipe> recipeList, String searchText, int sortIndex) {
         this.dm = dm;
         this.mm = mm;
         this.recipe = recipeKey;
@@ -103,16 +101,15 @@ public class RecipeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // height of window
-        split.heightProperty().addListener(listener -> scroll.setPrefHeight(split.getHeight()-tool.getHeight()));
+        split.heightProperty().addListener(listener -> scroll.setPrefHeight(split.getHeight() - tool.getHeight()));
         split.setPrefHeight(height);
         split.setPrefWidth(width);
 
         // HyperLink ===================================================================================================
-        if (recipe.getUrl()!=null){
+        if (recipe.getUrl() != null) {
             webSiteHyperLink.setGraphic(mm.getWebsiteIcon());
             webSiteHyperLink.setOnAction(event -> dm.getHostServices().showDocument(recipe.getUrl()));
-        }
-        else {
+        } else {
             webSiteHyperLink.setVisible(false);
         }
 
@@ -128,15 +125,14 @@ public class RecipeController implements Initializable {
         // ListView ====================================================================================================
         ObservableList<Ingredient> ingredients = FXCollections.observableArrayList(recipe.getIngredients());
         ingredientsList.setItems(ingredients);
-        ingredientsList.setCellFactory(i -> new ListCell<>(){
+        ingredientsList.setCellFactory(i -> new ListCell<>() {
             @Override
             protected void updateItem(Ingredient ingredient, boolean b) {
                 super.updateItem(ingredient, b);
-                if (b || ingredient == null || ingredient.toString() == null){
+                if (b || ingredient == null || ingredient.toString() == null) {
                     setText(null);
                     setGraphic(null);
-                }
-                else {
+                } else {
                     setText(ingredient.toString());
                     setGraphic(mm.getDoneIcon(true));
                 }
@@ -162,7 +158,7 @@ public class RecipeController implements Initializable {
         // description column - 1st column
         descriptionColumn.setCellValueFactory(cell -> cell.getValue().descriptionProperty());                           // ?????????????????????????????????????????????????????????---
         descriptionColumn.setCellFactory(param -> {
-            TableCell<Instruction,String> cell = new TableCell<>();
+            TableCell<Instruction, String> cell = new TableCell<>();
             Text text = new Text();
             cell.setGraphic(text);
             cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
@@ -172,7 +168,7 @@ public class RecipeController implements Initializable {
         });
 
         // image column - 2nd column
-        if(recipe.isInstructionImage()) {
+        if (recipe.isInstructionImage()) {
             imageColumn.setCellFactory(cell -> new TableCell<>() {
                 @Override
                 protected void updateItem(Image image, boolean b) {
@@ -189,8 +185,7 @@ public class RecipeController implements Initializable {
                 }
             });
             imageColumn.setCellValueFactory(new PropertyValueFactory<>("image"));                                    // ---???????????????????????????????????????????????????????????????
-        }
-        else {
+        } else {
             imageColumn.setPrefWidth(0);
             imageColumn.setMaxWidth(0);
             imageColumn.setMinWidth(0);
@@ -202,106 +197,60 @@ public class RecipeController implements Initializable {
 
         // ImageView ===================================================================================================
         recipeImage.setImage(recipe.getImage());
-
-        //rounded rectangle ImageView
-        Rectangle rectangle = new Rectangle(recipeImage.getFitWidth(), recipeImage.getFitHeight());
-        rectangle.setArcWidth(25);
-        rectangle.setArcHeight(25);
-        recipeImage.setClip(rectangle);
-
-        SnapshotParameters parameters = new SnapshotParameters();
-        parameters.setFill(Color.TRANSPARENT);
-        WritableImage image = recipeImage.snapshot(parameters, null);
-
-        //add shadow
-        recipeImage.setClip(null);
-        recipeImage.setEffect(new DropShadow(30, Color.WHITE));
-
-        recipeImage.setImage(image);
+        mm.setRectangleImage(recipeImage, 30, Color.WHITE);
 
         // Buttons =====================================================================================================
         // next button
-        if (mm.getNextIcon() != null) {
-            nextButton.setGraphic(mm.getNextIcon());
-        }
-        else {
-            nextButton.setText("Next");
-        }
-        if (recipeList.indexOf(recipe) < (recipeList.size()-1)) {
+        nextButton.setGraphic(mm.getNextIcon());
+
+        if (recipeList.indexOf(recipe) < (recipeList.size() - 1)) {
             nextButton.setOnAction(this::nextAction);
-        }
-        else {
+        } else {
             nextButton.setDisable(true);
         }
 
-        // back button
         // prev button
-        if(mm.getBackIcon()!=null) {
-            prevButton.setGraphic(mm.getBackIcon());
-            backButton.setGraphic(mm.getBackIcon());
-        }
-        else {
-            backButton.setText("Back");
-            prevButton.setText("Prev");
-        }
-        backButton.setOnAction(this::backAction);
-        if (recipeList.indexOf(recipe) > 0){
+        prevButton.setGraphic(mm.getBackIcon());
+
+        if (recipeList.indexOf(recipe) > 0) {
             prevButton.setOnAction(this::prevAction);
-        }
-        else {
+        } else {
             prevButton.setDisable(true);
         }
 
-        //home button
-        if(mm.getHomeIcon()!=null){
-            homeButton.setGraphic(mm.getHomeIcon());
-        }
-        homeButton.setOnAction(this::homeAction);
-
-        //recipes button
-        if (mm.getRecipesIcon()!=null){
-            recipesButton.setGraphic(mm.getRecipesIcon());
-        }
-        recipesButton.setOnAction(this::recipesAction);
-
-        //add button
-        if (mm.getAddIcon()!=null){
-            addButton.setGraphic(mm.getAddIcon());
-        }
-        addButton.setOnAction(this::addAction);
-
         // delete button
-        if (mm.getDeleteIcon(false)!=null){
-            deleteButton.setGraphic(mm.getDeleteIcon(false));
-        }
-        else {
-            deleteButton.setText("Delete");
-        }
+        deleteButton.setGraphic(mm.getDeleteIcon(false));
         deleteButton.setOnAction(this::deleteAction);
 
         // edit button
-        if (mm.getEditIcon()!=null){
-            editButton.setGraphic(mm.getEditIcon());
-        }
-        else {
-            editButton.setText("Edit");
-        }
+        editButton.setGraphic(mm.getEditIcon());
         editButton.setOnAction(this::editAction);
 
         // print button
-        if (mm.getPrintIcon()!=null){
-            printButton.setGraphic(mm.getPrintIcon());
-        }
+        printButton.setGraphic(mm.getPrintIcon());
         printButton.setOnAction(this::printAction);
+
+        // back button
+        backButton.setGraphic(mm.getBackIcon());
+        backButton.setOnAction(this::backAction);
+
+        //home button
+        homeButton.setGraphic(mm.getHomeIcon());
+        homeButton.setOnAction(this::homeAction);
+
+        //recipes button
+        recipesButton.setGraphic(mm.getRecipesIcon());
+        recipesButton.setOnAction(this::recipesAction);
+
+        //add button
+        addButton.setGraphic(mm.getAddIcon());
+        addButton.setOnAction(this::addAction);
     }
 
     // =================================================================================================================
     // Private methods
     // =================================================================================================================
     private void printAction(ActionEvent event) {
-        // Select printer
-//        final PrinterJob job = Objects.requireNonNull(PrinterJob.createPrinterJob(), "Cannot create printer job");
-//        final Scene scene = Objects.requireNonNull(anchor.getScene(), "Missing Scene");
 
         double borderHeight = border.getHeight();
         double defaultPrintHeight = 1305;

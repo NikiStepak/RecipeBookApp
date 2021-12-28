@@ -6,22 +6,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import pl.niki.recipebookapp.manager.DataManager;
-import pl.niki.recipebookapp.manager.MathManager;
+import pl.niki.recipebookapp.manager.Manager;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Instruction;
 import pl.niki.recipebookapp.recipes.Product;
@@ -57,7 +53,7 @@ public class AddController implements Initializable {
     private final boolean edit;
 
     private DataManager dm;
-    private MathManager mm;
+    private Manager mm;
     private ObservableList<Ingredient> ingredients;
     private ObservableList<Instruction> instructions;
     private Recipe editRecipe;
@@ -66,7 +62,7 @@ public class AddController implements Initializable {
     // =================================================================================================================
     // Controllers
     // =================================================================================================================
-    public AddController(DataManager dm, MathManager mm, double width, double height) {
+    public AddController(DataManager dm, Manager mm, double width, double height) {
         this.width = width;
         this.height = height;
         this.edit = false;
@@ -77,7 +73,7 @@ public class AddController implements Initializable {
         this.selectedProduct = null;
     }
 
-    public AddController(DataManager dm, MathManager mm, Recipe recipe, double width, double height) {
+    public AddController(DataManager dm, Manager mm, Recipe recipe, double width, double height) {
         this.width = width;
         this.height = height;
         this.edit = true;
@@ -109,22 +105,13 @@ public class AddController implements Initializable {
         // ImageView ===================================================================================================
         if (edit) {
             recipeImage.setImage(mm.getNewRecipe().getImage());
-            Rectangle rectangle = new Rectangle(recipeImage.getFitWidth(), recipeImage.getFitHeight());
-            rectangle.setArcHeight(25);
-            rectangle.setArcWidth(25);
-            recipeImage.setClip(rectangle);
-            SnapshotParameters parameters = new SnapshotParameters();
-            parameters.setFill(Color.TRANSPARENT);
-            WritableImage image = recipeImage.snapshot(parameters, null);
-            recipeImage.setClip(null);
-            recipeImage.setEffect(new DropShadow(30, Color.WHITE));
-            recipeImage.setImage(image);
+            mm.setRectangleImage(recipeImage, 30, Color.WHITE);
 
         } else {
             recipeImage.setImage(mm.getAddImage());
-            recipeImage.setEffect(new InnerShadow(100,Color.WHITE));
+            recipeImage.setEffect(new InnerShadow(100, Color.WHITE));
         }
-        recipeImage.setOnMouseClicked(event -> imageAction(recipeImage));
+        recipeImage.setOnMouseClicked(event -> imageAction(recipeImage, true));
 
         // Label, Fields and Area ======================================================================================
         if (edit) {
@@ -143,7 +130,7 @@ public class AddController implements Initializable {
         // ListView ====================================================================================================
         ingredients = FXCollections.observableArrayList(mm.getNewRecipe().getIngredients());
         ingredientsList.setItems(ingredients);
-        ingredientsList.getItems().add(new Ingredient(null,0, 0));
+        ingredientsList.getItems().add(new Ingredient(null, 0, 0));
         ingredientsList.setCellFactory(i -> new ListCell<>() {
 
             @Override
@@ -152,8 +139,7 @@ public class AddController implements Initializable {
 
                 if (b || ingredient == null) {
                     setGraphic(null);
-                }
-                else {
+                } else {
                     final HBox hBox = new HBox();
                     hBox.setAlignment(Pos.CENTER_LEFT);
 
@@ -181,7 +167,7 @@ public class AddController implements Initializable {
                         ComboBox<Product> productComboBox = new ComboBox<>();
                         ObservableList<Product> products = FXCollections.observableArrayList(mm.getNotAddedProducts(dm.getProducts()));
                         productComboBox.setItems(products);
-                        if (productComboBox.getItems().isEmpty()){
+                        if (productComboBox.getItems().isEmpty()) {
                             productComboBox.getItems().add(new Product(productComboBox.getEditor().getText(), 0, 100, true));
                         }
                         productComboBox.setPromptText("Select product");
@@ -214,8 +200,7 @@ public class AddController implements Initializable {
                         productComboBox.setMaxWidth(130);
 
                         hBox.getChildren().add(productComboBox);
-                    }
-                    else {
+                    } else {
                         // delete Button
                         if (mm.getDeleteIcon(true) != null) {
                             ingredientButton.setGraphic(mm.getDeleteIcon(true));
@@ -226,7 +211,7 @@ public class AddController implements Initializable {
                         ingredientTooltip.setText("Delete Ingredient");
 
                         amountField.setText(String.valueOf(ingredient.getAmount()));
-                        amountField.textProperty().addListener( (observableValue, oldText, newText) -> {
+                        amountField.textProperty().addListener((observableValue, oldText, newText) -> {
                             if (!newText.equals(oldText)) {
                                 ingredient.setAmount(Integer.parseInt(newText));
                                 mm.getNewRecipe().countKcal();
@@ -268,7 +253,7 @@ public class AddController implements Initializable {
                         instructionArea.setWrapText(true);
 
                         if (description == null) {
-                            instructionArea.textProperty().addListener( (observableValue, oldText, newText) -> {
+                            instructionArea.textProperty().addListener((observableValue, oldText, newText) -> {
                                 if (!newText.equals("") && !newText.equals(oldText)) {
                                     instructionTable.getItems().get(getIndex()).setDescriptionText(newText);
                                 }
@@ -295,7 +280,7 @@ public class AddController implements Initializable {
                 }
             };
 
-            descriptionColumn.widthProperty().addListener( (observableValue, oldWidth, newWidth) -> {
+            descriptionColumn.widthProperty().addListener((observableValue, oldWidth, newWidth) -> {
                 instructionArea.setMinWidth(descriptionColumn.getWidth() - 40);
                 instructionArea.setPrefWidth(descriptionColumn.getWidth() - 40);
                 instructionArea.setMaxWidth(descriptionColumn.getWidth() - 40);
@@ -308,7 +293,7 @@ public class AddController implements Initializable {
         imageColumn.setPrefWidth(250);
         imageColumn.setMaxWidth(250);
         imageColumn.setMinWidth(250);
-        imageColumn.setCellFactory(cell ->  new TableCell<>() {
+        imageColumn.setCellFactory(cell -> new TableCell<>() {
             @Override
             protected void updateItem(Image image, boolean b) {
                 super.updateItem(image, b);
@@ -370,37 +355,25 @@ public class AddController implements Initializable {
         refreshButton.setGraphic(mm.getRefreshIcon());
         refreshButton.setOnAction(this::refreshAction);
 
+        // add recipe button
+        addRecipeButton.setGraphic(mm.getDoneIcon(false));
+        addRecipeButton.setOnAction(this::addRecipeAction);
+
+
         // back button
-        if (mm.getBackIcon() != null) {
-            backButton.setGraphic(mm.getBackIcon());
-        } else
-            backButton.setText("Back");
+        backButton.setGraphic(mm.getBackIcon());
         backButton.setOnAction(this::backAction);
 
         // home button
-        if (mm.getHomeIcon() != null) {
-            homeButton.setGraphic(mm.getHomeIcon());
-        }
+        homeButton.setGraphic(mm.getHomeIcon());
         homeButton.setOnAction(this::homeAction);
 
         // recipes button
-        if (mm.getRecipesIcon() != null) {
-            recipesButton.setGraphic(mm.getRecipesIcon());
-        }
+        recipesButton.setGraphic(mm.getRecipesIcon());
         recipesButton.setOnAction(this::recipesAction);
 
-        // add recipe button
-        if (mm.getDoneIcon(false) != null) {
-            addRecipeButton.setGraphic(mm.getDoneIcon(false));
-        } else {
-            addRecipeButton.setText("Add Recipe");
-        }
-        addRecipeButton.setOnAction(this::addRecipeAction);
-
         // add button
-        if (mm.getAddIcon() != null) {
-            addButton.setGraphic(mm.getAddIcon());
-        }
+        addButton.setGraphic(mm.getAddIcon());
         addButton.setOnAction(this::addAction);
     }
 
@@ -418,7 +391,7 @@ public class AddController implements Initializable {
     // =================================================================================================================
     // Private methods
     // =================================================================================================================
-    private void imageAction(ImageView imageView) {
+    private void imageAction(ImageView imageView, boolean mainImage) {
         FileChooser fileChooser = new FileChooser();
         File file = fileChooser.showOpenDialog(imageView.getScene().getWindow());
         try {
@@ -428,6 +401,9 @@ public class AddController implements Initializable {
                 if (type.equals("image")){
                     Image newImage = new Image(file.toURI().toString());
                     imageView.setImage(newImage);
+                    if (mainImage){
+                        mm.setRectangleImage(imageView,30,Color.WHITE);
+                    }
                 }
             }
 
@@ -593,7 +569,7 @@ public class AddController implements Initializable {
             return contextMenu;
         }
         else {
-            imageAction(imageView);
+            imageAction(imageView, false);
             return null;
         }
     }

@@ -29,7 +29,6 @@
             </ImageView>
             <Label fx:id="userNameLabel" text="Sign in / Sign up" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="65.0">
                <styleClass>
-                  <String fx:value="blackText" />
                   <String fx:value="main" />
                </styleClass>
             </Label>
@@ -44,7 +43,7 @@
       </VBox>
    </AnchorPane>
    <VBox stylesheets="@styles/recipe-style.css">
-      <BorderPane styleClass=".toolbar">
+      <BorderPane>
          <left>
             <ToolBar fx:id="tool" prefHeight="45.0" styleClass="color" BorderPane.alignment="CENTER">
                <Button fx:id="editButton" mnemonicParsing="false" styleClass="main" text="Edit" />
@@ -62,7 +61,6 @@
                <Separator orientation="VERTICAL" prefWidth="50.0" visible="false" />
                <Hyperlink fx:id="webSiteHyperLink" nodeOrientation="LEFT_TO_RIGHT" text="Original Recipe">
                   <styleClass>
-                     <String fx:value="blackText" />
                      <String fx:value="main" />
                   </styleClass>
                </Hyperlink>

@@ -6,49 +6,49 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import pl.niki.recipebookapp.recipes.Ingredient;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MathManager {
+public class Manager {
     // =================================================================================================================
     // Private fields
     // =================================================================================================================
-    private Image backIcon, deleteIcon, filterIcon, addIcon, editIcon, nextIcon, homeIcon, listIcon, doneIcon, printIcon, refreshIcon, websiteIcon;
-    private Image addImage;
+    private final Image backIcon, deleteIcon, filterIcon, addIcon, editIcon, nextIcon, homeIcon, listIcon, doneIcon, printIcon, refreshIcon, websiteIcon;
+    private final Image addImage;
     private Recipe newRecipe;
-
-    private final String path = "D:\\PLIKI\\NIKI\\CV\\recipeBookApp\\src\\main\\java\\pl\\niki\\recipebookapp\\images\\";
-    private final String path0 = "/pl/niki/recipebookapp/images/";
 
     // =================================================================================================================
     // Constructors
     // =================================================================================================================
-    public MathManager() {
-        setAddImage();
-        setBackIcon();
-        setDeleteIcon();
-        setAddIcon();
-        setFilterIcon();
-        setEditIcon();
-        setNextIcon();
-        setHomeIcon();
-        setDoneIcon();
-        setListIcon();
-        setPrintIcon();
-        setRefreshIcon();
-        setWebsiteIcon();
+    public Manager() {
+        this.addImage = setIcon("add_photo.png");
+        this.backIcon = setIcon("arrow_back_icon.png");
+        this.deleteIcon = setIcon("delete_icon.png");
+        this.addIcon = setIcon("add_icon.png");
+        this.filterIcon = setIcon("filter_list_icon.png");
+        this.editIcon = setIcon("edit_icon.png");
+        this.nextIcon = setIcon("arrow_forward_icon.png");
+        this.homeIcon = setIcon("home_icon.png");
+        this.doneIcon = setIcon("done_icon.png");
+        this.listIcon = setIcon("reorder_icon.png");
+        this.printIcon = setIcon("print_icon.png");
+        this.refreshIcon = setIcon("refresh_icon.png");
+        this.websiteIcon = setIcon("website_icon.png");
     }
 
     // =================================================================================================================
@@ -63,85 +63,67 @@ public class MathManager {
     }
 
     public ImageView getFilterIcon() {
-        ImageView imageView = new ImageView(filterIcon);
-        setImageView(imageView);
+        return getIcon(filterIcon, 25);
+    }
+
+    private ImageView getIcon(Image image, int iconSize){
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(iconSize);
+        imageView.setFitHeight(iconSize);
         return imageView;
     }
 
     public ImageView getWebsiteIcon(){
-        ImageView imageView = new ImageView(websiteIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(websiteIcon, 25);
     }
 
     public ImageView getEditIcon() {
-        ImageView imageView = new ImageView(editIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(editIcon, 25);
     }
 
     public ImageView getDeleteIcon(boolean small) {
-        ImageView imageView = new ImageView(deleteIcon);
-        if (small){
-            setSmallIcon(imageView);
+        if (small) {
+            return getIcon(deleteIcon, 15);
+        } else {
+            return getIcon(deleteIcon, 25);
         }
-        else {
-            setImageView(imageView);
-        }
-        return imageView;
     }
 
     public ImageView getBackIcon() {
-        ImageView imageView = new ImageView(backIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(backIcon, 25);
     }
 
     public ImageView getNextIcon() {
-        ImageView imageView = new ImageView(nextIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(nextIcon, 25);
     }
 
     public ImageView getHomeIcon() {
-        ImageView imageView = new ImageView(homeIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(homeIcon, 25);
     }
 
     public ImageView getAddIcon() {
-        ImageView imageView = new ImageView(addIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(addIcon, 25);
     }
 
     public ImageView getRefreshIcon(){
-        ImageView imageView = new ImageView(refreshIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(refreshIcon, 25);
     }
 
     public ImageView getDoneIcon(boolean small) {
-        ImageView imageView = new ImageView(doneIcon);
         if (small){
-            setSmallIcon(imageView);
+            return getIcon(doneIcon,15);
         }
         else {
-            setImageView(imageView);
+            return getIcon(doneIcon,25);
         }
-        return imageView;
     }
 
     public ImageView getRecipesIcon() {
-        ImageView imageView = new ImageView(listIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(listIcon, 25);
     }
 
     public ImageView getPrintIcon() {
-        ImageView imageView = new ImageView(printIcon);
-        setImageView(imageView);
-        return imageView;
+        return getIcon(printIcon, 25);
     }
 
     // =================================================================================================================
@@ -151,123 +133,35 @@ public class MathManager {
         this.newRecipe = new Recipe(newRecipe);
     }
 
-    private void setListIcon(){
+    private Image setIcon(String iconName){
         try {
-            this.listIcon = new Image(new FileInputStream(path+"reorder_icon.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.listIcon = null;
-        }
-    }
-
-    private void setWebsiteIcon(){
-        try {
-            this.websiteIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path0+"website_icon.png")));
+            return new Image(Objects.requireNonNull(getClass().getResourceAsStream("/pl/niki/recipebookapp/images/" +iconName)));
         } catch (NullPointerException e){
-            this.websiteIcon = null;
-        }
-    }
-
-    private void setRefreshIcon() {
-        try {
-            this.refreshIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path0+"refresh_icon.png")));
-        } catch (NullPointerException e){
-            this.refreshIcon = null;
-        }
-    }
-
-    public void setPrintIcon() {
-        try {
-            this.printIcon = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path0 + "print_icon.png")));
-        } catch (NullPointerException e){
-            this.printIcon = null;
-        }
-    }
-
-    public void setDoneIcon() {
-        try {
-            this.doneIcon = new Image(new FileInputStream(path+"done_icon.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.doneIcon = null;
-        }
-    }
-
-    public void setAddImage() {
-        try {
-            this.addImage = new Image(new FileInputStream(path+"add_photo.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.addImage = null;
-        }
-    }
-
-    public void setBackIcon() {
-        try {
-            this.backIcon = new Image(new FileInputStream(path+"arrow_back_icon.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.backIcon = null;
-        }
-    }
-
-    public void setDeleteIcon() {
-        try {
-            this.deleteIcon = new Image(new FileInputStream(path+"delete_icon.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.deleteIcon = null;
-        }
-    }
-
-    public void setAddIcon() {
-        try {
-            this.addIcon = new Image(new FileInputStream(path+"add_icon.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.addIcon = null;
-        }
-    }
-
-    public void setFilterIcon() {
-        try {
-            this.filterIcon = new Image(new FileInputStream(path+"filter_list_icon.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.filterIcon = null;
-        }
-    }
-
-    public void setEditIcon() {
-        try {
-            this.editIcon = new Image(new FileInputStream(path+"edit_icon.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.editIcon = null;
-        }
-    }
-
-    public void setHomeIcon() {
-        try {
-            this.homeIcon = new Image(new FileInputStream(path+"home_icon.png"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            this.homeIcon = null;
-        }
-    }
-
-    public void setNextIcon() {
-        try {
-            this.nextIcon = new Image(new FileInputStream(path+"arrow_forward_icon.png"));
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-            this.nextIcon = null;
+            return null;
         }
     }
 
     // =================================================================================================================
     // Public methods
     // =================================================================================================================
+    public void setRectangleImage(ImageView imageView, int dropShadow, Color color){
+        //rounded rectangle ImageView
+        Rectangle rectangle = new Rectangle(imageView.getFitWidth(), imageView.getFitHeight());
+        rectangle.setArcWidth(25);
+        rectangle.setArcHeight(25);
+        imageView.setClip(rectangle);
+
+        SnapshotParameters parameters = new SnapshotParameters();
+        parameters.setFill(Color.TRANSPARENT);
+        WritableImage image = imageView.snapshot(parameters, null);
+
+        //add shadow
+        imageView.setClip(null);
+        imageView.setEffect(new DropShadow(dropShadow, color));
+
+        imageView.setImage(image);
+    }
+
     public List<Product> getNotAddedProducts(List<Product> allProduct){
         List<Product> products = new ArrayList<>();
         boolean isIngredient;
@@ -333,9 +227,6 @@ public class MathManager {
     }
 
     public void setNewRecipe(double kcal, String name, int time, int servings, String description, Image image, String cuisine, String course, String url) {
-        //???????????????????????????????????????
-        //check if cuisine exist in list
-        //???????????????????????????????????????
         this.newRecipe.set(name, kcal, time,servings,description,image,course,cuisine, url);
     }
 
@@ -405,17 +296,5 @@ public class MathManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void setImageView(ImageView imageView) {
-        int iconSize = 25;
-        imageView.setFitWidth(iconSize);
-        imageView.setFitHeight(iconSize);
-    }
-
-    private void setSmallIcon(ImageView imageView) {
-        int smallIconSize = 15;
-        imageView.setFitWidth(smallIconSize);
-        imageView.setFitHeight(smallIconSize);
     }
 }

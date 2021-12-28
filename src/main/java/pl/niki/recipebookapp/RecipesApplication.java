@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import pl.niki.recipebookapp.controllers.RecipesController;
 import pl.niki.recipebookapp.manager.DataManager;
-import pl.niki.recipebookapp.manager.MathManager;
+import pl.niki.recipebookapp.manager.Manager;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -16,7 +16,7 @@ public class RecipesApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(RecipesApplication.class.getResource("recipes-view.fxml"));
         DataManager dm = new DataManager(getHostServices());
-        MathManager mm = new MathManager();
+        Manager mm = new Manager();
         RecipesController controller = new RecipesController(dm, mm, 1100, 602);
         fxmlLoader.setController(controller);
         Scene scene = new Scene(fxmlLoader.load());

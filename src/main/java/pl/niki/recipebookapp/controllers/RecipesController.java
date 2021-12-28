@@ -8,19 +8,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import pl.niki.recipebookapp.manager.DataManager;
-import pl.niki.recipebookapp.manager.MathManager;
+import pl.niki.recipebookapp.manager.Manager;
 import pl.niki.recipebookapp.recipes.Product;
 import pl.niki.recipebookapp.recipes.Recipe;
 import java.net.URL;
@@ -51,7 +47,7 @@ public class RecipesController implements Initializable {
     // Private fields
     // =================================================================================================================
     private final DataManager dm;
-    private final MathManager mm;
+    private final Manager mm;
     private final double width, height;
     private final ObservableList<String> choice = FXCollections.observableArrayList("Sort by ...", "A -> Z", "Z -> A");
     private final ObservableSet<String> selectedCourse, selectedCuisine;
@@ -70,7 +66,7 @@ public class RecipesController implements Initializable {
     // =================================================================================================================
     public RecipesController() {
         this.dm = new DataManager();
-        this.mm = new MathManager();
+        this.mm = new Manager();
         this.width = 1100;
         this.height = 602;
         this.selectedCourse = FXCollections.observableSet();
@@ -93,7 +89,7 @@ public class RecipesController implements Initializable {
         this.commonRecipes = new ArrayList<>(dm.getRecipes());
     }
 
-    public RecipesController(DataManager dm, MathManager mm, double width, double height) {
+    public RecipesController(DataManager dm, Manager mm, double width, double height) {
         this.dm = dm;
         this.mm = mm;
         this.width = width;
@@ -118,7 +114,7 @@ public class RecipesController implements Initializable {
         this.commonRecipes = new ArrayList<>(dm.getRecipes());
     }
 
-    public RecipesController(DataManager dm, MathManager mm, double width, double height, ObservableSet<String> selectedCourse, ObservableSet<String> selectedCuisine, ObservableSet<Product> selectedIngredient, int minTimeValue, int maxTimeValue, int minKcalValue, int maxKcalValue, String searchText, int sortIndex) {
+    public RecipesController(DataManager dm, Manager mm, double width, double height, ObservableSet<String> selectedCourse, ObservableSet<String> selectedCuisine, ObservableSet<Product> selectedIngredient, int minTimeValue, int maxTimeValue, int minKcalValue, int maxKcalValue, String searchText, int sortIndex) {
         this.dm = dm;
         this.mm = mm;
         this.width = width;
@@ -153,7 +149,7 @@ public class RecipesController implements Initializable {
         split.setPrefHeight(height);
         split.heightProperty().addListener(l -> {
             scroll.setPrefHeight(split.getHeight() - filterToolBar.getHeight());
-            anchor.setMinHeight(split.getHeight() - filterToolBar.getHeight()-4);
+            anchor.setMinHeight(split.getHeight() - filterToolBar.getHeight() - 4);
         });
 
         // Sliders =====================================================================================================
@@ -223,12 +219,12 @@ public class RecipesController implements Initializable {
         // ListViews ===================================================================================================
         // Course list
         ObservableList<String> courses = FXCollections.observableArrayList(dm.getCourses());
-        setFilterList(courseList, selectedCourse,courses,Comparator.naturalOrder());
+        setFilterList(courseList, selectedCourse, courses, Comparator.naturalOrder());
         courseList.prefHeightProperty().bind(courseList.fixedCellSizeProperty().multiply(Bindings.size(courseList.getItems()).add(0.3)));
 
         // Cuisine list
         cuisines = FXCollections.observableArrayList(dm.getCuisines());
-        setFilterList(cuisineList,selectedCuisine,cuisines,Comparator.naturalOrder());
+        setFilterList(cuisineList, selectedCuisine, cuisines, Comparator.naturalOrder());
 
         // Ingredient list
         ingredients = FXCollections.observableArrayList(mm.getIngredients(dm.getRecipes()));
@@ -252,40 +248,31 @@ public class RecipesController implements Initializable {
         filterToggleButton.setOnAction(event -> getCommonRecipes());
 
         // Buttons =====================================================================================================
+        // clean button
+        cleanButton.setOnAction(this::cleanAction);
+
         //back button
-        if (mm.getBackIcon() != null) {
-            backButton.setGraphic(mm.getBackIcon());
-        } else
-            backButton.setText("Back");
+        backButton.setGraphic(mm.getBackIcon());
         backButton.setOnAction(this::backAction);
 
         //home button
-        if (mm.getHomeIcon() != null) {
-            homeButton.setGraphic(mm.getHomeIcon());
-        }
+        homeButton.setGraphic(mm.getHomeIcon());
         homeButton.setOnAction(this::homeAction);
 
         //recipes button
-        if (mm.getRecipesIcon() != null) {
-            recipesButton.setGraphic(mm.getRecipesIcon());
-        }
+        recipesButton.setGraphic(mm.getRecipesIcon());
         recipesButton.setOnAction(this::recipesAction);
 
         //add button
-        if (mm.getAddIcon() != null) {
-            addButton.setGraphic(mm.getAddIcon());
-        }
+        addButton.setGraphic(mm.getAddIcon());
         addButton.setOnAction(this::addAction);
-
-        cleanButton.setOnAction(this::cleanAction);
 
         // ScrollPane ====================================================================================================
         scroll.widthProperty().addListener(observable -> getCommonRecipes());
         scroll.setMinWidth(200);
 
-        tool.widthProperty().addListener((observableValue, number, t1) -> {
-            toolSeparator.setPrefWidth((t1.doubleValue() - 203) / 2 -110);
-        });
+        tool.widthProperty().addListener((observableValue, number, t1) -> toolSeparator.setPrefWidth((t1.doubleValue() - 203) / 2 - 110));
+
     }
 
     // =================================================================================================================
@@ -331,16 +318,8 @@ public class RecipesController implements Initializable {
                         recipeImage.setFitHeight(150);
                         recipeImage.setFitWidth(150);
                         recipeImage.setImage(recipe.getImage());
-                        Rectangle rectangle = new Rectangle(recipeImage.getFitWidth(), recipeImage.getFitHeight());
-                        rectangle.setArcWidth(25);
-                        rectangle.setArcHeight(25);
-                        recipeImage.setClip(rectangle);
-                        SnapshotParameters parameters = new SnapshotParameters();
-                        parameters.setFill(Color.TRANSPARENT);
-                        WritableImage image = recipeImage.snapshot(parameters, null);
-                        recipeImage.setClip(null);
-                        recipeImage.setEffect(new DropShadow(10, Color.web("#1f2a34")));
-                        recipeImage.setImage(image);
+                        mm.setRectangleImage(recipeImage,10,Color.web("#1f2a34"));
+
                         vBox.setAlignment(Pos.CENTER);
                         vBox.getChildren().add(recipeImage);
                         vBox.getChildren().add(label);
